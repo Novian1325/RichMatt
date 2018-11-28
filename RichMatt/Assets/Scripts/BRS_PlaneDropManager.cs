@@ -14,7 +14,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     public GameObject BRS_PlaneSpawn;//plane object (model) to spawn
     public GameObject endpointMarkerPrefab;//marks beginnning and end points for debugging purposes
 
-    public int planeSpeed_PlayerDrop = 200;
+    public int planeSpeed_PlayerDrop = 150;
     public int planeSpeed_SupplyDrop = 300;
 
     public bool DEBUG = true;//if true, prints debug statements
@@ -72,16 +72,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //set radius of spawnBoundsCircleRadius
         //leave at default value if local scale is too small
         spawnBoundsCircleRadius = planeSpawnBounds.localScale.x / 2 > spawnBoundsCircleRadius ? planeSpawnBounds.localScale.x / 2 : spawnBoundsCircleRadius;
-
-        if (DEBUG)
-        {
-            //make sure endpoint prefab is visible
-            endpointMarkerPrefab.GetComponent<MeshRenderer>().enabled = true;
-        }
-        else
-        {
-            endpointMarkerPrefab.GetComponent<MeshRenderer>().enabled = false;
-        }
+        
         return true;
     }
 
@@ -167,6 +158,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         {
             GameObject startMark = Instantiate(endpointMarkerPrefab, planeStartPoint, Quaternion.identity, this.transform);
             startMark.name = "StartMarker: " + unsuccessfulPasses;
+            if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
         }
 
@@ -178,7 +170,11 @@ public class BRS_PlaneDropManager : MonoBehaviour
             planeEndPoint = GetRandomPointOnCircle();
             //create a new endpoint marker at that location
             endpointMarker = Instantiate(endpointMarkerPrefab, planeEndPoint, Quaternion.identity, this.transform);
-            if (DEBUG) endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;
+            if (DEBUG)
+            {
+                endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
+                endpointMarker.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
+            }
 
             //test if flight path goes through LZ
             if (TestRaycastThroughDropZone(planeStartPoint, endpointMarker.transform.position, acceptableDropZones))
