@@ -688,7 +688,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4102155095743082}
   - component: {fileID: 20571116978990774}
-  - component: {fileID: 81224143101561470}
   - component: {fileID: 114452672666756526}
   m_Layer: 0
   m_Name: Camera_Plane
@@ -2555,13 +2554,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!81 &81224143101561470
-AudioListener:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1910136238171978}
-  m_Enabled: 1
 --- !u!82 &82497779546476592
 AudioSource:
   m_ObjectHideFlags: 1
