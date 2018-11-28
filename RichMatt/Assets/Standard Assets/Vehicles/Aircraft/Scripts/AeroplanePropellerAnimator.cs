@@ -42,11 +42,11 @@ namespace UnityStandardAssets.Vehicles.Aeroplane
             var newBlurState = 0;
 
             // choose between the blurred textures, if the throttle is high enough
-            if (m_Plane.Throttle > m_ThrottleBlurStart)
-            {
-                var throttleBlurProportion = Mathf.InverseLerp(m_ThrottleBlurStart, m_ThrottleBlurEnd, m_Plane.Throttle);
-                newBlurState = Mathf.FloorToInt(throttleBlurProportion*(m_PropellorBlurTextures.Length - 1));
-            }
+            //if (m_Plane.Throttle > m_ThrottleBlurStart)
+            //{
+            //    var throttleBlurProportion = Mathf.InverseLerp(m_ThrottleBlurStart, m_ThrottleBlurEnd, m_Plane.Throttle);
+            //    newBlurState = Mathf.FloorToInt(throttleBlurProportion*(m_PropellorBlurTextures.Length - 1));
+            //}
 
             // If the blur state has changed
             if (newBlurState != m_PropellorBlurState)
