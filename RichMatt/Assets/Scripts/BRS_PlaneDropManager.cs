@@ -25,7 +25,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     //how high does the plane fly?
     private float planeFlightAltitude = 800.0f;
 
-    private readonly int failedPathAltitudeIncrementAmount = 50;//if the flight path fails, raise the altitude by this much before trying again
+    private readonly int failedPathAltitudeIncrementAmount = 25;//if the flight path fails, raise the altitude by this much before trying again
 
     //radius of spawn zone
     private float spawnBoundsCircleRadius = 100.0f;
