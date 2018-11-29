@@ -81,9 +81,13 @@ public class SkyDiveTesting : MonoBehaviour
         float distanceToLanding = 999999.0f;//just a really long distance
 		RaycastHit hit;
 
-		if (Physics.Linecast(cameraPivotTransform.position, Vector3.down, out hit))
+		if (Physics.Raycast(this.transform.position, Vector3.down, out hit, distanceToLanding))
         {
-			distanceToLanding = hit.distance;
+            if (hit.collider.CompareTag("Terrain"))//verify that the ground was hit -- ex. not a parachute right below you
+            {
+			    distanceToLanding = hit.distance;
+
+            }
 		}
 
         return distanceToLanding;
