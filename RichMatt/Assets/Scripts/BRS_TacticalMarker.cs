@@ -1,53 +1,74 @@
-﻿using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class BRS_TacticalMarker : MonoBehaviour
 {
-	public GameObject TacticalMarker;
+    //tactical marker stuff
+	public GameObject TacticalMarkerPrefab;
 
-	private float markerOffset;
-	private Camera FPCamera;
+	private float tacticalMarkerOffset;
+	private Transform FPCameraTransform;
 	private float MinimapCamHeight;
-	private Ray ray;
-	private RaycastHit hit;
-	private string MARKER_ID = "*NONE*"; //this is how we keep track of its existence in the world
+    private GameObject tacticalMarkerInstance;
 
-	// Use this for initialization
-	void Start ()
+    //TODO
+    //hold 't' for 3 seconds to remove marker from map
+    //destroy marker if distance is too great
+
+    //what is the maximum distance away a player can set a tactical marker
+    private readonly int tacticalMarkerPlaceDistanceLimit = 300;
+
+    
+
+    void Start ()
 	{
-		FPCamera = GetComponentInChildren<Camera>();
-		MinimapCamHeight = GameObject.Find ("MiniMap Camera").transform.position.y;
-		markerOffset = MinimapCamHeight - 10.0f;
+        
+		FPCameraTransform = GetComponentInChildren<Camera>().transform;
+		MinimapCamHeight = GameObject.FindGameObjectWithTag ("MiniMap Camera").transform.position.y;
+		tacticalMarkerOffset = MinimapCamHeight - 10.0f;//marker always shown below map
 	}
 
-	// Update is called once per frame
-	void Update ()
-	{
-			if (Input.GetKeyUp (KeyCode.T))
-			{
-				PlaceMarker();
-			}
-	}
+    private void DestroyExistingTacticalMarkerAtDistanceLimit()
+    {
+        //if distance between player and marker > distance limit
+        if (Vector3.Distance(this.transform.position, tacticalMarkerInstance.transform.position) > tacticalMarkerPlaceDistanceLimit)
+        {
+            //TODO Should test 2D distance!
+            Debug.Log("Distance: " + Vector3.Distance(this.transform.position, tacticalMarkerInstance.transform.position));
+            Destroy(tacticalMarkerInstance);
+        }
+    }
 
-	private void PlaceMarker()
+    // Update is called once per frame
+    void Update ()
 	{
-		ray = new Ray(FPCamera.transform.position, FPCamera.transform.forward);
-		// Are we pointing at something in the world?
-		if (Physics.Raycast(ray, out hit))
+        //if(tacticalMarkerInstance) DestroyExistingTacticalMarkerAtDistanceLimit();
+        //Handle Tactical Marker
+        if (Input.GetKeyDown (KeyCode.T))
 		{
-			Vector3 markerLocation = new Vector3(hit.point.x, markerOffset, hit.point.z);
-			if (MARKER_ID == "*NONE*") // no marker on the map
-			{
-				GameObject marker = Instantiate(TacticalMarker, markerLocation, Quaternion.identity, null );
-				MARKER_ID = marker.name;  //remember this for the next time
+            PlaceTacticalMarker();
+		}
+        
+    }
 
-			} else { //find the marker that exists and relocate it
-				GameObject marker = GameObject.Find(MARKER_ID);
-				Destroy (marker);
-				marker = Instantiate(TacticalMarker, markerLocation, Quaternion.identity, null );
-				MARKER_ID = marker.name;  //remember this for the next time
-			}
+    
+
+	private void PlaceTacticalMarker()
+	{
+        RaycastHit hitInfo;
+        // Are we pointing at something in the world?
+        if (Physics.Raycast(FPCameraTransform.position, FPCameraTransform.forward, out hitInfo, tacticalMarkerPlaceDistanceLimit))
+		{
+            Vector3 markerLocation = new Vector3(hitInfo.point.x, tacticalMarkerOffset, hitInfo.point.z);
+            if (tacticalMarkerInstance != null)
+            {
+                Destroy(tacticalMarkerInstance);
+            }
+            tacticalMarkerInstance = Instantiate(TacticalMarkerPrefab, markerLocation, Quaternion.identity);
+            
 		}
 	}
+    
+
+    
 }
