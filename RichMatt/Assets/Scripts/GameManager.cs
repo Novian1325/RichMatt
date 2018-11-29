@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     [Header("GameSettings")]
-    public bool StartInPlane;
+    public bool StartInPlane = false;
+    public bool StartSkyDiving = false;
     public GameObject[] players;
 
     public BRS_PlaneDropManager planeDropManager;
@@ -61,9 +62,20 @@ public class GameManager : MonoBehaviour {
 
     private bool VerifyReferences()
     {
-        if (players.Length < 1)
+        bool allReferencesOkay = true;
+        if (players.Length < 1)//if no players loaded
         {
             players = GameObject.FindGameObjectsWithTag("Player");
+            if(players.Length < 1)//if no players tagged
+            {
+                players = new GameObject[1];//limit game to single player
+                players[0] = FindObjectOfType<BRS_TPCharacter>().gameObject;//find the first BRS TPC in game and assume it
+            }
+            else
+            {
+                Debug.LogError("ERROR! No Players found in scene. Tag one or double check BRS TPC.");
+                allReferencesOkay = false;
+            }
         }
 
         //if(supplies == null)
@@ -85,7 +97,7 @@ public class GameManager : MonoBehaviour {
         //    }
         //}
 
-        return true;
+        return allReferencesOkay;
 
     }
 }
