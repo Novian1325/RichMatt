@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine; 
 
 public class SkyDiveTesting : MonoBehaviour
 {
@@ -18,6 +18,7 @@ public class SkyDiveTesting : MonoBehaviour
 	private float distanceToTerrain;
 	private bool charFalling = true;
     private Animator anim;
+    public BRS_TPC playerController;
 
 	void Start ()
 	{
@@ -121,13 +122,16 @@ public class SkyDiveTesting : MonoBehaviour
 
     }
 
-	private void DistanceToTerrain()
+	private float GetDistanceToTerrain()
 	{
+        float distanceToLanding = 999999.0f;
 		RaycastHit hit;
 
-		if (Physics.Linecast(transform.position, -Vector3.up, out hit)) {
-			distanceToTerrain = hit.distance;
+		if (Physics.Linecast(transform.position, Vector3.down, out hit)) {
+			distanceToLanding = hit.distance;
 		}
+
+        return distanceToLanding;
 	}
 
 	private float CalculateDragIncrement()
@@ -139,19 +143,39 @@ public class SkyDiveTesting : MonoBehaviour
 
   void FixedUpdate()
 	{
-		DistanceToTerrain();
+        distanceToTerrain = GetDistanceToTerrain();
 
 		if (charFalling)
         {
 		  if (distanceToTerrain <= ChuteHeight)
             {
-			  rb.drag = ChuteDrag;
-			  charFalling = false;
-		  } else
-            {
+                OpenChute();
+			  
+		  }
+          else
+          {
+            
 		    rb.drag = CalculateDragIncrement();
 		  }
 		}
 	}
 
+    //if PLAYERSTATEENUM == freefalling
+    //freefall()
+    //checkChuteDistance
+    //else PLAYERSTATEENUM == parachuting
+    //OpenChute()
+    //checkdistance for ground 
+    //else PLAYERSTATEENUM == grounded
+    //disablefalling controls
+
+    private void OpenChute()
+    {
+        rb.drag = ChuteDrag;
+        charFalling = false;
+        //TODO 
+        //animateCute
+        //change controls
+        //
+    }
 }
