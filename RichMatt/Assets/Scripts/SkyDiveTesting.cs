@@ -15,15 +15,20 @@ public class SkyDiveTesting : MonoBehaviour
     public float ForwardSpeed = 5f;//player moves forward while falling
     
     //private readonly float _CameraDistance = 10f;
-    private Vector3 _RotationInput = Vector3.zero;//starting 
     public Transform cameraPivotTransform;
+    private Transform characterTransform;
     [Header("Camera Controls")]
+    public float MouseXSensitivity = 4.0f;
+    public float MouseYSensitivity = 4.0f;
+    public float smoothTime = 5.0f;
+    //public float ScrollSensitivity = 2.0f;
+    //public float OrbitDampening = 10.0f;
+    //public float ScrollDampening = 6.0f;
+
+    [SerializeField] private bool smoothCamera = true;
+    private bool clampVerticalRotation = true;
     private readonly float LookMinimumX = -90;
     private readonly float LookMaximumX = 90;
-    public float MouseSensitivity = 4.0f;
-    public float ScrolSensitivity = 2.0f;
-    public float OrbitDampening = 10.0f;
-    public float ScrollDampening = 6.0f;
 
     [Range(5f, 50f)]
     public float FallingDragTuning = 30.0f;
@@ -34,6 +39,17 @@ public class SkyDiveTesting : MonoBehaviour
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
 
+    private Quaternion m_CharacterTargetRot;
+    private Quaternion m_CameraTargetRot;
+
+    public void InitCameraRotation()
+    {
+        //save rotation starting values
+        characterTransform = this.transform;
+        m_CharacterTargetRot = characterTransform.transform.localRotation;
+        m_CameraTargetRot = cameraPivotTransform.localRotation;
+    }
+
     private void Awake()
     {
         //gather references
@@ -42,6 +58,7 @@ public class SkyDiveTesting : MonoBehaviour
 
         rb = gameObject.GetComponent<Rigidbody>();
         anim = gameObject.GetComponent<Animator>();
+        InitCameraRotation();
     }
 
     void Start ()
@@ -108,23 +125,35 @@ public class SkyDiveTesting : MonoBehaviour
 		return (Mathf.Abs(90f - cameraPivotTransform.rotation.eulerAngles.x) * Cosmic) * FallingDragTuning;
 	}
 
-    private void GetCameraMovement()
+    private void RotateView()
     {
-        _RotationInput.x = Input.GetAxis("Mouse X") * MouseSensitivity * RotationSpeed * Time.deltaTime;
-        _RotationInput.y = Input.GetAxis("Mouse Y") * MouseSensitivity * RotationSpeed * Time.deltaTime;
+        float yRot = Input.GetAxis("Mouse X") * MouseXSensitivity;
+        float xRot = Input.GetAxis("Mouse Y") * MouseYSensitivity;
+
+        m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
+        m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
+
+        if (clampVerticalRotation)
+            m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot);
+
         
     }
 
-    private void HandleCameraMovement()
+    private void HandleCameraMovement()//
     {
-        //handle camera pitch
-        cameraPivotTransform.Rotate(new Vector3(_RotationInput.y, 0, 0));
-        //TODO Clamp vertical rotation pitch to -90, 90
-
-
-        //handle character turn
-        this.transform.Rotate(new Vector3(0, _RotationInput.x, 0));
-    }
+        if (smoothCamera)
+        {
+            characterTransform.localRotation = Quaternion.Slerp(characterTransform.localRotation, m_CharacterTargetRot,
+                smoothTime * Time.deltaTime);
+            cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, m_CameraTargetRot,
+                smoothTime * Time.deltaTime);
+        }
+        else
+        {
+            characterTransform.localRotation = m_CharacterTargetRot;
+            cameraPivotTransform.localRotation = m_CameraTargetRot;
+        }
+    }//
 
     private void StartLanded()
     {
@@ -143,7 +172,7 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
-                GetCameraMovement();
+                RotateView();
                 break;
 
 
