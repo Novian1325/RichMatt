@@ -6,9 +6,11 @@ public class CameraOrbit : MonoBehaviour
 	private Transform _XForm_Parent;
 	private Vector3 _LocalRotation;
 
+    private Transform playerPivot;//saved transform
+
 	//private readonly float _CameraDistance = 10f;
 	public float MouseSensitivity = 4.0f;
-	public float ScrolSensitivity = 2.0f;
+	public float ScrollSensitivity = 2.0f;
 	public float OrbitDampening = 10.0f;
 	public float ScrollDampening = 6.0f;
 	//public bool CameraDisabled = false;
@@ -16,9 +18,22 @@ public class CameraOrbit : MonoBehaviour
 
 	void Start()
 	{
-		//this._XForm_Camera = this.transform;
-		this._XForm_Parent = this.transform.parent;
+        //this._XForm_Camera = this.transform;
+        this.playerPivot = this.transform.parent;//start pivoting this
+        _XForm_Parent = this.playerPivot;//save this for later
 	}
+
+    public void FollowPlane(Transform newPivot)
+    {
+        _XForm_Parent = newPivot;
+        this.enabled = true;
+    }
+
+    public void FollowPlayer()
+    {
+        _XForm_Parent = this.playerPivot;
+        this.enabled = false;
+    }
 
 	void LateUpdate()
 	{
