@@ -58,139 +58,31 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void StartFreeFalling()
     {
-        //the only thing that should be accepting controls is this code
-        if(playerController == null)
-        {
-            Debug.LogError("ERROR!!!!!!!");
-        }
-        else
-        {
-            playerController.enabled = false;
-
-        }
-        playerCharacter.enabled = false;
+        TogglePlayerControls(false);//turn off player controls except for skydiving controls
         anim.SetBool("SkyDive", true);
         skyDivingState = SkyDivingStateENUM.freeFalling;
         //
     }
 
-    private void FreeFalling()
+    private void TogglePlayerControls(bool active)
     {
-        // read inputs
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-
-
-
+        playerCharacter.enabled = active;
+        playerController.enabled = active;
     }
 
-    void Update()
+    private void FreeFalling()
     {
-        switch (skyDivingState)
-        {
-            case SkyDivingStateENUM.startFreeFalling:
-                StartFreeFalling();
-                break;
-
-            case SkyDivingStateENUM.freeFalling:
-                ;
-                break;
-
-            default:
-                break;
-        }
-    }//end Update()
-        //anim.SetBool("SkyDive", false);
-
-        /*
-		if (Input.GetAxisRaw ("Mouse Y") > 0)
-        {
-			//Twist to the right
-			var angle = transform.rotation.eulerAngles.x;
-			if ((angle < MaxDownAngle) || (angle > 180.0f))
-			  transform.Rotate (Vector3.right * RotationSpeed * Time.deltaTime);
-		}
-        else if (Input.GetAxisRaw ("Mouse Y") < 0)
-		{
-			//Twist to the left
-			var angle = transform.rotation.eulerAngles.x;
-			if ((angle > MaxUpAngle) && (angle < 180.0f))
-			  transform.Rotate (Vector3.right * -(RotationSpeed * Time.deltaTime));
-		}
-            transform.Rotate(Vector3.up * (Input.GetAxisRaw("Mouse X") * 10.0f) * Time.deltaTime);
-            */
-    
-        /*
+      
         
-        //Skydiving
-        //Mouse Left and Right: = rotate character on Y axis
-        if (Input.GetAxisRaw("Mouse X") > 0)
-        {
-            //Twist to the right
-                transform.Rotate(Vector3.up * RotationSpeed * Time.deltaTime);
-        }
-        else if (Input.GetAxisRaw("Mouse X") < 0)
-        {
-            //Twist to the left
-                transform.Rotate(Vector3.up * -(RotationSpeed * Time.deltaTime));
-        }
-        
-    */
-
-        ////Skydiving
-        ////Key left, key right = rotate on the z axis
-        //if (Input.GetAxisRaw("Vertical") > 0)
-        //{
-        //    //Dive
-        //    var angle = transform.rotation.eulerAngles.x;
-        //    if ((angle < MaxDownAngle) || (angle > 180.0f))
-        //        transform.Rotate(Vector3.right * RotationSpeed * Time.deltaTime);
-        //}
-        //else if (Input.GetAxisRaw("Vertical") < 0)
-        //{
-        //    //Pull Back
-        //    var angle = transform.rotation.eulerAngles.x;
-        //    if ((angle < MaxUpAngle) && (angle < 180.0f))
-        //        transform.Rotate(Vector3.right * -(RotationSpeed * Time.deltaTime));
-        //       // transform.Rotate(Vector3.right * -(RotationSpeed * Time.deltaTime));
-        //    //transform.Rotate((Vector3.right.x * -(RotationSpeed * Time.deltaTime)), transform.rotation.y, transform.rotation.z);
-        //}
-
-        //transform.Rotate(Vector3.up * (Input.GetAxisRaw("Vertical") * 10.0f) * Time.deltaTime);
-
-        /*
-
-
-        //Skydiving
-        //Key Forward = dive
-        //Key backwards = pull back
-        if (Input.GetAxisRaw("Horizontal") > 0)
-        {
-            //Twist to the right
-            //transform.Rotate(new Vector3(0, 0, (Vector3.forward.z * RotationSpeed)) * Time.deltaTime);
-            //transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, (Vector3.forward.z * RotationSpeed)) * Time.deltaTime);
-            //transform.rotation = Quaternion.Euler(0, 0, 0);
-            //transform.Rotate(Vector3.forward * RotationSpeed * Time.deltaTime, Space.Self);
-        }
-        else if (Input.GetAxisRaw("Horizontal") < 0)
-        {
-            //Twist to the left
-            //transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, (Vector3.forward.z * -RotationSpeed)) * Time.deltaTime);
-            //transform.Rotate(Vector3.forward * -(RotationSpeed * Time.deltaTime), Space.Self);
-            // transform.Rotate(new Vector3(0, 0, (Vector3.forward.z * -RotationSpeed)) * Time.deltaTime);
-        }
-
-        */
-
-
-    //}
+    }
 
 	private float GetDistanceToTerrain()
 	{
-        float distanceToLanding = 999999.0f;
+        float distanceToLanding = 999999.0f;//just a really long distance
 		RaycastHit hit;
 
-		if (Physics.Linecast(cameraPivotTransform.position, Vector3.down, out hit)) {
+		if (Physics.Linecast(cameraPivotTransform.position, Vector3.down, out hit))
+        {
 			distanceToLanding = hit.distance;
 		}
 
@@ -204,27 +96,52 @@ public class SkyDiveTesting : MonoBehaviour
 		return (Mathf.Abs(90f - cameraPivotTransform.rotation.eulerAngles.x) * Cosmic) * FallingDragTuning;
 	}
 
-    private void HandleCameraMovement()
+    private void GetCameraMovement()
     {
-        if (Input.GetAxis("Mouse Y") != 0)
-        {
-            _LocalRotation.y -= Input.GetAxis("Mouse Y") * MouseSensitivity;
-            _LocalRotation.y = Mathf.Clamp(_LocalRotation.y, -90f, 90f);
-            Quaternion QT = Quaternion.Euler(_LocalRotation.y, 0, 0);
-            cameraPivotTransform.rotation = Quaternion.Lerp(cameraPivotTransform.rotation, QT, Time.deltaTime * OrbitDampening);
-        }
-        if(Input.GetAxis("Mouse X") != 0)
-        {
-
-            _LocalRotation.x += Input.GetAxis("Mouse X") * MouseSensitivity;
-            //Debug.Log("Rotation: " + _LocalRotation);
-            //this.transform.Rotate(new Vector3(0, _LocalRotation.x, 0));
-            Quaternion QT = Quaternion.Euler(0, _LocalRotation.x, 0);
-            this.transform.rotation = Quaternion.Lerp(this.transform.rotation, QT, RotationSpeed);
-        }
+        _LocalRotation.y = Input.GetAxis("Mouse Y") * MouseSensitivity;
+        _LocalRotation.y = Mathf.Clamp(_LocalRotation.y, -90f, 90f);//do not exceed straight up or down
+        _LocalRotation.x = Input.GetAxis("Mouse X") * MouseSensitivity;
+        
     }
 
-    void FixedUpdate()
+    private void HandleCameraMovement()
+    {
+        //handle camera pitch
+        cameraPivotTransform.Rotate(new Vector3(_LocalRotation.y * RotationSpeed * Time.deltaTime, 0, 0));
+        //handle character turn
+        this.transform.Rotate(new Vector3(0, _LocalRotation.x * RotationSpeed * Time.deltaTime, 0));
+    }
+
+    private void StartLanded()
+    {
+        //Destroy Parachute
+        TogglePlayerControls(true);
+        anim.SetBool("SkyDive", false);
+        skyDivingState = SkyDivingStateENUM.landed;
+    }
+    
+    private void Update()
+    {
+        switch (skyDivingState)
+        {
+            case SkyDivingStateENUM.startFreeFalling:
+                StartFreeFalling();
+                break;
+
+            case SkyDivingStateENUM.freeFalling:
+                GetCameraMovement();
+                break;
+
+
+            case SkyDivingStateENUM.startLanded:
+                StartLanded();
+                break;
+            default:
+                break;
+        }
+    }//end Update()
+
+    private void FixedUpdate()
 	{
         distanceToTerrain = GetDistanceToTerrain();
         switch (skyDivingState)
@@ -233,12 +150,36 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
-                HandleCameraMovement();
                 FreeFalling();
                 break;
 
             default:
                 break;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        switch (skyDivingState)
+        {
+            case SkyDivingStateENUM.startFreeFalling:
+                break;
+
+            case SkyDivingStateENUM.freeFalling:
+                HandleCameraMovement();//move camera after all physics step have completed
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Terrain"))
+        {
+            //you've hit the terrain
+            skyDivingState = SkyDivingStateENUM.startLanded;
         }
     }
 

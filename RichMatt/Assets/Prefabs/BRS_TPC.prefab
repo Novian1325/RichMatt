@@ -1557,7 +1557,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941973348895546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5000, z: 0}
+  m_LocalPosition: {x: 0, y: 8.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4943463622790514}
@@ -2696,12 +2696,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784463d00ad7b074daad8a7f9b088cff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skyDivingState: 0
+  skyDivingState: 5
   MaxUpAngle: 9
   MaxDownAngle: 45
   ChuteHeight: 100
   ChuteDrag: 3.65
-  RotationSpeed: 145
+  RotationSpeed: 100
   ForwardSpeed: 5
   cameraPivotTransform: {fileID: 4750000278564472}
   MouseSensitivity: 4
