@@ -1389,10 +1389,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+    - target: {fileID: 114623461945884066, guid: 08d65c8f8a074ac4d839c9204f543d97,
         type: 2}
-      propertyPath: skyDivingState
-      value: 5
+      propertyPath: m_GroundCheckDistance
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
