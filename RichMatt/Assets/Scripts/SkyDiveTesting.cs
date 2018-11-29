@@ -18,6 +18,8 @@ public class SkyDiveTesting : MonoBehaviour
     private Vector3 _RotationInput = Vector3.zero;//starting 
     public Transform cameraPivotTransform;
     [Header("Camera Controls")]
+    private readonly float LookMinimumX = -90;
+    private readonly float LookMaximumX = 90;
     public float MouseSensitivity = 4.0f;
     public float ScrolSensitivity = 2.0f;
     public float OrbitDampening = 10.0f;
@@ -212,5 +214,21 @@ public class SkyDiveTesting : MonoBehaviour
         //animateCute
         //change controls
         //
+    }
+
+    private Quaternion ClampRotationAroundXAxis(Quaternion q)
+    {
+        q.x /= q.w;
+        q.y /= q.w;
+        q.z /= q.w;
+        q.w = 1.0f;
+
+        float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
+
+        angleX = Mathf.Clamp(angleX, LookMinimumX, LookMaximumX);
+
+        q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
+
+        return q;
     }
 }
