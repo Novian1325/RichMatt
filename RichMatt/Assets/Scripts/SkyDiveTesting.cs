@@ -18,7 +18,7 @@ public class SkyDiveTesting : MonoBehaviour
 	private float distanceToTerrain;
 	private bool charFalling = true;
     private Animator anim;
-    public BRS_TPC playerController;
+    public BRS_TPCharacter playerController;
 
 	void Start ()
 	{

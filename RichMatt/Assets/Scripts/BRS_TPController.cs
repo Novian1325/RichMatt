@@ -2,10 +2,10 @@ using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-    [RequireComponent(typeof (BRS_TPC))]
+    [RequireComponent(typeof (BRS_TPCharacter))]
     public class BRS_TPController : MonoBehaviour
     {
-        private BRS_TPC m_Character; // A reference to the ThirdPersonCharacter on the object
+        private BRS_TPCharacter m_Character; // A reference to the ThirdPersonCharacter on the object
         private Transform m_Cam;                  // A reference to the main camera in the scenes transform
         private Vector3 m_CamForward;             // The current forward direction of the camera
         private Vector3 m_Move;
@@ -27,7 +27,7 @@ using UnityStandardAssets.CrossPlatformInput;
             }
 
             // get the third person character ( this should never be null due to require component )
-            m_Character = GetComponent<BRS_TPC>();
+            m_Character = GetComponent<BRS_TPCharacter>();
         }
 
 
