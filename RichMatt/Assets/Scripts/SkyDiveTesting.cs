@@ -56,7 +56,7 @@ public class SkyDiveTesting : MonoBehaviour
 		//MaxDownAngle = Mathf.Abs(MaxDownAngle);
 	}
 
-    public void DoFreeFall()
+    public void BeginSkyDive()
     {
         //this is the function that is called from outside the class and starts the freefall framework
         skyDivingState = SkyDivingStateENUM.startFreeFalling;

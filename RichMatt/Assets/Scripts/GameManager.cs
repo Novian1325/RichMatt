@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour {
     [Header("Supply Drop")]
     public GameObject[] supplies;
     public bool QueSupplyDrop = false;
+
+    [Header("SkyDiving")]
+    public SkyDiveTesting skyDiveController;
     
     private void Awake()
     {
@@ -53,7 +56,18 @@ public class GameManager : MonoBehaviour {
             DeployPlayersInPlane();
         }
 
-        if (QueSupplyDrop)
+        else if (StartSkyDiving)
+        {
+            StartSkyDiving = false;
+            skyDiveController.BeginSkyDive();
+            //if you're lower than 100 feet, raise it up to a default value
+            if (skyDiveController.transform.position.y < 100)
+                skyDiveController.transform.position = new Vector3(skyDiveController.transform.position.x,
+                skyDiveController.transform.position.y + 500, skyDiveController.transform.position.z);
+
+        }
+
+        else if (QueSupplyDrop)
         {
             QueSupplyDrop = false;//immediately set flag to false
             DeploySupplyDrop();
@@ -63,6 +77,7 @@ public class GameManager : MonoBehaviour {
     private bool VerifyReferences()
     {
         bool allReferencesOkay = true;
+        //verify players
         if (players.Length < 1)//if no players loaded
         {
             players = GameObject.FindGameObjectsWithTag("Player");
@@ -76,6 +91,21 @@ public class GameManager : MonoBehaviour {
                 Debug.LogError("ERROR! No Players found in scene. Tag one or double check BRS TPC.");
                 allReferencesOkay = false;
             }
+        }
+        
+        //verify skyDiveController
+        if(skyDiveController == null)
+        {
+            if (players.Length < 1)
+            {
+                Debug.LogError("ERROR! cannot auto set skyDiveController without any players.");
+                allReferencesOkay = false;
+            }
+            else
+            {
+                skyDiveController = players[0].GetComponent<SkyDiveTesting>();
+            }
+
         }
 
         //if(supplies == null)
