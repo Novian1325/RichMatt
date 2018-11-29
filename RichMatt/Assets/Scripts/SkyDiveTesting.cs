@@ -56,6 +56,12 @@ public class SkyDiveTesting : MonoBehaviour
 		//MaxDownAngle = Mathf.Abs(MaxDownAngle);
 	}
 
+    public void DoFreeFall()
+    {
+        //this is the function that is called from outside the class and starts the freefall framework
+        skyDivingState = SkyDivingStateENUM.startFreeFalling;
+    }
+
     private void StartFreeFalling()
     {
         TogglePlayerControls(false);//turn off player controls except for skydiving controls
