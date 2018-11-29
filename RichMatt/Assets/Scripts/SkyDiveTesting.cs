@@ -215,9 +215,12 @@ public class SkyDiveTesting : MonoBehaviour
         }
         if(Input.GetAxis("Mouse X") != 0)
         {
+
             _LocalRotation.x += Input.GetAxis("Mouse X") * MouseSensitivity;
+            //Debug.Log("Rotation: " + _LocalRotation);
+            //this.transform.Rotate(new Vector3(0, _LocalRotation.x, 0));
             Quaternion QT = Quaternion.Euler(0, _LocalRotation.x, 0);
-            this.transform.rotation = Quaternion.Lerp(this.transform.rotation, QT, Time.deltaTime * OrbitDampening);
+            this.transform.rotation = Quaternion.Lerp(this.transform.rotation, QT, RotationSpeed);
         }
     }
 
