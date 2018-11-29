@@ -27,7 +27,7 @@ using UnityStandardAssets.CrossPlatformInput;
             }
 
             // get the third person character ( this should never be null due to require component )
-            m_Character = GetComponent<ThirdPersonCharacter>();
+            m_Character = GetComponent<BRS_TPC>();
         }
 
 
