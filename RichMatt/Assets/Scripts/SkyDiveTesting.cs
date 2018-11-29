@@ -108,18 +108,20 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void GetCameraMovement()
     {
-        _RotationInput.x = Input.GetAxis("Mouse X") * MouseSensitivity;
-        _RotationInput.y = Input.GetAxis("Mouse Y") * MouseSensitivity;
+        _RotationInput.x = Input.GetAxis("Mouse X") * MouseSensitivity * RotationSpeed * Time.deltaTime;
+        _RotationInput.y = Input.GetAxis("Mouse Y") * MouseSensitivity * RotationSpeed * Time.deltaTime;
         
     }
 
     private void HandleCameraMovement()
     {
         //handle camera pitch
-        cameraPivotTransform.Rotate(new Vector3(_RotationInput.y * RotationSpeed * Time.deltaTime, 0, 0));
+        cameraPivotTransform.Rotate(new Vector3(_RotationInput.y, 0, 0));
         //TODO Clamp vertical rotation pitch to -90, 90
+
+
         //handle character turn
-        this.transform.Rotate(new Vector3(0, _RotationInput.x * RotationSpeed * Time.deltaTime, 0));
+        this.transform.Rotate(new Vector3(0, _RotationInput.x, 0));
     }
 
     private void StartLanded()
