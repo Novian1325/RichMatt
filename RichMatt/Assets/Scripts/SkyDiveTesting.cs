@@ -15,7 +15,7 @@ public class SkyDiveTesting : MonoBehaviour
     public float ForwardSpeed = 5f;//player moves forward while falling
     
     //private readonly float _CameraDistance = 10f;
-    private Vector3 _LocalRotation = Vector3.zero;//starting 
+    private Vector3 _RotationInput = Vector3.zero;//starting 
     public Transform cameraPivotTransform;
     [Header("Camera Controls")]
     public float MouseSensitivity = 4.0f;
@@ -108,18 +108,18 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void GetCameraMovement()
     {
-        _LocalRotation.y = Input.GetAxis("Mouse Y") * MouseSensitivity;
-        _LocalRotation.y = Mathf.Clamp(_LocalRotation.y, -90f, 90f);//do not exceed straight up or down
-        _LocalRotation.x = Input.GetAxis("Mouse X") * MouseSensitivity;
+        _RotationInput.x = Input.GetAxis("Mouse X") * MouseSensitivity;
+        _RotationInput.y = Input.GetAxis("Mouse Y") * MouseSensitivity;
         
     }
 
     private void HandleCameraMovement()
     {
         //handle camera pitch
-        cameraPivotTransform.Rotate(new Vector3(_LocalRotation.y * RotationSpeed * Time.deltaTime, 0, 0));
+        cameraPivotTransform.Rotate(new Vector3(_RotationInput.y * RotationSpeed * Time.deltaTime, 0, 0));
+        //TODO Clamp vertical rotation pitch to -90, 90
         //handle character turn
-        this.transform.Rotate(new Vector3(0, _LocalRotation.x * RotationSpeed * Time.deltaTime, 0));
+        this.transform.Rotate(new Vector3(0, _RotationInput.x * RotationSpeed * Time.deltaTime, 0));
     }
 
     private void StartLanded()
