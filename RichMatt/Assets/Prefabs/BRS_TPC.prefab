@@ -1284,9 +1284,9 @@ GameObject:
   - component: {fileID: 95698142084461706}
   - component: {fileID: 54049656703727184}
   - component: {fileID: 136522419180399366}
-  - component: {fileID: 114090735471483264}
-  - component: {fileID: 114189562161771306}
   - component: {fileID: 114565705077904430}
+  - component: {fileID: 114623461945884066}
+  - component: {fileID: 114072262533309348}
   m_Layer: 0
   m_Name: BRS_TPC
   m_TagString: Untagged
@@ -2603,36 +2603,17 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114090735471483264
+--- !u!114 &114072262533309348
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941973348895546}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521b611700410be45810047f0a74e899, type: 3}
+  m_Script: {fileID: 11500000, guid: dd63021bc92fa764bbb5739b0925b248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114189562161771306
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1941973348895546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7a80d520cacc042b5fe14f373d8173, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MovingTurnSpeed: 360
-  m_StationaryTurnSpeed: 180
-  m_JumpPower: 6
-  m_GravityMultiplier: 2
-  m_RunCycleLegOffset: 0.2
-  m_MoveSpeedMultiplier: 1
-  m_AnimSpeedMultiplier: 1
-  m_GroundCheckDistance: 0.3
 --- !u!114 &114565705077904430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2650,6 +2631,26 @@ MonoBehaviour:
   ChuteDrag: 3.65
   RotationSpeed: 145
   FallingDragTuning: 5
+  playerController: {fileID: 0}
+--- !u!114 &114623461945884066
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1941973348895546}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c00d2cb6fa369469cd3daa8af935b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MovingTurnSpeed: 360
+  m_StationaryTurnSpeed: 180
+  m_JumpPower: 12
+  m_GravityMultiplier: 2
+  m_RunCycleLegOffset: 0.2
+  m_MoveSpeedMultiplier: 1
+  m_AnimSpeedMultiplier: 1
+  m_GroundCheckDistance: 0.1
 --- !u!136 &136522419180399366
 CapsuleCollider:
   m_ObjectHideFlags: 1
