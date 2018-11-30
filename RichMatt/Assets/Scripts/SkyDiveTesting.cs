@@ -1,22 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine; 
+using UnityEngine;
 
 public class SkyDiveTesting : MonoBehaviour
 {
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
     [Header("**Level Designer Only**")]
-	public float MaxUpAngle = 9.0f;
-	public float MaxDownAngle = 45.0f;
-	public float ChuteHeight = 100f;
-	public float ChuteDrag = 3.65f;
-	public float RotationSpeed = 145f;
+    public float MaxUpAngle = 9.0f;
+    public float MaxDownAngle = 45.0f;
+    public float ChuteHeight = 100f;
+    public float ChuteDrag = 3.65f;
+    public float PitchChangeSpeed = 145f;
+    public float rollChangeSpeed = 5f;
     public float ForwardSpeed = 5f;//player moves forward while falling
+
+
+    private readonly float minSwoopAngle = (-15f / 360f);
+    private readonly float maxSwoopAngle = (30f / 360f);
     
+    private readonly float minRollRotation = (-45f / 360f);
+    private readonly float maxRollRotation = (45f / 360f);
+
     //private readonly float _CameraDistance = 10f;
     public Transform cameraPivotTransform;
     private Transform characterTransform;
+    public Transform characterSkeletonTransform;
     [Header("Camera Controls")]
     public float MouseXSensitivity = 4.0f;
     public float MouseYSensitivity = 4.0f;
@@ -25,6 +34,7 @@ public class SkyDiveTesting : MonoBehaviour
     //public float OrbitDampening = 10.0f;
     //public float ScrollDampening = 6.0f;
 
+    //Camera settings
     [SerializeField] private bool smoothCamera = true;
     private bool clampVerticalRotation = true;
     private readonly float LookMinimumX = -90;
@@ -33,47 +43,52 @@ public class SkyDiveTesting : MonoBehaviour
     [Range(5f, 50f)]
     public float FallingDragTuning = 30.0f;
 
-	private Rigidbody rb;
-	private float distanceToTerrain;
+    private Rigidbody rb;
+    private float distanceToTerrain;
     private Animator anim;
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
 
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
+    private Quaternion m_CharacterSkeletonTargetRot;
 
-    public void InitCameraRotation()
+    private Vector3 m_CharacterSkeletonLocalRot;
+
+    public void InitRotationTransforms()
     {
         //save rotation starting values
         characterTransform = this.transform;
         m_CharacterTargetRot = characterTransform.transform.localRotation;
         m_CameraTargetRot = cameraPivotTransform.localRotation;
+        m_CharacterSkeletonTargetRot = characterSkeletonTransform.localRotation;
+        m_CharacterSkeletonLocalRot = Vector3.zero;
     }
 
     private void Awake()
     {
         //gather references
-        if(playerCharacter == null) playerCharacter = this.gameObject.GetComponent<BRS_TPCharacter>();
-        if(playerController == null) playerController = this.gameObject.GetComponent<BRS_TPController>();
+        if (playerCharacter == null) playerCharacter = this.gameObject.GetComponent<BRS_TPCharacter>();
+        if (playerController == null) playerController = this.gameObject.GetComponent<BRS_TPController>();
 
         rb = gameObject.GetComponent<Rigidbody>();
         anim = gameObject.GetComponent<Animator>();
-        InitCameraRotation();
+        InitRotationTransforms();
     }
 
-    void Start ()
-	{
-        
+    void Start()
+    {
 
-       // rb.AddForce(new Vector3(0,0,1), ForceMode.Impulse);
+
+        //rb.AddForce(new Vector3(0, 0, 1), ForceMode.Impulse);
         //rb.velocity = (transform.forward * 1.5f);
 
-  //      //normalize these variables - this permits the level Designer to be carefree about setting these
-  //      if (MaxDownAngle > 89.5f)
-		//  MaxDownAngle = (90 - MaxDownAngle) + 1;
-		//MaxUpAngle = Mathf.Abs(MaxUpAngle);
-		//MaxDownAngle = Mathf.Abs(MaxDownAngle);
-	}
+        ////normalize these variables - this permits the level Designer to be carefree about setting these
+        //if (MaxDownAngle > 89.5f)
+        //    MaxDownAngle = (90 - MaxDownAngle) + 1;
+        //MaxUpAngle = Mathf.Abs(MaxUpAngle);
+        //MaxDownAngle = Mathf.Abs(MaxDownAngle);
+    }
 
     public void BeginSkyDive()
     {
@@ -86,6 +101,7 @@ public class SkyDiveTesting : MonoBehaviour
         TogglePlayerControls(false);//turn off player controls except for skydiving controls
         anim.SetBool("SkyDive", true);
         skyDivingState = SkyDivingStateENUM.freeFalling;
+        m_CharacterSkeletonLocalRot = Vector3.zero;
         //
     }
 
@@ -97,56 +113,131 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FreeFalling()
     {
-      
-        
+        //calculate distance to ground
+        //deploy chute if too low
+        //increment state
+
+
     }
 
-	private float GetDistanceToTerrain()
-	{
+    private float GetDistanceToTerrain()
+    {
         float distanceToLanding = 999999.0f;//just a really long distance
-		RaycastHit hit;
+        RaycastHit hit;
 
-		if (Physics.Raycast(this.transform.position, Vector3.down, out hit, distanceToLanding))
+        if (Physics.Raycast(this.transform.position, Vector3.down, out hit, distanceToLanding))
         {
             if (hit.collider.CompareTag("Terrain"))//verify that the ground was hit -- ex. not a parachute right below you
             {
-			    distanceToLanding = hit.distance;
+                distanceToLanding = hit.distance;
 
             }
-		}
+        }
 
         return distanceToLanding;
-	}
+    }
 
-	private float CalculateDragIncrement()
-	{
+    private float CalculateDragIncrement()
+    {
         float Cosmic;
         Cosmic = 0.025f;
-		return (Mathf.Abs(90f - cameraPivotTransform.rotation.eulerAngles.x) * Cosmic) * FallingDragTuning;
-	}
+        return (Mathf.Abs(90f - cameraPivotTransform.rotation.eulerAngles.x) * Cosmic) * FallingDragTuning;
+    }
 
     private void RotateView()
     {
-        float yRot = Input.GetAxis("Mouse X") * MouseXSensitivity;
-        float xRot = Input.GetAxis("Mouse Y") * MouseYSensitivity;
 
-        m_CharacterTargetRot *= Quaternion.Euler(0f, yRot, 0f);
-        m_CameraTargetRot *= Quaternion.Euler(-xRot, 0f, 0f);
+        float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;
+
+        float characterRotationX = Input.GetAxis("Vertical") * PitchChangeSpeed;
+        float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;
+        float characterRotationZ = Input.GetAxis("Horizontal") * rollChangeSpeed;
+
+        #region Swoop Clamp
+        if (characterRotationX == 0)
+        {
+            if (characterSkeletonTransform.rotation.x > 0)
+            {
+                characterRotationX = -1;
+            }
+            else if (characterSkeletonTransform.rotation.x < 0)
+            {
+                characterRotationX = 1;
+            }
+
+        }
+        else if (characterSkeletonTransform.rotation.x > maxSwoopAngle)
+        {
+            if (characterRotationX > 0)
+                characterRotationX = 0;
+
+        }
+        else if (characterSkeletonTransform.rotation.x < minSwoopAngle)
+        {
+            if (characterRotationX < 0)
+                characterRotationX = 0;
+
+        }
+        #endregion
+
+        #region Clamp Roll
+        if (characterRotationZ == 0)
+        {
+            if(characterSkeletonTransform.rotation.z > 0)
+            {
+                characterRotationZ = 1;
+            }
+            else if(characterSkeletonTransform.rotation.z < 0)
+            {
+                characterRotationZ = -1;
+            }
+            
+        }
+        else if (characterSkeletonTransform.rotation.z > maxRollRotation) // || characterSkeletonTransform.rotation.z < minRollRotation)
+        {
+            if(characterRotationZ < 0)
+                characterRotationZ = 0;
+
+        }
+        else if (characterSkeletonTransform.rotation.z < minRollRotation) // || characterSkeletonTransform.rotation.z < minRollRotation)
+        {
+            if (characterRotationZ > 0)
+                characterRotationZ = 0;
+
+        }
+
+        #endregion
+
+        //if (characterSkeletonTransform.rotation.z < minRollRotation) characterRotationZ = 0;
+        Debug.Log(characterSkeletonTransform.rotation.z + " / " + maxRollRotation);
+
+        m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);
+        m_CameraTargetRot *= Quaternion.Euler(-cameraRotationX, 0f, 0f);
+        m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, 0f, -characterRotationZ);
 
         if (clampVerticalRotation)
             m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot);
-
         
+    }
+    private void HandlePlayerMovement()
+    {
+        //move character skeleton
+        characterSkeletonTransform.localRotation = Quaternion.Slerp(characterSkeletonTransform.localRotation,
+            m_CharacterSkeletonTargetRot,
+            smoothTime * Time.deltaTime);
     }
 
     private void HandleCameraMovement()//
     {
         if (smoothCamera)
         {
+            //move whole character (inluding cam)
             characterTransform.localRotation = Quaternion.Slerp(characterTransform.localRotation, m_CharacterTargetRot,
                 smoothTime * Time.deltaTime);
+            //move camera
             cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, m_CameraTargetRot,
                 smoothTime * Time.deltaTime);
+            
         }
         else
         {
@@ -173,6 +264,7 @@ public class SkyDiveTesting : MonoBehaviour
 
             case SkyDivingStateENUM.freeFalling:
                 RotateView();
+                HandlePlayerMovement();
                 break;
 
 

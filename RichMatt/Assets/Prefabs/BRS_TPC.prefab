@@ -1222,6 +1222,7 @@ GameObject:
   - component: {fileID: 4736738986692252}
   - component: {fileID: 20109728096473184}
   - component: {fileID: 114696388325903184}
+  - component: {fileID: 114317459040866896}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1557,7 +1558,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941973348895546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 6.2, y: 5000, z: -25.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4943463622790514}
@@ -2280,7 +2281,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1926282694239218}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.22623831, z: -1.58}
+  m_LocalPosition: {x: 0, y: 0.146, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4750000278564472}
@@ -2319,8 +2320,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1178110683289444}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.993, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.055, z: 0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4736738986692252}
@@ -2685,13 +2686,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd63021bc92fa764bbb5739b0925b248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114317459040866896
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1926282694239218}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e83de04f314cf4a8710e5acc9b91f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MouseSensitivity: 4
+  ScrollSensitivity: 2
+  OrbitDampening: 10
+  ScrollDampening: 6
 --- !u!114 &114565705077904430
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941973348895546}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 784463d00ad7b074daad8a7f9b088cff, type: 3}
   m_Name: 
@@ -2701,13 +2717,20 @@ MonoBehaviour:
   MaxDownAngle: 45
   ChuteHeight: 100
   ChuteDrag: 3.65
-  RotationSpeed: 100
+  PitchChangeSpeed: 5
+  rollChangeSpeed: 5
+  minRollRotation: -25
+  maxRollRotation: 25
   ForwardSpeed: 5
+  currentSwoopAngle: 0
+  minSwoopAngle: -15
+  maxSwoopAngle: 30
   cameraPivotTransform: {fileID: 4750000278564472}
-  MouseSensitivity: 4
-  ScrolSensitivity: 2
-  OrbitDampening: 10
-  ScrollDampening: 6
+  characterSkeletonTransform: {fileID: 4194924174433152}
+  MouseXSensitivity: 4
+  MouseYSensitivity: 4
+  smoothTime: 5
+  smoothCamera: 1
   FallingDragTuning: 5
 --- !u!114 &114623461945884066
 MonoBehaviour:
