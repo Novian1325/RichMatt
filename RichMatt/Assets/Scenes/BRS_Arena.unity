@@ -529,7 +529,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 500
+      value: 3.66
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.z
@@ -554,6 +554,22 @@ Prefab:
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728676684435884, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728676684435884, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728676684435884, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728676684435884, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
@@ -971,6 +987,11 @@ Prefab:
       propertyPath: supplyDropZones.Array.data[3]
       value: 
       objectReference: {fileID: 992990068}
+    - target: {fileID: 114630260696749518, guid: 4be5ada959d178b4db3e40c4a3443be4,
+        type: 2}
+      propertyPath: endpointMarkerPrefab
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4be5ada959d178b4db3e40c4a3443be4, type: 2}
   m_IsPrefabAsset: 0
