@@ -143,7 +143,7 @@ public class SkyDiveTesting : MonoBehaviour
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera yaw
         float characterRotationX = Input.GetAxis("Vertical") * attitudeChangeSpeed;//get swoop input
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
-        float characterRotationZ = Input.GetAxis("Horizontal") * attitudeChangeSpeed;//get roll input
+        float characterRotationZ = (.2f * characterRotationY) + Input.GetAxis("Horizontal") * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
         float charRoll = characterRollAxis.localRotation.z;//cache
         float charSwoop = characterSwoopTransform.localRotation.x;//cache
