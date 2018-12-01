@@ -241,37 +241,36 @@ public class SkyDiveTesting : MonoBehaviour
     {
         float myRot = characterSkeletonTransform.localRotation.x;
         float GoalDrag;
-        float anglePercent;
-        float startDrag = 0.25f;
 
         //Debug.Log(myRot + " : " + minSwoopAngle + " / " + maxSwoopAngle);
 
-        GoalDrag = myRot > 0 ? SwoopDrag : SlowDrag;
+        GoalDrag = myRot > 0 ? -SwoopDrag : SlowDrag;
         //Debug.Log(GoalDrag);
 
         //anglePercent = Mathf.Abs(myRot) / GoalDrag;
         //Debug.Log(anglePercent);
 
         //rb.drag = Mathf.Lerp(rb.drag, GoalDrag * anglePercent, 1);
-
-        if(myRot > 0)
+        rb.drag = myRot / GoalDrag;
+        
+        #region clamp drag
+        if (myRot > .01f)
         {
-            rb.drag = -myRot;
             rb.drag = Mathf.Clamp(rb.drag, SwoopDrag, FallDrag);
         }
-        else if(myRot < 0)
+        else if (myRot < .01f)
         {
-            rb.drag = +myRot;
+            //drag is a negative number here and will always be clamped to fall drag
             rb.drag = Mathf.Clamp(rb.drag, FallDrag, SlowDrag);
 
         }
-        else
-        {
-            rb.drag += -rb.drag * Time.deltaTime;
-        }
+        //else
+        //{
+        //    //rb.drag = -rb.drag * Time.deltaTime;
+        //}
+        #endregion
 
-       //rb.drag = GoalDrag / Mathf.Abs(myRot);
-        Debug.Log(rb.drag);
+        
     }
 
     private void StartLanded()
