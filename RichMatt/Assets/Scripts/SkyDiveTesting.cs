@@ -117,6 +117,8 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void Parachuting()
     {
+        RotateView();
+        HandleCameraMovement();
         HandleDrag();
         if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
         {
@@ -242,15 +244,8 @@ public class SkyDiveTesting : MonoBehaviour
         float myRot = characterSwoopTransform.localRotation.x;
         float GoalDrag;
 
-        //Debug.Log(myRot + " : " + minSwoopAngle + " / " + maxSwoopAngle);
-
         GoalDrag = myRot > 0 ? -SwoopDrag : SlowDrag;
-        //Debug.Log(GoalDrag);
 
-        //anglePercent = Mathf.Abs(myRot) / GoalDrag;
-        //Debug.Log(anglePercent);
-
-        //rb.drag = Mathf.Lerp(rb.drag, GoalDrag * anglePercent, 1);
         rb.drag = myRot / GoalDrag;
         
         #region clamp drag
@@ -264,13 +259,8 @@ public class SkyDiveTesting : MonoBehaviour
             rb.drag = Mathf.Clamp(rb.drag, FallDrag, SlowDrag);
 
         }
-        //else
-        //{
-        //    //rb.drag = -rb.drag * Time.deltaTime;
-        //}
         #endregion
 
-        
     }
     
     private void Update()
@@ -327,6 +317,10 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
+                HandleCameraMovement();//move camera after all physics step have completed
+                break;
+
+            case SkyDivingStateENUM.parachuting:
                 HandleCameraMovement();//move camera after all physics step have completed
                 break;
 
