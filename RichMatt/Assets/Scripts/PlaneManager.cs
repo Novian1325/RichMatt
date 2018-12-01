@@ -68,7 +68,8 @@ public class PlaneManager : MonoBehaviour
         if(otherCollider.gameObject == targetDropZone)
         {
             if (DEBUG) Debug.Log("Now Entering Target Drop Zone: " + otherCollider.name);
-            //drop supplies or signify to people they can drop
+            //drop supplies
+            //signify to Players they can drop
         }
     }
 
@@ -78,7 +79,7 @@ public class PlaneManager : MonoBehaviour
         if (otherCollider.gameObject == targetDropZone)
         {
             if (DEBUG) Debug.Log("Now Leaving Target Drop Zone: " + otherCollider.name);
-            //drop supplies or signify to people they can drop
+            //Force All Players out (if there are any)
         }
 
         //Destroy when leaving boundary

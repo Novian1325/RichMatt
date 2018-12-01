@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour {
 
     public void DeploySupplyDrop()
     {
-        planeDropManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies);
+        if (planeDropManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies)) ; //do something;
 
     }
 
