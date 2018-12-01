@@ -12,7 +12,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     [Header("Plane Settings")]
     public GameObject BRS_PlaneSpawn;//plane object (model) to spawn
-    public GameObject endpointMarkerPrefab;//marks beginnning and end points for debugging purposes
 
     public int planeSpeed_PlayerDrop = 150;
     public int planeSpeed_SupplyDrop = 300;
@@ -20,6 +19,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     public bool DEBUG = true;//if true, prints debug statements
     
     private GameObject[] acceptableDropZones;
+    private GameObject endpointMarkerPrefab;//marks beginnning and end points. for debugging purposes, also as raycast target
 
     //how high does the plane fly?
     private float planeFlightAltitude = 800.0f;
@@ -68,7 +68,10 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
         if(endpointMarkerPrefab == null)
         {
+            if (DEBUG) Debug.Log("No EndpointMarker prefab set. Creating one from scratch.");
             endpointMarkerPrefab = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            endpointMarkerPrefab.name = "Runtime endpoint marker";//give it a name to not confuse anyone
+            if (!DEBUG) endpointMarkerPrefab.GetComponent<MeshRenderer>().enabled = false;//make it invisible
         }
         
         return true;
@@ -185,7 +188,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
             if (DEBUG)
             {
                 endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
-                endpointMarker.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
             }
 
             //test if flight path goes through LZ

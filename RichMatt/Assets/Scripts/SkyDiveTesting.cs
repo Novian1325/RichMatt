@@ -102,6 +102,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FreeFalling()
     {
+        //limit downward velocity to terminal velocity, or something
         SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
@@ -118,8 +119,8 @@ public class SkyDiveTesting : MonoBehaviour
     private void Parachuting()
     {
         SetTargetRotations();
-        HandlePlayerMovement();
-        HandleDrag();
+        HandlePlayerMovement();//rotate character model
+        HandleDrag();//maybe handle drag differently here?
         if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
         {
             skyDivingState = SkyDivingStateENUM.startLanded;
@@ -241,26 +242,20 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void HandleDrag()
     {
-        float myRot = characterSwoopTransform.localRotation.x;
-        float GoalDrag;
-
-        GoalDrag = myRot > 0 ? -SwoopDrag : SlowDrag;
-
-        rb.drag = myRot / GoalDrag;
+        //convert rotation to angle!
+        Quaternion myQuat = characterSwoopTransform.localRotation;
+        float currentSwoopAngle = 2.0f * Mathf.Rad2Deg * Mathf.Atan(myQuat.x);
         
-        #region clamp drag
-        if (myRot > .01f)
-        {
-            rb.drag = Mathf.Clamp(rb.drag, SwoopDrag, FallDrag);
-        }
-        else if (myRot < .01f)
-        {
-            //drag is a negative number here and will always be clamped to fall drag
-            rb.drag = Mathf.Clamp(rb.drag, FallDrag, SlowDrag);
-
-        }
-        #endregion
-
+        //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
+        float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
+        
+        //drag varies inversely with swoopAngle: y = k/x.           
+        //where x is the ratio of our currentSwoop angle to maxSwoop angle
+        //if we swoop a little bit, we want the drag to change a little bit
+        float currentDrag = FallDrag * (1 - (currentSwoopAngle / localMaxAngle));
+        //level out drag if level swoop angle
+        rb.drag = Mathf.Abs(currentSwoopAngle) < 1f ? FallDrag : currentDrag;//set to fall drag if no pitch
+        Debug.Log("drag: " + rb.drag + ", myRot: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
     }
     
     private void Update()
@@ -336,13 +331,16 @@ public class SkyDiveTesting : MonoBehaviour
         if (other.gameObject.CompareTag("Terrain"))
         {
             //you've hit the terrain
+            //reset rigid body
+            rb.velocity = Vector3.zero;
+            rb.drag = 0;
             skyDivingState = SkyDivingStateENUM.startLanded;
         }
     }
     
     private void DeployParachute()
     {
-        rb.drag = ChuteDrag;
+        //rb.drag = ChuteDrag;
         //TODO 
         //animateCute
         //change controls
