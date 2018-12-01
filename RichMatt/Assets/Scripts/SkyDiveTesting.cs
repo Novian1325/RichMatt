@@ -118,7 +118,7 @@ public class SkyDiveTesting : MonoBehaviour
     private void Parachuting()
     {
         RotateView();
-        HandleCameraMovement();
+        HandlePlayerMovement();
         HandleDrag();
         if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
         {
@@ -303,6 +303,8 @@ public class SkyDiveTesting : MonoBehaviour
             case SkyDivingStateENUM.freeFalling:
                 FreeFalling();
                 break;
+
+            
 
             default:
                 break;
