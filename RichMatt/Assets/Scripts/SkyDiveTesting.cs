@@ -8,14 +8,16 @@ public class SkyDiveTesting : MonoBehaviour
 
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
-    [Header("**Level Designer Only**")]
-    public float MaxUpAngle = 9.0f;
-    public float MaxDownAngle = 45.0f;
+    [Header("SkyDiving Settings")]
+    public float SlowDrag = 0.35f;
+    public float FallDrag = 0.25f;
+    public float SwoopDrag = 0.01f;
+    public float ChuteDrag = 0.5f;
     public float ChuteHeight = 100f;
-    public float ChuteDrag = 3.65f;
     public float PitchChangeSpeed = 145f;
     public float rollChangeSpeed = 5f;
     public float ForwardSpeed = 5f;//player moves forward while falling
+    private float dragSmooth = 10f;
 
 
     private readonly float minSwoopAngle = (-15f / 360f);
@@ -107,9 +109,9 @@ public class SkyDiveTesting : MonoBehaviour
     {
         TogglePlayerControls(false);//turn off player controls except for skydiving controls
         anim.SetBool("SkyDive", true);
+        rb.drag = FallDrag;
+        Debug.Log("start freefalling" + rb.drag + " " + FallDrag);
         skyDivingState = SkyDivingStateENUM.freeFalling;
-        m_CharacterSkeletonLocalRot = Vector3.zero;
-        //
     }
 
     private void TogglePlayerControls(bool active)
@@ -199,8 +201,6 @@ public class SkyDiveTesting : MonoBehaviour
         //}
         #endregion
 
-        //Debug.Log(characterSkeletonTransform.localRotation.x + " : " + minSwoopAngle + " / " + maxSwoopAngle);
-
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);
         m_CameraTargetRot *= Quaternion.Euler(-cameraRotationX, 0f, 0f);
         m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, 0f, 0f);
@@ -237,6 +237,43 @@ public class SkyDiveTesting : MonoBehaviour
         }
     }
 
+    private void HandleDrag()
+    {
+        float myRot = characterSkeletonTransform.localRotation.x;
+        float GoalDrag;
+        float anglePercent;
+        float startDrag = 0.25f;
+
+        //Debug.Log(myRot + " : " + minSwoopAngle + " / " + maxSwoopAngle);
+
+        GoalDrag = myRot > 0 ? SwoopDrag : SlowDrag;
+        //Debug.Log(GoalDrag);
+
+        //anglePercent = Mathf.Abs(myRot) / GoalDrag;
+        //Debug.Log(anglePercent);
+
+        //rb.drag = Mathf.Lerp(rb.drag, GoalDrag * anglePercent, 1);
+
+        if(myRot > 0)
+        {
+            rb.drag = -myRot;
+            rb.drag = Mathf.Clamp(rb.drag, SwoopDrag, FallDrag);
+        }
+        else if(myRot < 0)
+        {
+            rb.drag = +myRot;
+            rb.drag = Mathf.Clamp(rb.drag, FallDrag, SlowDrag);
+
+        }
+        else
+        {
+            rb.drag += -rb.drag * Time.deltaTime;
+        }
+
+       //rb.drag = GoalDrag / Mathf.Abs(myRot);
+        Debug.Log(rb.drag);
+    }
+
     private void StartLanded()
     {
         //Destroy Parachute
@@ -256,8 +293,15 @@ public class SkyDiveTesting : MonoBehaviour
             case SkyDivingStateENUM.freeFalling:
                 RotateView();
                 HandlePlayerMovement();
+                HandleDrag();
                 break;
 
+            case SkyDivingStateENUM.startparachute:
+                break;
+
+            case SkyDivingStateENUM.parachuting:
+                HandleDrag();
+                break;
 
             case SkyDivingStateENUM.startLanded:
                 StartLanded();

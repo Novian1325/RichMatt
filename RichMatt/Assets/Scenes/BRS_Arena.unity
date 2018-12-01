@@ -1294,91 +1294,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1997315730870376, guid: b73fddebf16a6a143bdf3ab89f667ba3,
     type: 2}
   m_PrefabInternal: {fileID: 1297732916}
---- !u!1 &1374601730
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1374601731}
-  - component: {fileID: 1374601734}
-  - component: {fileID: 1374601733}
-  - component: {fileID: 1374601732}
-  m_Layer: 0
-  m_Name: Cube
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1374601731
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1374601730}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.316}
-  m_LocalScale: {x: 0.51482, y: 0.44697, z: 1}
-  m_Children: []
-  m_Father: {fileID: 701374496}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1374601732
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1374601730}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &1374601733
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1374601730}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &1374601734
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1374601730}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1453050223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1565,6 +1480,41 @@ Prefab:
         type: 2}
       propertyPath: near clip plane
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 54049656703727184, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: m_Drag
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 54049656703727184, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: skyDivingState
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: SlowDrag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: FallDrag
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: SwoopDrag
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: ChuteDrag
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
