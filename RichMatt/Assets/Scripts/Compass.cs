@@ -44,7 +44,7 @@ public class Compass : MonoBehaviour
 			//Do this
 			CompassDirectionText.text = "E";
 			break;
-		case 130:
+		case 135:
 			//Do this
 			CompassDirectionText.text = "SE";
 			break;
@@ -60,7 +60,11 @@ public class Compass : MonoBehaviour
 			//Do this
 			CompassDirectionText.text = "W";
 			break;
-		default:
+        case 315:
+            //Do this
+            CompassDirectionText.text = "NW";
+            break;
+        default:
 			CompassDirectionText.text = headingAngle.ToString ();
 			break;
 		}
