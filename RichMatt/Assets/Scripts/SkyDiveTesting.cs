@@ -12,13 +12,14 @@ public class SkyDiveTesting : MonoBehaviour
     public float SlowDrag = 0.35f;
     public float FallDrag = 0.25f;
     public float SwoopDrag = 0.01f;
-    public float ChuteDrag = 0.5f;
-    public float ChuteHeight = 100f;
+    public float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
+    public float deployParachuteHeight = 100f;
     public float cutParachuteHeight = 10f;
     public float attitudeChangeSpeed = 5f;
     public float ForwardSpeed = 5f;//player moves forward while falling
-    private float dragSmooth = 10f;
-    
+    [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
+    //MUST BE NEGATIVE! Gets inverted if above 0
+        
     //private readonly float _CameraDistance = 10f;
     public Transform cameraPivotTransform; //camera look
     public Transform characterSwoopTransform; //used for pitch
@@ -83,6 +84,10 @@ public class SkyDiveTesting : MonoBehaviour
 
     void Start()
     {
+        if(terminalVelocity > 0)
+        {
+            terminalVelocity *= -1;//invert if above 0
+        }
     }
 
     public void BeginSkyDive()
@@ -106,13 +111,15 @@ public class SkyDiveTesting : MonoBehaviour
         SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
-        if (GetDistanceToTerrain() <= ChuteHeight)
+        if (GetDistanceToTerrain() <= deployParachuteHeight)
             skyDivingState = SkyDivingStateENUM.startparachute;
     }
 
     private void StartParachute()
     {
         DeployParachute();
+        //if chute pulled, velocity limited further
+        terminalVelocity *= .75f;//set chute terminal velocity
         skyDivingState = SkyDivingStateENUM.parachuting;
     }
 
@@ -248,13 +255,27 @@ public class SkyDiveTesting : MonoBehaviour
         
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
-        
+
         //drag varies inversely with swoopAngle: y = k/x.           
         //where x is the ratio of our currentSwoop angle to maxSwoop angle
         //if we swoop a little bit, we want the drag to change a little bit
-        float currentDrag = FallDrag * (1 - (currentSwoopAngle / localMaxAngle));
+        float targetDrag = FallDrag * (1 - (currentSwoopAngle / localMaxAngle));
+
         //level out drag if level swoop angle
-        rb.drag = Mathf.Abs(currentSwoopAngle) < 1f ? FallDrag : currentDrag;//set to fall drag if no pitch
+        targetDrag = Mathf.Abs(currentSwoopAngle) < 1f ? FallDrag : targetDrag;//set to fall drag if no pitch
+
+        //set drag and clamp to limits
+        targetDrag = Mathf.Clamp(targetDrag, SwoopDrag, SlowDrag);//clamp
+
+        //modify drag if chute is deployed
+        targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? ChuteDragModifier * targetDrag : targetDrag;
+
+        //set drag; calcs complete
+        rb.drag = targetDrag;
+
+        //clamp downward velocity to terminalVelocity
+        rb.velocity = rb.velocity.y < terminalVelocity ? new Vector3(rb.velocity.x, terminalVelocity, rb.velocity.z) : rb.velocity;
+        
         Debug.Log("drag: " + rb.drag + ", myRot: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
     }
     

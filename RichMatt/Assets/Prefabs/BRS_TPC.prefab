@@ -2771,13 +2771,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skyDivingState: 5
-  SlowDrag: 1
-  FallDrag: 0.75
+  SlowDrag: 0.6
+  FallDrag: 0.5
   SwoopDrag: 0.01
-  ChuteDrag: 1.5
-  ChuteHeight: 100
+  ChuteDrag: 1
+  deployParachuteHeight: 100
+  cutParachuteHeight: 10
   attitudeChangeSpeed: 5
   ForwardSpeed: 5
+  terminalVelocity: -25
   cameraPivotTransform: {fileID: 4750000278564472}
   characterSwoopTransform: {fileID: 4194695862080004}
   characterRollAxis: {fileID: 4728676684435884}
