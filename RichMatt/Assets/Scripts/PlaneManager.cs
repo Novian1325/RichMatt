@@ -14,6 +14,8 @@ public class PlaneManager : MonoBehaviour
 
     private static int planeCounter = 0;
 
+    private bool greenLight = false;
+
 
     //public UnityStandardAssets.Characters.FirstPerson.FirstPersonController fpsController;
 
@@ -63,14 +65,33 @@ public class PlaneManager : MonoBehaviour
 		transform.position += transform.forward * Time.deltaTime * airspeed;
 	}
 
+    //private void LoadPlayersIntoPlane()//deprecated ; player controls themselves
+    //{
+    //    for (int i = 0; i < cargo.Length; ++i)
+    //    {
+    //        if (cargo[i].CompareTag("Player"))
+    //        {
+    //            GameObject player = cargo[i];
+    //            player.transform.SetParent(this.transform);
+    //            player.transform.position = Vector3.zero;//reset 
+    //            player.GetComponent<MeshRenderer>().enabled = false;
+    //        }
+    //    }
+    //}
+
     private void OnTriggerEnter(Collider otherCollider)
     {
         if(otherCollider.gameObject == targetDropZone)
         {
             if (DEBUG) Debug.Log("Now Entering Target Drop Zone: " + otherCollider.name);
+            greenLight = true;
             //drop supplies
             //signify to Players they can drop
         }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
     }
 
     private void OnTriggerExit(Collider otherCollider)
@@ -80,6 +101,10 @@ public class PlaneManager : MonoBehaviour
         {
             if (DEBUG) Debug.Log("Now Leaving Target Drop Zone: " + otherCollider.name);
             //Force All Players out (if there are any)
+            if (CheckIfPlayerOnBoard())
+            {
+                //GET OUT OF HERE, Players!
+            }
         }
 
         //Destroy when leaving boundary
