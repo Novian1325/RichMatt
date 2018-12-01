@@ -156,19 +156,12 @@ public class SkyDiveTesting : MonoBehaviour
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;
         float characterRotationX = Input.GetAxis("Vertical") * PitchChangeSpeed;
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;
-        float characterRotationZ = Input.GetAxis("Horizontal") * rollChangeSpeed;
+        //float characterRotationZ = Input.GetAxis("Horizontal") * rollChangeSpeed;
 
         #region Swoop Clamp
         if (System.Math.Abs(characterRotationX) < Mathf.Epsilon)
         {
-            if (characterSkeletonTransform.localRotation.x > 0)
-            {
-                characterRotationX = -1;
-            }
-            else if (characterSkeletonTransform.localRotation.x < 0)
-            {
-                characterRotationX = 1;
-            }
+            characterRotationX = characterSkeletonTransform.localRotation.x > 0 ? -1 : 1;
         }
         else if (characterSkeletonTransform.localRotation.x > maxSwoopAngle)
         {
@@ -183,57 +176,39 @@ public class SkyDiveTesting : MonoBehaviour
         #endregion
 
         #region Clamp Roll
-        if (System.Math.Abs(characterRotationZ) < Mathf.Epsilon)
-        {
-            if(characterSkeletonTransform.localRotation.z > 0)
-            {
-                characterRotationZ = 1;
-            }
-            else if(characterSkeletonTransform.localRotation.z < 0)
-            {
-                characterRotationZ = -1;
-            }
-        }
-        else if (characterSkeletonTransform.localRotation.z > maxRollRotation)
-        {
-            if(characterRotationZ < 0)
-                characterRotationZ = 0;
-        }
-        else if (characterSkeletonTransform.localRotation.z < minRollRotation)
-        {
-            if (characterRotationZ > 0)
-                characterRotationZ = 0;
-        }
+        //if (System.Math.Abs(characterRotationZ) < Mathf.Epsilon)
+        //{
+        //    if(characterSkeletonTransform.localRotation.z > 0)
+        //    {
+        //        characterRotationZ = 1;
+        //    }
+        //    else if(characterSkeletonTransform.localRotation.z < 0)
+        //    {
+        //        characterRotationZ = -1;
+        //    }
+        //}
+        //else if (characterSkeletonTransform.localRotation.z > maxRollRotation)
+        //{
+        //    if(characterRotationZ < 0)
+        //        characterRotationZ = 0;
+        //}
+        //else if (characterSkeletonTransform.localRotation.z < minRollRotation)
+        //{
+        //    if (characterRotationZ > 0)
+        //        characterRotationZ = 0;
+        //}
         #endregion
 
-        Debug.Log(characterSkeletonTransform.localRotation.z + " / " + maxRollRotation);
+        //Debug.Log(characterSkeletonTransform.localRotation.x + " : " + minSwoopAngle + " / " + maxSwoopAngle);
 
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);
         m_CameraTargetRot *= Quaternion.Euler(-cameraRotationX, 0f, 0f);
-        m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, 0f, -characterRotationZ);
-        m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, tempCharacterRotationY, -characterRotationZ);
+        m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, 0f, 0f);
+        //m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, tempCharacterRotationY, -characterRotationZ);
 
         if (clampVerticalRotation)
         {
             m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot);
-        }
-
-        //float tempCharacterRotationY = 0f;
-
-        if (System.Math.Abs(Input.GetAxis("Vertical")) < Mathf.Epsilon && System.Math.Abs(Input.GetAxis("Horizontal")) < Mathf.Epsilon)
-        {
-            if (characterSkeletonTransform.rotation.y > 0)
-            {
-                tempCharacterRotationY = -1;
-            }
-            else if (characterSkeletonTransform.rotation.y < 0)
-            {
-                tempCharacterRotationY = 1;
-            }
-        }
-        else
-        {
-            tempCharacterRotationY = 0f;
         }
     }
     private void HandlePlayerMovement()
