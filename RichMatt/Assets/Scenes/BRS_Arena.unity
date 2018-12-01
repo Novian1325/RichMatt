@@ -534,7 +534,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1000
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.z
@@ -562,8 +562,8 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
         type: 2}
-      propertyPath: parachuteTerminalVelocityModifier
-      value: 0.75
+      propertyPath: ForwardSpeed
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}

@@ -15,6 +15,7 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
     [SerializeField] private float deployParachuteHeight = 100f;
     [SerializeField] private float cutParachuteHeight = 10f;
+    [SerializeField] private float parachuteSpeedModifier = 1.5f;
     [SerializeField] private float attitudeChangeSpeed = 5f;
     [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
@@ -220,6 +221,35 @@ public class SkyDiveTesting : MonoBehaviour
         characterRollAxis.localRotation = Quaternion.Slerp(characterRollAxis.localRotation,
             m_CharacterRollTargetRot,
             smoothTime * Time.deltaTime);
+
+        //convert rotation to angle!
+        Quaternion myQuat = characterSwoopTransform.localRotation;
+        float currentSwoopAngle = 2.0f * Mathf.Rad2Deg * Mathf.Atan(myQuat.x);
+
+        //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
+        float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : minSwoopAngle;
+
+        //if parachuting, pulling back increases forward drastically
+        if (skyDivingState == SkyDivingStateENUM.parachuting)
+        {
+            //pulling back has a different effect than pushing forward
+            localMaxAngle = localMaxAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
+        }
+
+        //drag varies inversely with swoopAngle: y = k/x.           
+        //where x is the ratio of our currentSwoop angle to maxSwoop angle
+        //if we swoop a little bit, we want the drag to change a little bit
+        float targetForwardMove = 1 + (ForwardSpeed * (1 - (currentSwoopAngle / localMaxAngle)));
+        //should not be totally zero....
+
+        //if parachuting, pulling back increases forward drastically
+        if(skyDivingState == SkyDivingStateENUM.parachuting)
+        {
+            targetForwardMove *= 1.5f;//elongate arc when pulling back
+        }
+
+        //move character forward a bit
+        characterTransform.Translate(Vector3.forward * targetForwardMove * Time.deltaTime);
     }
 
     private void HandleCameraMovement()
