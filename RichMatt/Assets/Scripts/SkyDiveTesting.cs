@@ -160,7 +160,7 @@ public class SkyDiveTesting : MonoBehaviour
         //if input in deadzone and roll axis not at identity
         if (System.Math.Abs(characterRotationZ) < Mathf.Epsilon && System.Math.Abs(charRoll) > .01f)
         {
-            characterRotationZ = charRoll > 0 ? 1 : -1;
+            characterRotationZ = charRoll > 0 ? .8f : -.8f;
         }
         #endregion
 
