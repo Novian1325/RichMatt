@@ -9,17 +9,18 @@ public class SkyDiveTesting : MonoBehaviour
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
     [Header("SkyDiving Settings")]
-    public float SlowDrag = 0.35f;
-    public float FallDrag = 0.25f;
-    public float SwoopDrag = 0.01f;
-    public float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
-    public float deployParachuteHeight = 100f;
-    public float cutParachuteHeight = 10f;
-    public float attitudeChangeSpeed = 5f;
-    public float ForwardSpeed = 5f;//player moves forward while falling
+    [SerializeField] private float SlowDrag = 0.35f;
+    [SerializeField] private float FallDrag = 0.25f;
+    [SerializeField] private float SwoopDrag = 0.01f;
+    [SerializeField] private float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
+    [SerializeField] private float deployParachuteHeight = 100f;
+    [SerializeField] private float cutParachuteHeight = 10f;
+    [SerializeField] private float attitudeChangeSpeed = 5f;
+    [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
+    [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
     //MUST BE NEGATIVE! Gets inverted if above 0
-        
+
     //private readonly float _CameraDistance = 10f;
     public Transform cameraPivotTransform; //camera look
     public Transform characterSwoopTransform; //used for pitch
@@ -119,7 +120,6 @@ public class SkyDiveTesting : MonoBehaviour
     {
         DeployParachute();
         //if chute pulled, velocity limited further
-        terminalVelocity *= .75f;//set chute terminal velocity
         skyDivingState = SkyDivingStateENUM.parachuting;
     }
 
@@ -165,13 +165,6 @@ public class SkyDiveTesting : MonoBehaviour
         }
 
         return distanceToLanding;
-    }
-
-    private float CalculateDragIncrement()
-    {
-        float Cosmic;
-        Cosmic = 0.025f;
-        return (Mathf.Abs(90f - cameraPivotTransform.rotation.eulerAngles.x) * Cosmic) * FallingDragTuning;
     }
 
     private void SetTargetRotations()
@@ -261,6 +254,9 @@ public class SkyDiveTesting : MonoBehaviour
         //if we swoop a little bit, we want the drag to change a little bit
         float targetDrag = FallDrag * (1 - (currentSwoopAngle / localMaxAngle));
 
+        //sets velocity cap based on state
+        float velocityCap = skyDivingState == SkyDivingStateENUM.parachuting ? terminalVelocity * parachuteTerminalVelocityModifier : terminalVelocity;
+
         //level out drag if level swoop angle
         targetDrag = Mathf.Abs(currentSwoopAngle) < 1f ? FallDrag : targetDrag;//set to fall drag if no pitch
 
@@ -274,7 +270,7 @@ public class SkyDiveTesting : MonoBehaviour
         rb.drag = targetDrag;
 
         //clamp downward velocity to terminalVelocity
-        rb.velocity = rb.velocity.y < terminalVelocity ? new Vector3(rb.velocity.x, terminalVelocity, rb.velocity.z) : rb.velocity;
+        rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
         Debug.Log("drag: " + rb.drag + ", myRot: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
     }

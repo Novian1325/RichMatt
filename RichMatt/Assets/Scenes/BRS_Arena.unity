@@ -562,13 +562,8 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
         type: 2}
-      propertyPath: ChuteDrag
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
-        type: 2}
-      propertyPath: ChuteDragModifier
-      value: 1.5
+      propertyPath: parachuteTerminalVelocityModifier
+      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
