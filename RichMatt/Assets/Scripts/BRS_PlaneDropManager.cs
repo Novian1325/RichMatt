@@ -35,7 +35,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     private GameObject endpointMarker;
 
     private int unsuccessfulPasses = 0;
-    private readonly int flightPathChecksUntilFailure = 12;
+    private readonly int flightPathChecksUntilFailure = 15;
 
     //stuff to pass on to plane when deployed
     private GameObject targetDropZone;
@@ -65,6 +65,10 @@ public class BRS_PlaneDropManager : MonoBehaviour
             return false;
         }
 
+        if(endpointMarkerPrefab == null)
+        {
+            endpointMarkerPrefab = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        }
         //set and check altitude
         planeFlightAltitude = planeSpawnBounds.position.y > 0 ? planeSpawnBounds.position.y : 200f;//verifies that altitude is above 0
 
