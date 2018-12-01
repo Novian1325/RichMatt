@@ -23,6 +23,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     //how high does the plane fly?
     private float planeFlightAltitude = 800.0f;
+    private float startingFlightAltitude;
 
     private readonly int failedPathAltitudeIncrementAmount = 25;//if the flight path fails, raise the altitude by this much before trying again
 
@@ -69,12 +70,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
         {
             endpointMarkerPrefab = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         }
-        //set and check altitude
-        planeFlightAltitude = planeSpawnBounds.position.y > 0 ? planeSpawnBounds.position.y : 200f;//verifies that altitude is above 0
-
-        //set radius of spawnBoundsCircleRadius
-        //leave at default value if local scale is too small
-        spawnBoundsCircleRadius = planeSpawnBounds.localScale.x / 2 > spawnBoundsCircleRadius ? planeSpawnBounds.localScale.x / 2 : spawnBoundsCircleRadius;
         
         return true;
     }
@@ -113,6 +108,14 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     void Start()
     {
+        //set and check altitude
+        planeFlightAltitude = planeSpawnBounds.position.y > 0 ? planeSpawnBounds.position.y : 200f;//verifies that altitude is above 0
+        startingFlightAltitude = planeFlightAltitude;//set starting value
+
+        //set radius of spawnBoundsCircleRadius
+        //leave at default value if local scale is too small
+        spawnBoundsCircleRadius = planeSpawnBounds.localScale.x / 2 > spawnBoundsCircleRadius ? planeSpawnBounds.localScale.x / 2 : spawnBoundsCircleRadius;
+
         //error checking
         if (VerifyReferences())
         {
@@ -208,9 +211,11 @@ public class BRS_PlaneDropManager : MonoBehaviour
             //does the flight unobstructed and through a drop zone
             if(endpointHit && flightPathThroughLZ)
             {
-                //SUCCESSS!!!!!!!
+                //SUCCESS!!!!!!!
                 ToggleDropZones(true);//turn LZ on
-                if(!DEBUG) DestroyMarkerObjects();
+                planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
+                unsuccessfulPasses = 0;//reset failures
+                if (!DEBUG) DestroyMarkerObjects();
                 return true;
             }
             else
