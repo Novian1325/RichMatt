@@ -100,21 +100,44 @@ public class SkyDiveTesting : MonoBehaviour
         skyDivingState = SkyDivingStateENUM.freeFalling;
     }
 
-    private void TogglePlayerControls(bool active)
-    {
-        playerCharacter.enabled = active;
-        playerController.enabled = active;
-    }
-
     private void FreeFalling()
     {
         RotateView();
         HandlePlayerMovement();
         HandleDrag();
-        if(GetDistanceToTerrain() <= ChuteHeight)
+        if (GetDistanceToTerrain() <= ChuteHeight)
             skyDivingState = SkyDivingStateENUM.startparachute;
     }
 
+    private void StartParachute()
+    {
+        DeployParachute();
+        skyDivingState = SkyDivingStateENUM.parachuting;
+    }
+
+    private void Parachuting()
+    {
+        HandleDrag();
+        if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
+        {
+            skyDivingState = SkyDivingStateENUM.startLanded;
+        }
+    }
+
+    private void StartLanded()
+    {
+        //Destroy Parachute
+        TogglePlayerControls(true);
+        anim.SetBool("SkyDive", false);
+        skyDivingState = SkyDivingStateENUM.landed;
+    }
+
+    private void TogglePlayerControls(bool active)
+    {
+        playerCharacter.enabled = active;
+        playerController.enabled = active;
+    }
+    
     private float GetDistanceToTerrain()
     {
         float distanceToLanding = 999999.0f;//just a really long distance
@@ -249,29 +272,6 @@ public class SkyDiveTesting : MonoBehaviour
 
         
     }
-
-    private void StartLanded()
-    {
-        //Destroy Parachute
-        TogglePlayerControls(true);
-        anim.SetBool("SkyDive", false);
-        skyDivingState = SkyDivingStateENUM.landed;
-    }
-
-    private void StartParachute()
-    {
-        DeployParachute();
-        skyDivingState = SkyDivingStateENUM.parachuting;
-    }
-
-    private void Parachuting()
-    {
-        HandleDrag();
-        if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
-        {
-            skyDivingState = SkyDivingStateENUM.startLanded;
-        }
-    }
     
     private void Update()
     {
@@ -343,16 +343,7 @@ public class SkyDiveTesting : MonoBehaviour
             skyDivingState = SkyDivingStateENUM.startLanded;
         }
     }
-
-    //if PLAYERSTATEENUM == freefalling
-    //freefall()
-    //checkChuteDistance
-    //else PLAYERSTATEENUM == parachuting
-    //OpenChute()
-    //checkdistance for ground 
-    //else PLAYERSTATEENUM == grounded
-    //disablefalling controls
-
+    
     private void DeployParachute()
     {
         rb.drag = ChuteDrag;
