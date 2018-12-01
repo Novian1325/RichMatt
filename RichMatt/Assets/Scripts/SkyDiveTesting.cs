@@ -102,7 +102,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FreeFalling()
     {
-        RotateView();
+        SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
         if (GetDistanceToTerrain() <= ChuteHeight)
@@ -117,7 +117,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void Parachuting()
     {
-        RotateView();
+        SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
         if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
@@ -166,7 +166,7 @@ public class SkyDiveTesting : MonoBehaviour
         return (Mathf.Abs(90f - cameraPivotTransform.rotation.eulerAngles.x) * Cosmic) * FallingDragTuning;
     }
 
-    private void RotateView()
+    private void SetTargetRotations()
     {
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera yaw
         float characterRotationX = Input.GetAxis("Vertical") * attitudeChangeSpeed;//get swoop input
