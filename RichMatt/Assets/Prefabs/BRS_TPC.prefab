@@ -2776,8 +2776,7 @@ MonoBehaviour:
   SwoopDrag: 0.01
   ChuteDrag: 1.5
   ChuteHeight: 100
-  PitchChangeSpeed: 5
-  rollChangeSpeed: 5
+  attitudeChangeSpeed: 5
   ForwardSpeed: 5
   cameraPivotTransform: {fileID: 4750000278564472}
   characterSwoopTransform: {fileID: 4194695862080004}
