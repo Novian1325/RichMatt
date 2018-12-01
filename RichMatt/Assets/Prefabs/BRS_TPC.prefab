@@ -133,14 +133,14 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1125356618688736
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4728676684435884}
   m_Layer: 0
-  m_Name: SkyDivingPivot
+  m_Name: RollAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -232,6 +232,21 @@ GameObject:
   - component: {fileID: 4916624020329960}
   m_Layer: 0
   m_Name: EthanRightToe2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1186341907635812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4194695862080004}
+  m_Layer: 0
+  m_Name: SwoopAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1552,6 +1567,20 @@ Transform:
   m_Father: {fileID: 4298940545630490}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4194695862080004
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1186341907635812}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.42, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4728676684435884}
+  m_Father: {fileID: 4203598678526034}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4194924174433152
 Transform:
   m_ObjectHideFlags: 1
@@ -1579,7 +1608,7 @@ Transform:
   - {fileID: 4943463622790514}
   - {fileID: 4750000278564472}
   - {fileID: 4364246454994680}
-  - {fileID: 4728676684435884}
+  - {fileID: 4194695862080004}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2268,14 +2297,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1125356618688736}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.748, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.0000087072885, w: 1}
+  m_LocalPosition: {x: 0, y: 0.3280469, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4194924174433152}
-  m_Father: {fileID: 4203598678526034}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 4194695862080004}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.001}
 --- !u!4 &4729009022059176
 Transform:
   m_ObjectHideFlags: 1
@@ -2651,8 +2680,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 0.1
+  far clip plane: 10000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -2742,15 +2771,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skyDivingState: 5
-  MaxUpAngle: 9
-  MaxDownAngle: 45
+  SlowDrag: 1
+  FallDrag: 0.75
+  SwoopDrag: 0.01
+  ChuteDrag: 1.5
   ChuteHeight: 100
-  ChuteDrag: 3.65
   PitchChangeSpeed: 5
   rollChangeSpeed: 5
   ForwardSpeed: 5
   cameraPivotTransform: {fileID: 4750000278564472}
-  characterSkeletonTransform: {fileID: 4728676684435884}
+  characterSwoopTransform: {fileID: 4194695862080004}
+  characterRollAxis: {fileID: 4728676684435884}
   MouseXSensitivity: 4
   MouseYSensitivity: 4
   smoothTime: 5
