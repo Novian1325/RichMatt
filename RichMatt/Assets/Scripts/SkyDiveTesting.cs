@@ -14,51 +14,44 @@ public class SkyDiveTesting : MonoBehaviour
     public float SwoopDrag = 0.01f;
     public float ChuteDrag = 0.5f;
     public float ChuteHeight = 100f;
-    public float SwoopChangeSpeed = 145f;
-    public float rollChangeSpeed = 5f;
+    public float attitudeChangeSpeed = 5f;
     public float ForwardSpeed = 5f;//player moves forward while falling
     private float dragSmooth = 10f;
-
-    private readonly float minSwoopAngle = -15f;
-    private readonly float maxSwoopAngle =  30f;
-    //private readonly float minSwoopAngle = (-15f / 360f);//deprecated
-    //private readonly float maxSwoopAngle = (30f / 360f);//deprecated
-
-    private readonly float minRollRotation = -45f;
-    private readonly float maxRollRotation =  45f;
-    //private readonly float minRollRotation = (-45f / 360f);
-    //private readonly float maxRollRotation = (45f / 360f);
-
+    
     //private readonly float _CameraDistance = 10f;
     public Transform cameraPivotTransform; //camera look
-    private Transform characterTransform;//this object
     public Transform characterSwoopTransform; //used for pitch
     public Transform characterRollAxis;//used for rolling
-
-
+    private Transform characterTransform;//this object used for yaw
+    
     [Header("Camera Controls")]
     public float MouseXSensitivity = 4.0f;
     public float MouseYSensitivity = 4.0f;
     public float smoothTime = 5.0f;
-    //public float ScrollSensitivity = 2.0f;
-    //public float OrbitDampening = 10.0f;
-    //public float ScrollDampening = 6.0f;
 
     //Camera settings
     [SerializeField] private bool smoothCamera = true;
     private readonly bool clampVerticalRotation = true;
-    private readonly float LookMinimumX = -90;
-    private readonly float LookMaximumX = 90;
+    private readonly float cameraMinPitch = -90;
+    private readonly float cameraMaxPitch = 90;
 
     [Range(5f, 50f)]
     public float FallingDragTuning = 30.0f;
-
-    private Rigidbody rb;
     private float distanceToTerrain;
+
+    //component references
+    private Rigidbody rb;
     private Animator anim;
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
+    
+    //clamp limits
+    private readonly float minSwoopAngle = -15f;
+    private readonly float maxSwoopAngle = 30f;
+    private readonly float minRollRotation = -45f;
+    private readonly float maxRollRotation = 45f;
 
+    //target rotations
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
     private Quaternion m_CharacterSwoopTargetRot;
@@ -102,7 +95,7 @@ public class SkyDiveTesting : MonoBehaviour
         TogglePlayerControls(false);//turn off player controls except for skydiving controls
         anim.SetBool("SkyDive", true);
         rb.drag = FallDrag;
-        Debug.Log("start freefalling" + rb.drag + " " + FallDrag);
+        //Debug.Log("start freefalling" + rb.drag + " " + FallDrag);
         skyDivingState = SkyDivingStateENUM.freeFalling;
     }
 
@@ -147,40 +140,28 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void RotateView()
     {
-        float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;
-        float characterRotationX = Input.GetAxis("Vertical") * SwoopChangeSpeed;
-        float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;
-        float characterRotationZ = Input.GetAxis("Horizontal") * rollChangeSpeed;
+        float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera yaw
+        float characterRotationX = Input.GetAxis("Vertical") * attitudeChangeSpeed;//get swoop input
+        float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
+        float characterRotationZ = Input.GetAxis("Horizontal") * attitudeChangeSpeed;//get roll input
 
-        float charRoll = characterRollAxis.localRotation.z;
-        float charSwoop = characterSwoopTransform.localRotation.x;
+        float charRoll = characterRollAxis.localRotation.z;//cache
+        float charSwoop = characterSwoopTransform.localRotation.x;//cache
 
+        #region unwind to center if no input
         //unwind swoop amount
         //if input in deadzone and swoop axis not at identity
         if (System.Math.Abs(characterRotationX) < Mathf.Epsilon && System.Math.Abs(charSwoop) > .01f)
         {
             characterRotationX = charSwoop > 0 ? -1 : 1;
         }
-
-        #region Clamp Roll
-        //unwind
+        
+        //unwind roll
         //if input in deadzone and roll axis not at identity
         if (System.Math.Abs(characterRotationZ) < Mathf.Epsilon && System.Math.Abs(charRoll) > .01f)
         {
-            characterRotationZ = charRoll > 0 ? -1 : 1;
-            
+            characterRotationZ = charRoll > 0 ? 1 : -1;
         }
-        //else if (charRoll > maxRollRotation)
-        //{
-        //    Debug.Log(charRoll + " / " + maxRollRotation);
-        //    if (characterRotationZ > 0)
-        //        characterRotationZ = 0;
-        //}
-        //else if (charRoll < minRollRotation)
-        //{
-        //    if (characterRotationZ < 0)
-        //        characterRotationZ = 0;
-        //}
         #endregion
 
         //set target rotations for axes
@@ -193,7 +174,7 @@ public class SkyDiveTesting : MonoBehaviour
         //CLAMP 'EM ALL!
         if (clampVerticalRotation)
         {
-            m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot, LookMinimumX, LookMaximumX);
+            m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
         }
         m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, minSwoopAngle, maxSwoopAngle);
         m_CharacterRollTargetRot = ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
