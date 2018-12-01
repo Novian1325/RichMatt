@@ -14,6 +14,7 @@ public class SkyDiveTesting : MonoBehaviour
     public float SwoopDrag = 0.01f;
     public float ChuteDrag = 0.5f;
     public float ChuteHeight = 100f;
+    public float cutParachuteHeight = 10f;
     public float attitudeChangeSpeed = 5f;
     public float ForwardSpeed = 5f;//player moves forward while falling
     private float dragSmooth = 10f;
@@ -107,11 +108,11 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FreeFalling()
     {
-        //calculate distance to ground
-        //deploy chute if too low
-        //increment state
-
-
+        RotateView();
+        HandlePlayerMovement();
+        HandleDrag();
+        if(GetDistanceToTerrain() <= ChuteHeight)
+            skyDivingState = SkyDivingStateENUM.startparachute;
     }
 
     private float GetDistanceToTerrain()
@@ -126,6 +127,8 @@ public class SkyDiveTesting : MonoBehaviour
                 distanceToLanding = hit.distance;
 
             }
+            //TODO
+            //CHECK IF COLLIDER WAS A BUILDING, TOO
         }
 
         return distanceToLanding;
@@ -179,6 +182,7 @@ public class SkyDiveTesting : MonoBehaviour
         m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, minSwoopAngle, maxSwoopAngle);
         m_CharacterRollTargetRot = ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
     }
+
     private void HandlePlayerMovement()
     {
         //move character pitch
@@ -253,6 +257,21 @@ public class SkyDiveTesting : MonoBehaviour
         anim.SetBool("SkyDive", false);
         skyDivingState = SkyDivingStateENUM.landed;
     }
+
+    private void StartParachute()
+    {
+        DeployParachute();
+        skyDivingState = SkyDivingStateENUM.parachuting;
+    }
+
+    private void Parachuting()
+    {
+        HandleDrag();
+        if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
+        {
+            skyDivingState = SkyDivingStateENUM.startLanded;
+        }
+    }
     
     private void Update()
     {
@@ -263,21 +282,21 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
-                RotateView();
-                HandlePlayerMovement();
-                HandleDrag();
+                FreeFalling();
                 break;
 
             case SkyDivingStateENUM.startparachute:
+                StartParachute();
                 break;
 
             case SkyDivingStateENUM.parachuting:
-                HandleDrag();
+                Parachuting();
                 break;
 
             case SkyDivingStateENUM.startLanded:
                 StartLanded();
                 break;
+            case SkyDivingStateENUM.landed:
             default:
                 break;
         }
@@ -334,10 +353,9 @@ public class SkyDiveTesting : MonoBehaviour
     //else PLAYERSTATEENUM == grounded
     //disablefalling controls
 
-    private void OpenChute()
+    private void DeployParachute()
     {
         rb.drag = ChuteDrag;
-        //charFalling = false;
         //TODO 
         //animateCute
         //change controls
