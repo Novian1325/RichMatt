@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SkyDiveTesting : MonoBehaviour
 {
+    #region Variables
+
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
     [Header("**Level Designer Only**")]
@@ -26,6 +28,9 @@ public class SkyDiveTesting : MonoBehaviour
     public Transform cameraPivotTransform;
     private Transform characterTransform;
     public Transform characterSkeletonTransform;
+    public float tempCharacterRotationY;
+
+
     [Header("Camera Controls")]
     public float MouseXSensitivity = 4.0f;
     public float MouseYSensitivity = 4.0f;
@@ -54,6 +59,8 @@ public class SkyDiveTesting : MonoBehaviour
     private Quaternion m_CharacterSkeletonTargetRot;
 
     private Vector3 m_CharacterSkeletonLocalRot;
+
+    #endregion
 
     public void InitRotationTransforms()
     {
@@ -146,78 +153,88 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void RotateView()
     {
-
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;
-
         float characterRotationX = Input.GetAxis("Vertical") * PitchChangeSpeed;
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;
         float characterRotationZ = Input.GetAxis("Horizontal") * rollChangeSpeed;
 
         #region Swoop Clamp
-        if (characterRotationX == 0)
+        if (System.Math.Abs(characterRotationX) < Mathf.Epsilon)
         {
-            if (characterSkeletonTransform.rotation.x > 0)
+            if (characterSkeletonTransform.localRotation.x > 0)
             {
                 characterRotationX = -1;
             }
-            else if (characterSkeletonTransform.rotation.x < 0)
+            else if (characterSkeletonTransform.localRotation.x < 0)
             {
                 characterRotationX = 1;
             }
-
         }
-        else if (characterSkeletonTransform.rotation.x > maxSwoopAngle)
+        else if (characterSkeletonTransform.localRotation.x > maxSwoopAngle)
         {
             if (characterRotationX > 0)
                 characterRotationX = 0;
-
         }
-        else if (characterSkeletonTransform.rotation.x < minSwoopAngle)
+        else if (characterSkeletonTransform.localRotation.x < minSwoopAngle)
         {
             if (characterRotationX < 0)
                 characterRotationX = 0;
-
         }
         #endregion
 
         #region Clamp Roll
-        if (characterRotationZ == 0)
+        if (System.Math.Abs(characterRotationZ) < Mathf.Epsilon)
         {
-            if(characterSkeletonTransform.rotation.z > 0)
+            if(characterSkeletonTransform.localRotation.z > 0)
             {
                 characterRotationZ = 1;
             }
-            else if(characterSkeletonTransform.rotation.z < 0)
+            else if(characterSkeletonTransform.localRotation.z < 0)
             {
                 characterRotationZ = -1;
             }
-            
         }
-        else if (characterSkeletonTransform.rotation.z > maxRollRotation) // || characterSkeletonTransform.rotation.z < minRollRotation)
+        else if (characterSkeletonTransform.localRotation.z > maxRollRotation)
         {
             if(characterRotationZ < 0)
                 characterRotationZ = 0;
-
         }
-        else if (characterSkeletonTransform.rotation.z < minRollRotation) // || characterSkeletonTransform.rotation.z < minRollRotation)
+        else if (characterSkeletonTransform.localRotation.z < minRollRotation)
         {
             if (characterRotationZ > 0)
                 characterRotationZ = 0;
-
         }
-
         #endregion
 
-        //if (characterSkeletonTransform.rotation.z < minRollRotation) characterRotationZ = 0;
-        Debug.Log(characterSkeletonTransform.rotation.z + " / " + maxRollRotation);
+        Debug.Log(characterSkeletonTransform.localRotation.z + " / " + maxRollRotation);
 
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);
         m_CameraTargetRot *= Quaternion.Euler(-cameraRotationX, 0f, 0f);
         m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, 0f, -characterRotationZ);
+        m_CharacterSkeletonTargetRot *= Quaternion.Euler(characterRotationX, tempCharacterRotationY, -characterRotationZ);
 
         if (clampVerticalRotation)
+        {
             m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot);
-        
+        }
+
+        //float tempCharacterRotationY = 0f;
+
+        if (System.Math.Abs(Input.GetAxis("Vertical")) < Mathf.Epsilon && System.Math.Abs(Input.GetAxis("Horizontal")) < Mathf.Epsilon)
+        {
+            if (characterSkeletonTransform.rotation.y > 0)
+            {
+                tempCharacterRotationY = -1;
+            }
+            else if (characterSkeletonTransform.rotation.y < 0)
+            {
+                tempCharacterRotationY = 1;
+            }
+        }
+        else
+        {
+            tempCharacterRotationY = 0f;
+        }
     }
     private void HandlePlayerMovement()
     {
@@ -227,7 +244,7 @@ public class SkyDiveTesting : MonoBehaviour
             smoothTime * Time.deltaTime);
     }
 
-    private void HandleCameraMovement()//
+    private void HandleCameraMovement()
     {
         if (smoothCamera)
         {
@@ -237,14 +254,13 @@ public class SkyDiveTesting : MonoBehaviour
             //move camera
             cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, m_CameraTargetRot,
                 smoothTime * Time.deltaTime);
-            
         }
         else
         {
             characterTransform.localRotation = m_CharacterTargetRot;
             cameraPivotTransform.localRotation = m_CameraTargetRot;
         }
-    }//
+    }
 
     private void StartLanded()
     {
@@ -274,7 +290,7 @@ public class SkyDiveTesting : MonoBehaviour
             default:
                 break;
         }
-    }//end Update()
+    }
 
     private void FixedUpdate()
 	{
