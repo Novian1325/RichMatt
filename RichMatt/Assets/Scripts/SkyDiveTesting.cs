@@ -9,15 +9,15 @@ public class SkyDiveTesting : MonoBehaviour
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
     [Header("SkyDiving Settings")]
-    [SerializeField] private float SlowDrag = 0.35f;
-    [SerializeField] private float FallDrag = 0.25f;
-    [SerializeField] private float SwoopDrag = 0.01f;
+    [SerializeField] private float SlowDrag = 0.35f; //target drag when slowing
+    [SerializeField] private float FallDrag = 0.25f;//normal drag
+    [SerializeField] private float SwoopDrag = 0.01f;//drag when swooping (pitching)
     [SerializeField] private float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
-    [SerializeField] private float deployParachuteHeight = 100f;
-    [SerializeField] private float cutParachuteHeight = 10f;
-    [SerializeField] private float parachuteSpeedModifier = 1.5f;
-    [SerializeField] private float attitudeChangeSpeed = 5f;
-    [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling
+    [SerializeField] private float deployParachuteHeight = 100f; //height at which parachute auto deploys
+    [SerializeField] private float cutParachuteHeight = 10f; //height at which character cuts parachute and safely falls to ground
+    [SerializeField] private float parachuteStallModifier = 1.5f;//modifies the glide that occurs when pulling back while parachute deployed
+    [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
+    [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling not straight down "forward momentum"
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
     //MUST BE NEGATIVE! Gets inverted if above 0
@@ -245,7 +245,7 @@ public class SkyDiveTesting : MonoBehaviour
         //if parachuting, pulling back increases forward drastically
         if(skyDivingState == SkyDivingStateENUM.parachuting)
         {
-            targetForwardMove *= 1.5f;//elongate arc when pulling back
+            targetForwardMove *= parachuteStallModifier;//elongate arc when pulling back
         }
 
         //move character forward a bit
