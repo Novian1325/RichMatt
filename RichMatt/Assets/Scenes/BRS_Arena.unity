@@ -501,7 +501,7 @@ Prefab:
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
       propertyPath: StartSkyDiving
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
@@ -534,7 +534,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 500
+      value: 3.56
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.z
