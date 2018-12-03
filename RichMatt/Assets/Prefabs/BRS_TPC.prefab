@@ -2774,11 +2774,11 @@ MonoBehaviour:
   SlowDrag: 0.6
   FallDrag: 0.5
   SwoopDrag: 0.01
-  ChuteDragModifier: 1.5
+  ChuteDragModifier: 1.6
   deployParachuteHeight: 100
   cutParachuteHeight: 10
-  parachuteStallModifier: 1.5
   attitudeChangeSpeed: 5
+  parachuteStallModifier: 1.5
   ForwardSpeed: 5
   terminalVelocity: -25
   parachuteTerminalVelocityModifier: 0.75

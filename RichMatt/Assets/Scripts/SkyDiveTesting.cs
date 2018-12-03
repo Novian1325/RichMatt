@@ -15,8 +15,8 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
     [SerializeField] private float deployParachuteHeight = 100f; //height at which parachute auto deploys
     [SerializeField] private float cutParachuteHeight = 10f; //height at which character cuts parachute and safely falls to ground
-    [SerializeField] private float parachuteStallModifier = 1.5f;//modifies the glide that occurs when pulling back while parachute deployed
     [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
+    [SerializeField] private float parachuteStallModifier = 1.5f;//modifies the glide that occurs when pulling back while parachute deployed
     [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling not straight down "forward momentum"
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
@@ -221,10 +221,8 @@ public class SkyDiveTesting : MonoBehaviour
         characterRollAxis.localRotation = Quaternion.Slerp(characterRollAxis.localRotation,
             m_CharacterRollTargetRot,
             smoothTime * Time.deltaTime);
-
-        //convert rotation to angle!
-        Quaternion myQuat = characterSwoopTransform.localRotation;
-        float currentSwoopAngle = 2.0f * Mathf.Rad2Deg * Mathf.Atan(myQuat.x);
+        
+        float currentSwoopAngle = GetCurrentSwoopAngle();
 
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : minSwoopAngle;
@@ -270,11 +268,25 @@ public class SkyDiveTesting : MonoBehaviour
         }
     }
 
+    private float GetCurrentSwoopAngle()
+    {
+        Quaternion q = characterSwoopTransform.localRotation;
+        //normalize
+        q.x /= q.w;
+        q.y /= q.w;
+        q.z /= q.w;
+        q.w = 1.0f;
+
+        //hooray trigonometry!
+        return 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
+
+    }
+
     private void HandleDrag()
     {
         //convert rotation to angle!
-        Quaternion myQuat = characterSwoopTransform.localRotation;
-        float currentSwoopAngle = 2.0f * Mathf.Rad2Deg * Mathf.Atan(myQuat.x);
+
+        float currentSwoopAngle = GetCurrentSwoopAngle();
         
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
@@ -302,7 +314,7 @@ public class SkyDiveTesting : MonoBehaviour
         //clamp downward velocity to terminalVelocity
         rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
-        Debug.Log("drag: " + rb.drag + ", myRot: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
+        Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
     }
     
     private void Update()
