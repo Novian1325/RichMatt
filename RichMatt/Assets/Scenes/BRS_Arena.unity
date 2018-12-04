@@ -492,7 +492,7 @@ Prefab:
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
       propertyPath: StartInPlane
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1680688628067676, guid: 07b09818548fb4d41bfa95b56e1827cb, type: 2}
       propertyPath: m_IsActive
@@ -560,7 +560,13 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: deployParachuteHeight
+      value: 50
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114317459040866896, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &663648548
@@ -991,6 +997,11 @@ Prefab:
       propertyPath: DEBUG
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114630260696749518, guid: 4be5ada959d178b4db3e40c4a3443be4,
+        type: 2}
+      propertyPath: planeSpeed_PlayerDrop
+      value: 75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4be5ada959d178b4db3e40c4a3443be4, type: 2}
   m_IsPrefabAsset: 0
@@ -1164,7 +1175,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4052810129898802, guid: 0eeef1b8fd3633441bcce1121d9abbcf, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 25
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 4052810129898802, guid: 0eeef1b8fd3633441bcce1121d9abbcf, type: 2}
       propertyPath: m_LocalPosition.z
