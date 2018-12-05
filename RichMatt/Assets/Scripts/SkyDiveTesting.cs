@@ -130,8 +130,7 @@ public class SkyDiveTesting : MonoBehaviour
     private void Parachuting()
     {
         SetTargetRotations();
-        HandlePlayerMovement();//rotate character model
-        HandleDrag();//maybe handle drag differently here?
+        HandlePlayerMovement();//rotate character model;//maybe handle drag differently here?
         if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
         {
             skyDivingState = SkyDivingStateENUM.startLanded;
@@ -319,7 +318,6 @@ public class SkyDiveTesting : MonoBehaviour
         switch (skyDivingState)
         {
             case SkyDivingStateENUM.startFreeFalling:
-                StartFreeFalling();
                 break;
 
             case SkyDivingStateENUM.freeFalling:
@@ -349,10 +347,11 @@ public class SkyDiveTesting : MonoBehaviour
         switch (skyDivingState)
         {
             case SkyDivingStateENUM.startFreeFalling:
+                StartFreeFalling();
                 break;
 
             case SkyDivingStateENUM.freeFalling:
-                FreeFalling();
+                HandleDrag();
                 break;
 
             
