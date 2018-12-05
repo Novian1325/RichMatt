@@ -92,7 +92,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     public void BeginSkyDive()
     {
-        Debug.Log("BEGIN SKYDIVE()!");
+        //Debug.Log("BEGIN SKYDIVE()!");
         //this is the function that is called from outside the class and starts the freefall framework
         this.enabled = true;
         skyDivingState = SkyDivingStateENUM.startFreeFalling;
@@ -100,7 +100,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void StartFreeFalling()
     {
-        Debug.Log("StartFreeFalling()");
+        //Debug.Log("StartFreeFalling()");
         playerController.TogglePlayerControls(false);//turn off player controls except for skydiving controls
 
         anim.SetBool("SkyDive", true);
