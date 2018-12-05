@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class BRS_PlaneDropManager : MonoBehaviour
 
@@ -40,7 +40,8 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     //stuff to pass on to plane when deployed
     private GameObject targetDropZone;
-    private GameObject[] planeCargo;
+    private List<GameObject> cargo_Players = new List<GameObject>();
+    private List<GameObject> cargo_Supplies = new List<GameObject>();
     private int planeFlightSpeed = 200;
 
     private bool VerifyReferences()
@@ -84,6 +85,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             case DropTypeENUM.PLAYER:
                 acceptableDropZones =  playerDropZones;
                 planeFlightSpeed = planeSpeed_PlayerDrop;
+
                 break;
 
             case DropTypeENUM.SUPPLY:
@@ -143,12 +145,26 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     }
 
+    private void LoadCargo(GameObject[] cargo)
+    {
+        foreach (GameObject burden in cargo)
+        {
+            if (burden.CompareTag("Player")) cargo_Players.Add(burden);
+            else
+            {
+                cargo_Supplies.Add(burden);//add to supplies list
+            }
+        }
+
+
+    }
+
     public bool InitPlaneDrop(DropTypeENUM dropType)
     {
         ConfigureFlightType(dropType);
         if (SetupFlightPath())
         {
-            SpawnPlane();//catch the plane Manager to keep track of the plane further
+            SpawnPlane(dropType);//catch the plane Manager to keep track of the plane further
             return true;
         }
 
@@ -157,7 +173,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     public bool InitPlaneDrop(DropTypeENUM dropType, GameObject[] incomingCargo)
     {
-        planeCargo = incomingCargo;
+        if(incomingCargo.Length > 0) LoadCargo(incomingCargo);
         return InitPlaneDrop(dropType);//"boil up"
     }
 
@@ -243,14 +259,15 @@ public class BRS_PlaneDropManager : MonoBehaviour
         
     }//end func
 
-    public PlaneManager SpawnPlane()
+    public PlaneManager SpawnPlane(DropTypeENUM dropType)
     {
         //create this plane in the world at this position, with no rotation
         GameObject plane = Instantiate(BRS_PlaneSpawn, planeStartPoint, Quaternion.identity);//do not set plane to be child of this object!
         plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
         //get plane manager
         PlaneManager planeManager = plane.GetComponent<PlaneManager>();
-        planeManager.InitPlane(targetDropZone, planeCargo, planeFlightSpeed);
+        planeManager.InitPlane(dropType, targetDropZone, cargo_Players.ToArray(), cargo_Supplies.ToArray(), planeFlightSpeed);
+        cargo_Supplies.Clear(); cargo_Players.Clear();
         return planeManager;
 
     }

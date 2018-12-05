@@ -46,7 +46,6 @@ public class SkyDiveTesting : MonoBehaviour
     //component references
     private Rigidbody rb;
     private Animator anim;
-    private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
     
     //clamp limits
@@ -76,7 +75,6 @@ public class SkyDiveTesting : MonoBehaviour
     private void Awake()
     {
         //gather references
-        if (playerCharacter == null) playerCharacter = this.gameObject.GetComponent<BRS_TPCharacter>();
         if (playerController == null) playerController = this.gameObject.GetComponent<BRS_TPController>();
 
         rb = gameObject.GetComponent<Rigidbody>();
@@ -94,14 +92,19 @@ public class SkyDiveTesting : MonoBehaviour
 
     public void BeginSkyDive()
     {
+        //Debug.Log("BEGIN SKYDIVE()!");
         //this is the function that is called from outside the class and starts the freefall framework
+        this.enabled = true;
         skyDivingState = SkyDivingStateENUM.startFreeFalling;
     }
 
     private void StartFreeFalling()
     {
-        TogglePlayerControls(false);//turn off player controls except for skydiving controls
+        //Debug.Log("StartFreeFalling()");
+        playerController.TogglePlayerControls(false);//turn off player controls except for skydiving controls
+
         anim.SetBool("SkyDive", true);
+        //anim.SetBool("OnGround", false);
         rb.drag = FallDrag;
         //Debug.Log("start freefalling" + rb.drag + " " + FallDrag);
         skyDivingState = SkyDivingStateENUM.freeFalling;
@@ -138,15 +141,9 @@ public class SkyDiveTesting : MonoBehaviour
     private void StartLanded()
     {
         //Destroy Parachute
-        TogglePlayerControls(true);
+        playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
         skyDivingState = SkyDivingStateENUM.landed;
-    }
-
-    private void TogglePlayerControls(bool active)
-    {
-        playerCharacter.enabled = active;
-        playerController.enabled = active;
     }
     
     private float GetDistanceToTerrain()
@@ -314,7 +311,7 @@ public class SkyDiveTesting : MonoBehaviour
         //clamp downward velocity to terminalVelocity
         rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
-        Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
+        //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
     }
     
     private void Update()
