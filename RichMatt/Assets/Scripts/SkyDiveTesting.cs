@@ -13,6 +13,7 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private float FallDrag = 0.25f;//normal drag
     [SerializeField] private float SwoopDrag = 0.01f;//drag when swooping (pitching)
     [SerializeField] private float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
+    [SerializeField] private float rollFactor = .25f;
     [SerializeField] private float deployParachuteHeight = 100f; //height at which parachute auto deploys
     [SerializeField] private float cutParachuteHeight = 10f; //height at which character cuts parachute and safely falls to ground
     [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
@@ -150,7 +151,7 @@ public class SkyDiveTesting : MonoBehaviour
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera yaw
         float characterRotationX = Input.GetAxis("Vertical") * attitudeChangeSpeed;//get swoop input
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
-        float characterRotationZ = (.25f * characterRotationY) + Input.GetAxis("Horizontal") * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
+        float characterRotationZ = (rollFactor * characterRotationY) + Input.GetAxis("Horizontal") * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
         float charRoll = characterRollAxis.localRotation.z;//cache
         float charSwoop = characterSwoopTransform.localRotation.x;//cache

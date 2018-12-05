@@ -492,7 +492,7 @@ Prefab:
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
       propertyPath: StartInPlane
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1680688628067676, guid: 07b09818548fb4d41bfa95b56e1827cb, type: 2}
       propertyPath: m_IsActive
@@ -501,7 +501,7 @@ Prefab:
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
       propertyPath: StartSkyDiving
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
@@ -562,11 +562,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114565705077904430, guid: 08d65c8f8a074ac4d839c9204f543d97,
         type: 2}
-      propertyPath: deployParachuteHeight
-      value: 50
+      propertyPath: rollFactor
+      value: 0.32
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114317459040866896, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &663648548
