@@ -12,6 +12,8 @@ public class BRS_TPCharacter : MonoBehaviour {
     [SerializeField] float m_AnimSpeedMultiplier = 1f;
     [SerializeField] float m_GroundCheckDistance = 0.1f;
 
+    [SerializeField] private GameObject characterModel;
+
     Rigidbody m_Rigidbody;
     Animator m_Animator;
     bool m_IsGrounded;
@@ -36,6 +38,11 @@ public class BRS_TPCharacter : MonoBehaviour {
 
         m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
+    }
+
+    public void ShowPlayerModel(bool active)
+    {
+        characterModel.SetActive(active);
     }
 
 

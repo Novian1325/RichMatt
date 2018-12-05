@@ -91,7 +91,14 @@ public class BRS_TPController : MonoBehaviour
     {
         HandleCameraPitch();
     }
-    
+
+
+    public void TogglePlayerControls(bool active)
+    {
+        m_Character.enabled = active;
+        this.enabled = active;
+    }
+
     private void HandleCameraPitch()
     {
         //set pitch via SLERP smooth and wavy
