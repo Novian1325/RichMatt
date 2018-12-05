@@ -18,13 +18,19 @@ public class SupplyDrop : MonoBehaviour {
     private int initialDistanceToGround = 0;//distance from instantiated point to ground
     private Animator anim;
     private Rigidbody rb;
-    [SerializeField] private bool parachuteDeployed = false;
+    //[SerializeField] private bool parachuteDeployed = false;
 
     public GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
     
     private void AddIconToMiniMap()
     {
         //TODO
+    }
+
+    private void StartFreeFalling()
+    {
+        initialDistanceToGround = PPBRS_Utility.GetDistanceToTerrain(this.transform.position);
+        freefallingState = SkyDivingStateENUM.freeFalling;
     }
 
     private void FreeFalling()
@@ -44,7 +50,6 @@ public class SupplyDrop : MonoBehaviour {
         //do it!
         terminalVelocity = parachuteTerminalVelocity;
         terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
-        parachuteDeployed = true;
         freefallingState = SkyDivingStateENUM.parachuting;
     }
 
@@ -52,6 +57,8 @@ public class SupplyDrop : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        //init state
+        freefallingState = SkyDivingStateENUM.startFreeFalling;
         
         //init variables
         terminalVelocity = -Mathf.Abs(terminalVelocity); //get the absolutely negative value for downwards velocity
@@ -59,7 +66,6 @@ public class SupplyDrop : MonoBehaviour {
         parachuteTerminalVelocity = -Mathf.Abs(parachuteTerminalVelocity); //get the absolutely negative value for downwards velocity
         //enforce parachuteTerminalVelocity being lower
         parachuteTerminalVelocity = parachuteTerminalVelocity > terminalVelocity ? terminalVelocity - 1 : parachuteTerminalVelocity;
-        initialDistanceToGround = PPBRS_Utility.GetDistanceToTerrain(this.transform.position);
 
 
         //snag references
@@ -76,6 +82,9 @@ public class SupplyDrop : MonoBehaviour {
 
         switch (freefallingState)
         {
+            case SkyDivingStateENUM.startFreeFalling:
+                StartFreeFalling();
+                break;
             case SkyDivingStateENUM.freeFalling:
                 FreeFalling();
                 break;
