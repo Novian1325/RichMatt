@@ -13,22 +13,41 @@ public class PlayerInPlaneController : MonoBehaviour
 
     //private readonly float _CameraDistance = 10f;
     public float MouseSensitivity = 4.0f;
-    private float orbitDistance = -50;//must be negative!
+    private readonly float orbitDistance = -50;//must be negative!
 	//public float ScrollSensitivity = 2.0f;
     //TODO Add feature to scroll to zoom in and out
 	public float OrbitDampening = 10.0f;
     //public float ScrollDampening = 6.0f;
     //public bool CameraDisabled = false;
 
+    public GameObject jumpPromptUI;
+
+
+
     private bool isAllowedToJump = false;
 
+    //references to other components
     private SkyDiveTesting skyDiveController;
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
+
+    private void ShowJumpPrompt()
+    {
+        if(jumpPromptUI != null)
+        {
+            jumpPromptUI = Instantiate(jumpPromptUI);
+            //show it!
+        }
+        else
+        {
+            Debug.LogError("ERROR! Jump Tool Tip reference not set.");
+        }
+
+    }
     
     public void OnDropZoneEnter()
     {
-        isAllowedToJump = true;
+        isAllowedToJump = true;//set flag so script will accept player input
         //show tooltip UI to player
         Debug.Log("GREEN LIGHT! GREEN LIGHT! GO GO GO! JUMP!");
     }
@@ -90,7 +109,7 @@ public class PlayerInPlaneController : MonoBehaviour
         Camera.main.transform.SetParent(originalPivot);//set parent back to player's pivot
         Camera.main.transform.localPosition = cameraStartingPosition;//reset
         Camera.main.transform.localRotation = Quaternion.identity;//set rotation to neutral relative to parent
-        this.enabled = false; //maybe even Destroy(this);
+        Destroy(this);//remove this component  //this.enabled = false; //maybe even Destroy(this);
 
     }
 
