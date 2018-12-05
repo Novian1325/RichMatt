@@ -164,7 +164,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         ConfigureFlightType(dropType);
         if (SetupFlightPath())
         {
-            SpawnPlane(dropType);//catch the plane Manager to keep track of the plane further
+            SpawnPlane();//catch the plane Manager to keep track of the plane further
             return true;
         }
 
@@ -259,14 +259,14 @@ public class BRS_PlaneDropManager : MonoBehaviour
         
     }//end func
 
-    public PlaneManager SpawnPlane(DropTypeENUM dropType)
+    public PlaneManager SpawnPlane()
     {
         //create this plane in the world at this position, with no rotation
         GameObject plane = Instantiate(BRS_PlaneSpawn, planeStartPoint, Quaternion.identity);//do not set plane to be child of this object!
         plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
         //get plane manager
         PlaneManager planeManager = plane.GetComponent<PlaneManager>();
-        planeManager.InitPlane(dropType, targetDropZone, cargo_Players.ToArray(), cargo_Supplies.ToArray(), planeFlightSpeed);
+        planeManager.InitPlane(targetDropZone, cargo_Players.ToArray(), cargo_Supplies.ToArray(), planeFlightSpeed);
         cargo_Supplies.Clear(); cargo_Players.Clear();
         return planeManager;
 

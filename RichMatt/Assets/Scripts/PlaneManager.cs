@@ -13,8 +13,7 @@ public class PlaneManager : MonoBehaviour
     [SerializeField] private bool DEBUG = false;
     //to which drop zone is the plane headed?
     private GameObject targetDropZone;
-
-    private DropTypeENUM dropType;
+    
 
     private static int planeCounter = 0;
     
@@ -44,11 +43,10 @@ public class PlaneManager : MonoBehaviour
     }
 
     //this is basically the constructor class
-    public void InitPlane(DropTypeENUM incomingDropType, GameObject incomingTargetDropZone, GameObject[] incomingPlayers = null, GameObject[] incomingSupplies = null, int incomingAirSpeed = 100)
+    public void InitPlane(GameObject incomingTargetDropZone, GameObject[] incomingPlayers = null, GameObject[] incomingSupplies = null, int incomingAirSpeed = 100)
     {
         if (DEBUG) Debug.Log("This plane heading towards DZ: " + incomingTargetDropZone);
         //initialize member variables
-        this.dropType = incomingDropType;
         this.targetDropZone = incomingTargetDropZone;
         this.cargo_Supplies = incomingSupplies;
         this.airspeed = incomingAirSpeed;
