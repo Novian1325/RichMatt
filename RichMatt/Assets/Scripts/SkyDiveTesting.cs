@@ -116,7 +116,7 @@ public class SkyDiveTesting : MonoBehaviour
         SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
-        if (GetDistanceToTerrain() <= deployParachuteHeight)
+        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= deployParachuteHeight)
             skyDivingState = SkyDivingStateENUM.startparachute;
     }
 
@@ -131,7 +131,7 @@ public class SkyDiveTesting : MonoBehaviour
     {
         SetTargetRotations();
         HandlePlayerMovement();//rotate character model;//maybe handle drag differently here?
-        if (GetDistanceToTerrain() <= cutParachuteHeight)//safe falling distance from ground
+        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= cutParachuteHeight)//safe falling distance from ground
         {
             skyDivingState = SkyDivingStateENUM.startLanded;
         }
@@ -143,25 +143,6 @@ public class SkyDiveTesting : MonoBehaviour
         playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
         skyDivingState = SkyDivingStateENUM.landed;
-    }
-    
-    private float GetDistanceToTerrain()
-    {
-        float distanceToLanding = 999999.0f;//just a really long distance
-        RaycastHit hit;
-
-        if (Physics.Raycast(this.transform.position, Vector3.down, out hit, distanceToLanding))
-        {
-            if (hit.collider.CompareTag("Terrain"))//verify that the ground was hit -- ex. not a parachute right below you
-            {
-                distanceToLanding = hit.distance;
-
-            }
-            //TODO
-            //CHECK IF COLLIDER WAS A BUILDING, TOO
-        }
-
-        return distanceToLanding;
     }
 
     private void SetTargetRotations()
@@ -343,7 +324,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FixedUpdate()
 	{
-        distanceToTerrain = GetDistanceToTerrain();
+        distanceToTerrain = PPBRS_Utility.GetDistanceToTerrain(this.transform.position);
         switch (skyDivingState)
         {
             case SkyDivingStateENUM.startFreeFalling:
