@@ -18,7 +18,13 @@ public class Compass : MonoBehaviour
     [SerializeField] private bool ordinalLetters = true;//show N instead of 0 or S instead of 180
     [SerializeField] private degreeIncrement degreeInc = degreeIncrement.Five;// round to this number
 
-	public void Update()
+    private void Start()
+    {
+        if (Player == null) Player = GameObject.FindGameObjectWithTag("Player").transform;
+        if (Player == null) Debug.LogError("ERROR! No GameObject tagged \"Player\" in scene.");
+    }
+
+    public void Update()
 	{
 		//Get a handle on the Image's uvRect
 		CompassImage.uvRect = new Rect(Player.localEulerAngles.y / 360, 0, 1, 1);
