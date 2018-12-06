@@ -95,7 +95,7 @@ public class BRS_TPController : MonoBehaviour
 
     public void TogglePlayerControls(bool active)
     {
-        m_Character.enabled = active;
+        //m_Character.enabled = active;
         this.enabled = active;
     }
 
