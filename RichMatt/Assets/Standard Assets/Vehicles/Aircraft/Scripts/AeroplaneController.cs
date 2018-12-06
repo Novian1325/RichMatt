@@ -66,8 +66,7 @@ namespace UnityStandardAssets.Vehicles.Aeroplane
             RollInput = rollInput;
             PitchInput = pitchInput;
             YawInput = yawInput;
-            //ThrottleInput = throttleInput;
-            ThrottleInput = 1;
+            ThrottleInput = throttleInput;
             AirBrakes = airBrakes;
 
             ClampInputs();
