@@ -15,7 +15,7 @@ public class BRSCarController : MonoBehaviour
     public GameObject Player;
 
     public bool InCar;
-    public bool Trap;
+    public bool InVehicleRange;
 
 	// Use this for initialization
 	void Start ()
@@ -37,19 +37,32 @@ public class BRSCarController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if(InCar && Input.GetKeyDown("u"))
+        if(Input.GetButtonDown("Interact"))
         {
-            GetOutCar();
+            if(InCar)
+            {
+                GetOutCar();
+            }
+            else
+            {
+                GetInCar();
+            }
         }
 	}
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == Player.name)
+        if (other.gameObject.CompareTag("Player"))
         {
-           Debug.Log(other.gameObject);
+           InVehicleRange = true;
+        }
+    }
 
-            GetInCar();
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            InVehicleRange = false;
         }
     }
 
@@ -71,6 +84,7 @@ public class BRSCarController : MonoBehaviour
 
         Player.SetActive(true);
         Player.transform.position = ExitPoint.transform.position;
+        Player.transform.rotation = ExitPoint.transform.rotation;
 
         CarController.enabled = false;
         CarUserControl.enabled = false;
