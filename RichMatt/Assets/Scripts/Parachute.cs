@@ -11,7 +11,17 @@ public class Parachute : MonoBehaviour {
     {
         meshRenderer.enabled = true;
         anim.SetTrigger("DeployChute");
+        //play sound
+        //let other players know teammate deployed 'chute  
 
+    }
+
+    public void DestroyParachute()
+    {
+        //don't destroy right away
+        //maybe play a final animation or something
+        //meshRenderer.enabled = false;
+        Destroy(this.gameObject);
     }
 
 
