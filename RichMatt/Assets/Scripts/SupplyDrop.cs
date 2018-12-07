@@ -10,8 +10,9 @@ public class SupplyDrop : MonoBehaviour
     [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
     [SerializeField] private int parachuteTerminalVelocity = -9;
     [SerializeField] private float forwardMomentum = .03f;
-    [Range(0, 1)]//after the object has fallen this percentage of the distance to the ground, pull the chute
-    [SerializeField] private float deployParachuteDistancePercent = .9f;
+    [Range(0, 1)]//after the object is this percentage of the distance to the ground, pull the chute
+    [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
+    private readonly float supplyDropDrag = .5f;
 
     private Vector3 terminalVelocityVector;
 
@@ -45,6 +46,13 @@ public class SupplyDrop : MonoBehaviour
 
     }
 
+    private void StartLanded()
+    {
+        if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
+        freefallingState = SkyDivingStateENUM.landed;
+        rb.freezeRotation = true;
+    }
+
 
     private void DeployParachute()
     {
@@ -73,10 +81,11 @@ public class SupplyDrop : MonoBehaviour
         //snag references
         this.rb = this.GetComponent<Rigidbody>() as Rigidbody;
         this.anim = this.GetComponent<Animator>() as Animator;
-        if (this.parachute == null) this.parachute = this.GetComponent<Parachute>();
+        if (this.parachute == null) this.parachute = this.GetComponentInChildren<Parachute>();
 
         //set name
         this.gameObject.name = "Supply Drop # " + ++supplyDropCount;//track name
+        this.rb.drag = supplyDropDrag;
 		
 	}
 	
@@ -100,8 +109,7 @@ public class SupplyDrop : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.startLanded:
-                if(parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
-                freefallingState = SkyDivingStateENUM.landed;
+                StartLanded();
                 break;
 
             case SkyDivingStateENUM.landed:
@@ -142,9 +150,9 @@ public class SupplyDrop : MonoBehaviour
         }
 
         //cap downward velocity
-        this.rb.velocity = this.rb.velocity.y > terminalVelocity ? terminalVelocityVector : this.rb.velocity;
-        
-        //Debug.Log("Velocity: " + this.rb.velocity);
+        this.rb.velocity = this.rb.velocity.y < terminalVelocity ? terminalVelocityVector : this.rb.velocity;
+
+        Debug.Log("Velocity: " + this.rb.velocity + "/ terminal velocity: " + terminalVelocity);
     }
 
     private void OnCollisionEnter(Collision collision)
