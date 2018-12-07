@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
 
     [Header("SkyDiving")]
     public SkyDiveTesting skyDiveController;
+    public int skyDiveTestHeight = 500;
     
     private void Awake()
     {
@@ -59,11 +60,12 @@ public class GameManager : MonoBehaviour {
         else if (StartSkyDiving)
         {
             StartSkyDiving = false;
-            skyDiveController.BeginSkyDive();
             //if you're lower than 100 feet, raise it up to a default value
-            if (skyDiveController.transform.position.y < 100)
+            if (skyDiveController.transform.position.y < skyDiveTestHeight)
                 skyDiveController.transform.position = new Vector3(skyDiveController.transform.position.x,
-                skyDiveController.transform.position.y + 500, skyDiveController.transform.position.z);
+                    skyDiveTestHeight, skyDiveController.transform.position.z);
+
+            skyDiveController.BeginSkyDive();
 
         }
 
