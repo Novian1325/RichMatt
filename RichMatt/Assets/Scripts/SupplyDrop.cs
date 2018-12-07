@@ -156,4 +156,12 @@ public class SupplyDrop : MonoBehaviour
 
         }
     }
+
+    public void Interact()
+    {
+        //throw loot all over the ground like a maniac
+        //remove icons and effects
+        //play an effect
+        Destroy(this.gameObject);
+    }
 }
