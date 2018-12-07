@@ -139,6 +139,6 @@ public class SupplyDrop : MonoBehaviour {
         //cap downward velocity
         this.rb.velocity = this.rb.velocity.y > terminalVelocity ? terminalVelocityVector : this.rb.velocity;
         
-        Debug.Log("Velocity: " + this.rb.velocity);
+        //Debug.Log("Velocity: " + this.rb.velocity);
     }
 }

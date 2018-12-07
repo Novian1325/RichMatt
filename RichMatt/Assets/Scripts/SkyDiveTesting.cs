@@ -12,7 +12,7 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private float SlowDrag = 0.35f; //target drag when slowing
     [SerializeField] private float FallDrag = 0.25f;//normal drag
     [SerializeField] private float SwoopDrag = 0.01f;//drag when swooping (pitching)
-    [SerializeField] private float ChuteDragModifier = 1.5f;//increase drag by this much while chute is deployed
+    [SerializeField] private float ChuteDrag = 0.65f;//increase drag by this much while chute is deployed
     [SerializeField] private float rollFactor = .25f;
     [SerializeField] private float deployParachuteHeight = 100f; //height at which parachute auto deploys
     [SerializeField] private float cutParachuteHeight = 10f; //height at which character cuts parachute and safely falls to ground
@@ -21,6 +21,7 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling not straight down "forward momentum"
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
+    [SerializeField] private Parachute Parachute;
     //MUST BE NEGATIVE! Gets inverted if above 0
 
     //private readonly float _CameraDistance = 10f;
@@ -284,7 +285,7 @@ public class SkyDiveTesting : MonoBehaviour
         targetDrag = Mathf.Clamp(targetDrag, SwoopDrag, SlowDrag);//clamp
 
         //modify drag if chute is deployed
-        targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? ChuteDragModifier * targetDrag : targetDrag;
+        targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? ChuteDrag * targetDrag : targetDrag;
 
         //set drag; calcs complete
         rb.drag = targetDrag;
@@ -292,7 +293,7 @@ public class SkyDiveTesting : MonoBehaviour
         //clamp downward velocity to terminalVelocity
         rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
-        //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
+        Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
     }
     
     private void Update()
@@ -336,7 +337,13 @@ public class SkyDiveTesting : MonoBehaviour
                 HandleDrag();
                 break;
 
-            
+            case SkyDivingStateENUM.startparachute:
+                HandleDrag();
+                break;
+
+            case SkyDivingStateENUM.parachuting:
+                HandleDrag();
+                break;
 
             default:
                 break;
@@ -382,6 +389,8 @@ public class SkyDiveTesting : MonoBehaviour
         //animateCute
         //change controls
         //
+        anim.SetBool("Parachuting", true);
+        Parachute.DeployParachute();
     }
 
     private Quaternion ClampRotationAroundXAxis(Quaternion q, float min, float max)
