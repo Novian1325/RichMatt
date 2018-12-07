@@ -9,10 +9,10 @@ public class SkyDiveTesting : MonoBehaviour
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
     [Header("SkyDiving Settings")]
-    [SerializeField] private float slowDrag = 0.35f; //target drag when slowing
-    [SerializeField] private float fallDrag = 0.25f;//normal drag
+    [SerializeField] private float slowDrag = 0.6f; //target drag when slowing
+    [SerializeField] private float fallDrag = 0.5f;//normal drag
     [SerializeField] private float swoopDrag = 0.01f;//drag when swooping (pitching)
-    [SerializeField] private float chuteDrag = 0.85f;// drag while chute is deployed
+    [SerializeField] private float chuteDrag = 1.2f;// drag while chute is deployed
     [SerializeField] private float rollFactor = .25f;
     [SerializeField] private int forceParachuteHeight = 100; //height at which parachute auto deploys
     [SerializeField] private int deployParachuteLimit = 250; //character must be at least this distance to ground before being able to deploy 'chute

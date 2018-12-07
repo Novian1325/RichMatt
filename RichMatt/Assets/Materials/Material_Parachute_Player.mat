@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: TempParachute
+  m_Name: Material_Parachute_Player
   m_Shader: {fileID: 4800000, guid: 747ec8c9f1db5844281e111bb403965f, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
