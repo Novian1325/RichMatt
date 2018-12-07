@@ -3099,15 +3099,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skyDivingState: 5
-  SlowDrag: 0.6
-  FallDrag: 0.5
-  SwoopDrag: 0.01
-  ChuteDrag: 1.85
+  slowDrag: 0.6
+  fallDrag: 0.5
+  swoopDrag: 0.01
+  chuteDrag: 1.2
   rollFactor: 0.32
   forceParachuteHeight: 100
   deployParachuteLimit: 300
   attitudeChangeSpeed: 5
-  ForwardSpeed: 5
+  forwardMomentum: 5
   parachuteStallModifier: 1.2
   terminalVelocity: -25
   parachuteTerminalVelocityModifier: 0.75
@@ -3166,7 +3166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca118e5ad500d4448db45ad6e41bb52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  secondsUntilDestroy: 2
 --- !u!136 &136522419180399366
 CapsuleCollider:
   m_ObjectHideFlags: 1
