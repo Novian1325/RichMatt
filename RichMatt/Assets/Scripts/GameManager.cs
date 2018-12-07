@@ -83,13 +83,12 @@ public class GameManager : MonoBehaviour {
             players = GameObject.FindGameObjectsWithTag("Player");
             if(players.Length < 1)//if no players tagged
             {
-                players = new GameObject[1];//limit game to single player
-                players[0] = FindObjectOfType<BRS_TPCharacter>().gameObject;//find the first BRS TPC in game and assume it
+
+                Debug.LogError("ERROR! No Players found in scene. Tag one or double check BRS TPC.");
+                allReferencesOkay = false;
             }
             else
             {
-                Debug.LogError("ERROR! No Players found in scene. Tag one or double check BRS TPC.");
-                allReferencesOkay = false;
             }
         }
         
