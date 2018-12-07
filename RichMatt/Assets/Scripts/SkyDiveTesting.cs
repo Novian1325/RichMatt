@@ -9,16 +9,16 @@ public class SkyDiveTesting : MonoBehaviour
     public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
     [Header("SkyDiving Settings")]
-    [SerializeField] private float SlowDrag = 0.35f; //target drag when slowing
-    [SerializeField] private float FallDrag = 0.25f;//normal drag
-    [SerializeField] private float SwoopDrag = 0.01f;//drag when swooping (pitching)
-    [SerializeField] private float ChuteDrag = 0.65f;//increase drag by this much while chute is deployed
+    [SerializeField] private float slowDrag = 0.35f; //target drag when slowing
+    [SerializeField] private float fallDrag = 0.25f;//normal drag
+    [SerializeField] private float swoopDrag = 0.01f;//drag when swooping (pitching)
+    [SerializeField] private float chuteDrag = 0.85f;// drag while chute is deployed
     [SerializeField] private float rollFactor = .25f;
-    [SerializeField] private float deployParachuteHeight = 100f; //height at which parachute auto deploys
-    [SerializeField] private float cutParachuteHeight = 10f; //height at which character cuts parachute and safely falls to ground
+    [SerializeField] private int forceParachuteHeight = 100; //height at which parachute auto deploys
+    [SerializeField] private int deployParachuteLimit = 250; //character must be at least this distance to ground before being able to deploy 'chute
     [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
-    [SerializeField] private float parachuteStallModifier = 1.5f;//modifies the glide that occurs when pulling back while parachute deployed
-    [SerializeField] private float ForwardSpeed = 5f;//player moves forward while falling not straight down "forward momentum"
+    [SerializeField] private float forwardMomentum = 5f;//player moves forward while falling not straight down "forward momentum"
+    [SerializeField] private float parachuteStallModifier = 1.3f;//modifies the glide that occurs when pulling back while parachute deployed
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
     [SerializeField] private Parachute Parachute;
@@ -96,7 +96,7 @@ public class SkyDiveTesting : MonoBehaviour
     {
         //Debug.Log("BEGIN SKYDIVE()!");
         //this is the function that is called from outside the class and starts the freefall framework
-        this.enabled = true;
+        this.enabled = true;//turn this script on so its Update() recurring functions will be called
         skyDivingState = SkyDivingStateENUM.startFreeFalling;
     }
 
@@ -107,7 +107,7 @@ public class SkyDiveTesting : MonoBehaviour
 
         anim.SetBool("SkyDive", true);
         //anim.SetBool("OnGround", false);
-        rb.drag = FallDrag;
+        rb.drag = fallDrag;
         //Debug.Log("start freefalling" + rb.drag + " " + FallDrag);
         skyDivingState = SkyDivingStateENUM.freeFalling;
     }
@@ -118,7 +118,7 @@ public class SkyDiveTesting : MonoBehaviour
         SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
-        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= deployParachuteHeight)
+        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)
             skyDivingState = SkyDivingStateENUM.startparachute;
     }
 
@@ -133,29 +133,31 @@ public class SkyDiveTesting : MonoBehaviour
     {
         SetTargetRotations();
         HandlePlayerMovement();//rotate character model;//maybe handle drag differently here?
-        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= cutParachuteHeight)//safe falling distance from ground
-        {
-            skyDivingState = SkyDivingStateENUM.startLanded;
-        }
+
     }
 
     private void StartLanded()
     {
-        //Destroy Parachute
+        Parachute.DestroyParachute();//parachute class handles destroying itself (playing anims, whatever)
         playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
         skyDivingState = SkyDivingStateENUM.landed;
+        this.enabled = false;//this script is finished unless activated again
     }
 
     private void SetTargetRotations()
     {
-        float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera yaw
+        float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera pitch input
         float characterRotationX = Input.GetAxis("Vertical") * attitudeChangeSpeed;//get swoop input
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
-        float characterRotationZ = (rollFactor * characterRotationY) + Input.GetAxis("Horizontal") * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
+        float characterRotationZ = (rollFactor * characterRotationY) * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
         float charRoll = characterRollAxis.localRotation.z;//cache
         float charSwoop = characterSwoopTransform.localRotation.x;//cache
+
+        //restrict rolling to freefalling only, for now.  Can swing when parachuting
+        characterRotationZ = (skyDivingState == SkyDivingStateENUM.freeFalling) ? characterRotationZ : 0;//force to zero roll if not skydiving
+
 
         #region unwind to center if no input
         //unwind swoop amount
@@ -173,10 +175,14 @@ public class SkyDiveTesting : MonoBehaviour
         }
         #endregion
 
+        //only roll if skydiving, otherwise reset rotation
+         m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);
+
         //set target rotations for axes
         m_CharacterSwoopTargetRot *= Quaternion.Euler(characterRotationX, 0f, 0f);//pitch
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);//yaw
-        m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);//roll
+        //only roll when freefalling, not when 'chute deployed
+        if(skyDivingState == SkyDivingStateENUM.freeFalling) m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);//roll
 
         m_CameraTargetRot *= Quaternion.Euler(-cameraRotationX, 0f, 0f);//camera pitch
 
@@ -206,7 +212,7 @@ public class SkyDiveTesting : MonoBehaviour
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : minSwoopAngle;
 
-        //if parachuting, pulling back increases forward drastically
+        //if parachuting, pulling back increases forward momentum
         if (skyDivingState == SkyDivingStateENUM.parachuting)
         {
             //pulling back has a different effect than pushing forward
@@ -216,7 +222,7 @@ public class SkyDiveTesting : MonoBehaviour
         //drag varies inversely with swoopAngle: y = k/x.           
         //where x is the ratio of our currentSwoop angle to maxSwoop angle
         //if we swoop a little bit, we want the drag to change a little bit
-        float targetForwardMove = 1 + (ForwardSpeed * (1 - (currentSwoopAngle / localMaxAngle)));
+        float targetForwardMove = 1 + (forwardMomentum * (1 - (currentSwoopAngle / localMaxAngle)));
         //should not be totally zero....
 
         //if parachuting, pulling back increases forward drastically
@@ -269,31 +275,47 @@ public class SkyDiveTesting : MonoBehaviour
         
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
-
+        
         //drag varies inversely with swoopAngle: y = k/x.           
         //where x is the ratio of our currentSwoop angle to maxSwoop angle
         //if we swoop a little bit, we want the drag to change a little bit
-        float targetDrag = FallDrag * (1 - (currentSwoopAngle / localMaxAngle));
-
-        //sets velocity cap based on state
-        float velocityCap = skyDivingState == SkyDivingStateENUM.parachuting ? terminalVelocity * parachuteTerminalVelocityModifier : terminalVelocity;
+        float targetDrag = fallDrag * (1 - (currentSwoopAngle / localMaxAngle));
 
         //level out drag if level swoop angle
-        targetDrag = Mathf.Abs(currentSwoopAngle) < 1f ? FallDrag : targetDrag;//set to fall drag if no pitch
+        targetDrag = Mathf.Abs(currentSwoopAngle) < 1f ? fallDrag : targetDrag;//set to fall drag if no pitch
 
-        //set drag and clamp to limits
-        targetDrag = Mathf.Clamp(targetDrag, SwoopDrag, SlowDrag);//clamp
+        //clamp to limits
+        targetDrag = Mathf.Clamp(targetDrag, swoopDrag, slowDrag);//clamp
 
         //modify drag if chute is deployed
-        targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? ChuteDrag * targetDrag : targetDrag;
+        targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? chuteDrag * targetDrag : targetDrag;
 
         //set drag; calcs complete
         rb.drag = targetDrag;
+        
+        //sets velocity cap based on state
+        float velocityCap = skyDivingState == SkyDivingStateENUM.parachuting ? terminalVelocity * parachuteTerminalVelocityModifier : terminalVelocity;
 
         //clamp downward velocity to terminalVelocity
         rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
-        Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
+        //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
+    }
+
+    private void CheckForRipCord()
+    {
+        //should only be called in Update()
+        if (Input.GetButtonDown("Jump") || Input.GetButtonDown("Interact"))
+        {
+            if(PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= deployParachuteLimit)
+            {
+                DeployParachute();
+            }
+            else
+            {
+                //Debug.Log("Cannot deploy parachute: too high above limit");
+            }
+        }
     }
     
     private void Update()
@@ -334,6 +356,7 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
+                CheckForRipCord();
                 HandleDrag();
                 break;
 
@@ -384,11 +407,7 @@ public class SkyDiveTesting : MonoBehaviour
     
     private void DeployParachute()
     {
-        //rb.drag = ChuteDrag;
-        //TODO 
-        //animateCute
-        //change controls
-        //
+        characterRollAxis.localRotation = Quaternion.identity;//stand straight up and down when 'chute deployed -- no roll
         anim.SetBool("Parachuting", true);
         Parachute.DeployParachute();
     }
