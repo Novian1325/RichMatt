@@ -118,8 +118,8 @@ public class SkyDiveTesting : MonoBehaviour
         SetTargetRotations();
         HandlePlayerMovement();
         HandleDrag();
-        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)
-            skyDivingState = SkyDivingStateENUM.startparachute;
+        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)//pull parachute if too close to ground
+            skyDivingState = SkyDivingStateENUM.startparachute;//put in state to pull parachute
     }
 
     private void StartParachute()
@@ -309,7 +309,7 @@ public class SkyDiveTesting : MonoBehaviour
         {
             if(PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= deployParachuteLimit)
             {
-                DeployParachute();
+                skyDivingState = SkyDivingStateENUM.startparachute;
             }
             else
             {
