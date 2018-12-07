@@ -41,7 +41,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     //stuff to pass on to plane when deployed
     private GameObject targetDropZone;
     private List<GameObject> cargo_Players = new List<GameObject>();
-    private List<GameObject> cargo_Supplies = new List<GameObject>();
+    private GameObject cargo_Supplies;//can only carry one supply drop per sortie
     private int planeFlightSpeed = 200;
 
     private bool VerifyReferences()
@@ -152,7 +152,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             if (burden.CompareTag("Player")) cargo_Players.Add(burden);
             else
             {
-                cargo_Supplies.Add(burden);//add to supplies list
+                if(burden != null) cargo_Supplies = burden;//set supplies
             }
         }
 
@@ -266,8 +266,8 @@ public class BRS_PlaneDropManager : MonoBehaviour
         plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
         //get plane manager
         PlaneManager planeManager = plane.GetComponent<PlaneManager>();
-        planeManager.InitPlane(targetDropZone, cargo_Players.ToArray(), cargo_Supplies.ToArray(), planeFlightSpeed);
-        cargo_Supplies.Clear(); cargo_Players.Clear();
+        planeManager.InitPlane(targetDropZone, cargo_Players.ToArray(), cargo_Supplies, planeFlightSpeed);
+        cargo_Players.Clear();
         return planeManager;
 
     }

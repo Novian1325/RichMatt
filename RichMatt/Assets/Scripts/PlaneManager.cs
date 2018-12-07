@@ -3,7 +3,7 @@
 public class PlaneManager : MonoBehaviour
 {
     [SerializeField] private int airspeed = 100;
-    [SerializeField] private GameObject[] cargo_Supplies;
+    [SerializeField] private GameObject cargo_Supplies;
     [SerializeField] private PlayerInPlaneController[] cargo_Players;
     [SerializeField] private bool hasDroppedCargo = false;
     [SerializeField] private GameObject planeCameraPivot;//tells player camera which object to pivot/orbit around
@@ -43,18 +43,23 @@ public class PlaneManager : MonoBehaviour
     }
 
     //this is basically the constructor class
-    public void InitPlane(GameObject incomingTargetDropZone, GameObject[] incomingPlayers = null, GameObject[] incomingSupplies = null, int incomingAirSpeed = 100)
+    public void InitPlane(GameObject incomingTargetDropZone, GameObject[] incomingPlayers = null, GameObject incomingSupplies = null, int incomingAirSpeed = 100)
     {
-        if (DEBUG) Debug.Log("This plane heading towards DZ: " + incomingTargetDropZone);
+        if (DEBUG)
+        {
+            //gives this plane a name for tracking purposes
+            this.gameObject.name = "Plane Number: " + ++planeCounter;
+            Debug.Log("Plane: " + this.gameObject.name + " heading towards DZ: " + incomingTargetDropZone);
+        }
+
         //initialize member variables
         this.targetDropZone = incomingTargetDropZone;
-        this.cargo_Supplies = incomingSupplies;
         this.airspeed = incomingAirSpeed;
-        //gives this plane a name for tracking purposes
-        if (DEBUG) this.gameObject.name = "Plane Number: " + ++planeCounter;
 
         //tell player to reaact to being placed on plane
-        ConfigurePlayersOnPlane(incomingPlayers);
+        if(incomingPlayers != null && incomingPlayers.Length > 0) ConfigurePlayersOnPlane(incomingPlayers);
+
+        if(incomingSupplies != null) this.cargo_Supplies = incomingSupplies; //TODO if incoming supplies is deleted or cleared, does that affect this.cargo_Supplies?
 
     }
 
@@ -108,13 +113,23 @@ public class PlaneManager : MonoBehaviour
         }
     }
 
-    public void ForceOutPlayers()
+    private void DropSupplies()
+    {
+        if (cargo_Supplies != null)
+        {
+            if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
+            Instantiate(cargo_Supplies, dropSpot.position, Quaternion.identity);
+        }
+
+    }
+
+    private void ForceOutPlayers()
     {
         for (int i = 0; i < cargo_Players.Length; ++i)
         {
             if (cargo_Players[i] != null)
             {
-                Debug.Log("GET OUT OF MY PLANE, " + cargo_Players[i].gameObject.name);
+                if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Players[i].gameObject.name);
                 cargo_Players[i].ForceJump();
             }
         }
@@ -145,8 +160,13 @@ public class PlaneManager : MonoBehaviour
         if (otherCollider.gameObject == targetDropZone)
         {
             if (DEBUG) Debug.Log("Now Leaving Target Drop Zone: " + otherCollider.name);
+
             //Force All Players out (if there are any)
-            ForceOutPlayers();
+            if (this.cargo_Players != null && cargo_Players.Length > 0) ForceOutPlayers();
+
+            //drop supplies, if any
+            if (this.cargo_Supplies != null) DropSupplies();
+            
         }
 
         //Destroy when leaving boundary

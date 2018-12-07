@@ -100,7 +100,8 @@ public class SupplyDrop : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.startLanded:
-                //Destroy parachute
+                if(parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
+                freefallingState = SkyDivingStateENUM.landed;
                 break;
 
             case SkyDivingStateENUM.landed:
@@ -130,8 +131,6 @@ public class SupplyDrop : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.startLanded:
-                parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
-                freefallingState = SkyDivingStateENUM.landed;
                 break;
 
             case SkyDivingStateENUM.landed:
@@ -150,7 +149,8 @@ public class SupplyDrop : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Terrain"))
+        if (this.freefallingState == SkyDivingStateENUM.landed) return;
+        else if (collision.gameObject.CompareTag("Terrain"))
         {
             freefallingState = SkyDivingStateENUM.startLanded;
 
