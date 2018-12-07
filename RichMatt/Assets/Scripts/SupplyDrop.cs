@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
  [RequireComponent(typeof(Rigidbody))]
-public class SupplyDrop : MonoBehaviour {
-
-    //[SerializeField] private float percent
+public class SupplyDrop : MonoBehaviour
+{
+    
+    [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
     [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
     [SerializeField] private int parachuteTerminalVelocity = -9;
     [SerializeField] private float forwardMomentum = .03f;
     [Range(0, 1)]//after the object has fallen this percentage of the distance to the ground, pull the chute
     [SerializeField] private float deployParachuteDistancePercent = .9f;
-    [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
 
     private Vector3 terminalVelocityVector;
 
     private int initialDistanceToGround = 0;//distance from instantiated point to ground
     private Animator anim;
     private Rigidbody rb;
+    [SerializeField] private Parachute parachute;
     //[SerializeField] private bool parachuteDeployed = false;
 
     public GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
@@ -48,6 +49,7 @@ public class SupplyDrop : MonoBehaviour {
     private void DeployParachute()
     {
         //do it!
+        parachute.DeployParachute();
         terminalVelocity = parachuteTerminalVelocity;
         terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
         freefallingState = SkyDivingStateENUM.parachuting;
@@ -65,12 +67,13 @@ public class SupplyDrop : MonoBehaviour {
         terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
         parachuteTerminalVelocity = -Mathf.Abs(parachuteTerminalVelocity); //get the absolutely negative value for downwards velocity
         //enforce parachuteTerminalVelocity being lower
-        parachuteTerminalVelocity = parachuteTerminalVelocity > terminalVelocity ? terminalVelocity - 1 : parachuteTerminalVelocity;
+        parachuteTerminalVelocity = parachuteTerminalVelocity > terminalVelocity ? parachuteTerminalVelocity : terminalVelocity + 1;
 
 
         //snag references
         this.rb = this.GetComponent<Rigidbody>() as Rigidbody;
         this.anim = this.GetComponent<Animator>() as Animator;
+        if (this.parachute == null) this.parachute = this.GetComponent<Parachute>();
 
         //set name
         this.gameObject.name = "Supply Drop # " + ++supplyDropCount;//track name
@@ -102,6 +105,8 @@ public class SupplyDrop : MonoBehaviour {
 
             case SkyDivingStateENUM.landed:
                 //do stuff. like wait to be opened
+                //release smoke and what not. 
+                //add icon to minimap
                 break;
 
             default:
@@ -125,7 +130,8 @@ public class SupplyDrop : MonoBehaviour {
                 break;
 
             case SkyDivingStateENUM.startLanded:
-                //Destroy parachute
+                parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
+                freefallingState = SkyDivingStateENUM.landed;
                 break;
 
             case SkyDivingStateENUM.landed:
@@ -140,5 +146,14 @@ public class SupplyDrop : MonoBehaviour {
         this.rb.velocity = this.rb.velocity.y > terminalVelocity ? terminalVelocityVector : this.rb.velocity;
         
         //Debug.Log("Velocity: " + this.rb.velocity);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Terrain"))
+        {
+            freefallingState = SkyDivingStateENUM.startLanded;
+
+        }
     }
 }
