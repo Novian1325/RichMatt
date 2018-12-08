@@ -141,6 +141,7 @@ public class SkyDiveTesting : MonoBehaviour
         Parachute.DestroyParachute();//parachute class handles destroying itself (playing anims, whatever)
         playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
+        anim.SetBool("OnGround", false);
         skyDivingState = SkyDivingStateENUM.landed;
         this.enabled = false;//this script is finished unless activated again
     }
@@ -341,6 +342,7 @@ public class SkyDiveTesting : MonoBehaviour
                 StartLanded();
                 break;
             case SkyDivingStateENUM.landed:
+                
             default:
                 break;
         }
@@ -395,13 +397,15 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        
         if (other.gameObject.CompareTag("Terrain"))
         {
+            
             //you've hit the terrain
             //reset rigid body
             rb.velocity = Vector3.zero;
             rb.drag = 0;
-            skyDivingState = SkyDivingStateENUM.startLanded;
+            if (skyDivingState != SkyDivingStateENUM.landed) skyDivingState = SkyDivingStateENUM.startLanded;
         }
     }
     
