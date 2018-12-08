@@ -19,9 +19,9 @@ public class PlayerInPlaneController : MonoBehaviour
 	public float OrbitDampening = 10.0f;
     //public float ScrollDampening = 6.0f;
     //public bool CameraDisabled = false;
-
-    public GameObject jumpPromptUI;
-
+    
+    //tooltips
+    [SerializeField] private GameObject jumpToolTip;
 
 
     private bool isAllowedToJump = false;
@@ -31,12 +31,11 @@ public class PlayerInPlaneController : MonoBehaviour
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
 
-    private void ShowJumpPrompt()
+    private void ShowJumpPrompt(bool active)
     {
-        if(jumpPromptUI != null)
+        if(jumpToolTip != null)
         {
-            jumpPromptUI = Instantiate(jumpPromptUI);
-            //show it!
+            jumpToolTip.SetActive(active);
         }
         else
         {
@@ -48,8 +47,8 @@ public class PlayerInPlaneController : MonoBehaviour
     public void OnDropZoneEnter()
     {
         isAllowedToJump = true;//set flag so script will accept player input
-        //show tooltip UI to player
-        Debug.Log("GREEN LIGHT! GREEN LIGHT! GO GO GO! JUMP!");
+        ShowJumpPrompt(true);
+        //Debug.Log("GREEN LIGHT! GREEN LIGHT! GO GO GO! JUMP!");
     }
 
     public void OnEnterPlane(PlaneManager planeMan)
@@ -84,6 +83,12 @@ public class PlayerInPlaneController : MonoBehaviour
         cameraTransform.localPosition = new Vector3(0, 0, orbitDistance);//camera starting position
     }
 
+    private void Start()
+    {
+        jumpToolTip = GameObject.FindGameObjectWithTag("ToolTip");//TODO Maybe more than one tooltip
+        ShowJumpPrompt(false);
+    }
+
     private void Update()
     {
         if (CrossPlatformInputManager.GetButton("Jump") && isAllowedToJump){
@@ -100,10 +105,11 @@ public class PlayerInPlaneController : MonoBehaviour
     private void JumpFromPlane()
     {
         planeManager.OnPlayerJump(this);
-        //disable tooltip UI // redundant -- destroyed along with this
+        ShowJumpPrompt(false);//disable tooltip UI
         skyDiveController.enabled = true;//turn on skydive controller and let it take control from here
         skyDiveController.BeginSkyDive();//tell player to do animations and stuff for skydiving
-        this.transform.position = planeManager.GetDropSpot(); // set player to appear at planes location from wherever they were
+        this.transform.position = planeManager.GetDropSpot().position; // set player to appear at planes location from wherever they were
+        this.transform.rotation = planeManager.GetDropSpot().rotation; // match rotation of player to rotation of drop spot
         playerCharacter.ShowPlayerModel(true);//make the player visible again
         //playerController.TogglePlayerControls(true);//normal control does not resume until after skydiving
         Camera.main.transform.SetParent(originalPivot);//set parent back to player's pivot
