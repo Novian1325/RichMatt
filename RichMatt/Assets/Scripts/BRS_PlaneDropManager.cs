@@ -263,6 +263,12 @@ public class BRS_PlaneDropManager : MonoBehaviour
             }
             else
             {
+                if (DEBUG)
+                {
+                    if (!endpointHit) Debug.Log("Flight path failed because ENDPOINT NOT HIT.");
+                    if (!flightPathThroughLZ) Debug.Log("Flight path failed because NOT THROUGH LZ.");
+                    Debug.Log(".................New test.......................");
+                }
                 endpointHit = false;
                 flightPathThroughLZ = false;
             }
@@ -312,7 +318,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //raycast
         if (Physics.Raycast(startPoint, targetObject - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2))
         {
-            if (DEBUG) Debug.Log("Object Hit: " + raycastHitInfo.collider.gameObject.name);
+            if (DEBUG) Debug.Log("Testing Raycast Through DropZone. Hit: " + raycastHitInfo.collider.gameObject.name);
             for (int i = 0; i < acceptableDropZones.Length; ++i)//look through each drop zone in list
             {
                 if (raycastHitInfo.collider.gameObject == acceptableDropZones[i])//if the game object that was hit is inside this list of good zones
@@ -345,7 +351,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //if something was hit...
         if (Physics.Raycast(startPoint, targetObject.transform.position - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2))
         {
-            if (DEBUG) Debug.Log("Object Hit: " + raycastHitInfo.collider.gameObject.name);
+            if (DEBUG) Debug.Log("Testing Raycast against Endpoint. Hit: " + raycastHitInfo.collider.gameObject.name);
             if (raycastHitInfo.collider.gameObject == targetObject)//were we trying to hit this thing?
             {
                 raycastHitEndpoint = true;//booyah!

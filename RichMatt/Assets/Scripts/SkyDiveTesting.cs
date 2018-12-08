@@ -204,6 +204,8 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void HandleCameraZoomOut()
     {
+        
+
         Transform cameraXform = Camera.main.transform;
 
         float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
