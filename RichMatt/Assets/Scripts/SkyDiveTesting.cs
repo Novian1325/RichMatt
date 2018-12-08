@@ -62,6 +62,12 @@ public class SkyDiveTesting : MonoBehaviour
     private Quaternion m_CharacterSwoopTargetRot;
     private Quaternion m_CharacterRollTargetRot;
 
+    //camera zoom during parachute deploy and reset after landing
+    [SerializeField] private Transform zoomPoint;
+    [SerializeField] private float zoomSpeed;
+    private float zoomStartTime;
+    private float zoomLength;
+
     #endregion
 
     public void InitRotationTransforms()
@@ -194,6 +200,15 @@ public class SkyDiveTesting : MonoBehaviour
         }
         m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, minSwoopAngle, maxSwoopAngle);
         m_CharacterRollTargetRot = ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
+    }
+
+    private void HandleCameraZoomOut()
+    {
+        Transform cameraXform = Camera.main.transform;
+
+        float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
+        cameraXform.position = Vector3.Lerp(cameraXform.position, zoomPoint.position, journeyedPercent);
+
     }
 
     private void HandlePlayerMovement()
@@ -387,12 +402,25 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.parachuting:
+                HandleCameraZoomOut();
                 HandleCameraMovement();//move camera after all physics step have completed
+                
                 break;
 
             default:
                 break;
         }
+    }
+
+    private void DeployParachute()
+    {
+        characterRollAxis.localRotation = Quaternion.identity;//stand straight up and down when 'chute deployed -- no roll
+        anim.SetBool("Parachuting", true);
+        Parachute.DeployParachute();//tell parachute class to do its thing
+
+        //for zooming camera out
+        zoomStartTime = Time.time;//start zooming camera out to see canopy
+        zoomLength = Vector3.Distance(Camera.main.transform.position, zoomPoint.position);
     }
 
     private void OnCollisionEnter(Collision other)
@@ -408,14 +436,7 @@ public class SkyDiveTesting : MonoBehaviour
             if (skyDivingState != SkyDivingStateENUM.landed) skyDivingState = SkyDivingStateENUM.startLanded;
         }
     }
-    
-    private void DeployParachute()
-    {
-        characterRollAxis.localRotation = Quaternion.identity;//stand straight up and down when 'chute deployed -- no roll
-        anim.SetBool("Parachuting", true);
-        Parachute.DeployParachute();
-    }
-
+  
     private Quaternion ClampRotationAroundXAxis(Quaternion q, float min, float max)
     {
         q.x /= q.w;
@@ -429,6 +450,7 @@ public class SkyDiveTesting : MonoBehaviour
 
         return q;
     }
+
     private Quaternion ClampRotationAroundZAxis(Quaternion q, float min, float max)
     {
         q.x /= q.w;
