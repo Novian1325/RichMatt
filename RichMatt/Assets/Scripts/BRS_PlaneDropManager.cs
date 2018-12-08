@@ -20,6 +20,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     
     private GameObject[] acceptableDropZones;
     private GameObject endpointMarkerPrefab;//marks beginnning and end points. for debugging purposes, also as raycast target
+    private List<GameObject> endpointMarkerList = new List<GameObject>();
 
     //how high does the plane fly?
     private float planeFlightAltitude = 800.0f;
@@ -36,7 +37,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
     private GameObject endpointMarker;
 
     private int unsuccessfulPasses = 0;
-    private readonly int flightPathChecksUntilFailure = 15;
+    private readonly int flightPathChecksUntilFailure = 10;
 
     //stuff to pass on to plane when deployed
     private GameObject targetDropZone;
@@ -104,11 +105,11 @@ public class BRS_PlaneDropManager : MonoBehaviour
     private void DestroyMarkerObjects()
     {
         //destorys each marker that was used.
-        //warning! DESTROYS ALL CHILDREN!
-        foreach (Transform child in transform)
+        foreach (GameObject endPointMarker in endpointMarkerList)
         {
-            Destroy(child.gameObject);
+            Destroy(endPointMarker);
         }
+        endpointMarkerList.Clear();//clear list so it doesn't balloon infinitely
     }
 
     void Start()
@@ -188,6 +189,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         if (DEBUG)
         {
             GameObject startMark = Instantiate(endpointMarkerPrefab, planeStartPoint, Quaternion.identity, this.transform);
+            endpointMarkerList.Add(startMark);//add to list to delete later
             startMark.name = "StartMarker: " + unsuccessfulPasses;
             if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
@@ -201,6 +203,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             planeEndPoint = GetRandomPointOnCircle();
             //create a new endpoint marker at that location
             endpointMarker = Instantiate(endpointMarkerPrefab, planeEndPoint, Quaternion.identity, this.transform);
+            endpointMarkerList.Add(endpointMarker);//add to list to delete later
             if (DEBUG)
             {
                 endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
@@ -233,7 +236,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
                 ToggleDropZones(true);//turn LZ on
                 planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
                 unsuccessfulPasses = 0;//reset failures
-                if (!DEBUG) DestroyMarkerObjects();
                 return true;
             }
             else
@@ -248,11 +250,14 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //this altitude is not working. keep raising
         if (++unsuccessfulPasses > flightPathChecksUntilFailure)//we've been here before
         {
-            Debug.LogError("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
+            Debug.LogWarning("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
+
             return false;
         }
         //raise altitude and try again
         planeFlightAltitude += failedPathAltitudeIncrementAmount;
+        //destroy markers
+        if (!DEBUG) DestroyMarkerObjects();
         //try again
         return SetupFlightPath();
         
@@ -292,7 +297,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
                     if(DEBUG) Debug.Log("Passing Through Drop Zone: " + raycastHitInfo.collider.gameObject.name);
                     targetDropZone = acceptableDropZones[i];//this zone will be passed to the plane, so it knows when it hits said zone
                     raycastThroughDropZone = true;//booyah!
-                    //if (DEBUG) Instantiate(debugEndpointMarker, raycastHitInfo.point, Quaternion.identity, this.transform);
                     break;//break out of for loop looking through gameObjects in list
                 }//end if
             }//end for
