@@ -3113,7 +3113,7 @@ MonoBehaviour:
   chuteDrag: 1.2
   rollFactor: 0.32
   forceParachuteHeight: 100
-  deployParachuteLimit: 300
+  deployParachuteLimit: 10000
   attitudeChangeSpeed: 5
   forwardMomentum: 5
   parachuteStallModifier: 1.2
@@ -3129,7 +3129,8 @@ MonoBehaviour:
   smoothCamera: 1
   FallingDragTuning: 5
   zoomPoint: {fileID: 4532797397029042}
-  zoomSpeed: 0
+  cameraTransformBeforeZoom: {fileID: 4943463622790514}
+  zoomSpeed: 0.1
 --- !u!114 &114623461945884066
 MonoBehaviour:
   m_ObjectHideFlags: 1
