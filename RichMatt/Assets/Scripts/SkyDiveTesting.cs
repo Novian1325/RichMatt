@@ -64,6 +64,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     //camera zoom during parachute deploy and reset after landing
     [SerializeField] private Transform zoomPoint;
+    [SerializeField] private Transform cameraTransformBeforeZoom;
     [SerializeField] private float zoomSpeed;
     private float zoomStartTime;
     private float zoomLength;
@@ -92,7 +93,9 @@ public class SkyDiveTesting : MonoBehaviour
 
     void Start()
     {
-        if(terminalVelocity > 0)
+       
+        //verify input
+        if (terminalVelocity > 0)
         {
             terminalVelocity *= -1;//invert if above 0
         }
@@ -144,12 +147,15 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void StartLanded()
     {
+        //camera zoom stuff
+        zoomStartTime = Time.time;//reset zoom timer
+        zoomLength = Vector3.Distance(Camera.main.transform.localPosition, cameraTransformBeforeZoom.localPosition);
+
         Parachute.DestroyParachute();//parachute class handles destroying itself (playing anims, whatever)
         playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
         anim.SetBool("OnGround", false);
         skyDivingState = SkyDivingStateENUM.landed;
-        this.enabled = false;//this script is finished unless activated again
     }
 
     private void SetTargetRotations()
@@ -204,12 +210,32 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void HandleCameraZoomOut()
     {
-        
+        //TODO
+        //Camera may need to orbit forward over the canopy when in parachute mode
+        ////zoom out when chute is deployed
+        //Transform cameraXform = Camera.main.transform;
+        ////Transform cameraXform = cameraPivotTransform;
+        //float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
+        //if (journeyedPercent >= .95f) return; //stop after the camera gets close enough
+        //cameraXform.position = Vector3.Lerp(cameraXform.position, zoomPoint.position, journeyedPercent);
+        ////cameraXform.transform.LookAt(cameraTransformBeforeZoom);
 
+    }
+
+    private void HandleCameraZoomIn()
+    {
         Transform cameraXform = Camera.main.transform;
-
         float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
-        cameraXform.position = Vector3.Lerp(cameraXform.position, zoomPoint.position, journeyedPercent);
+        if (journeyedPercent >= .95f){
+            this.enabled = false;//TURN OFF DISABLE THIS SCRIPT. CAMERA ZOOM IN IS FINAL THING.
+        }
+
+        else
+        {
+            //Debug.Log(journeyedPercent);
+            cameraXform.localPosition = Vector3.Lerp(cameraXform.localPosition, cameraTransformBeforeZoom.localPosition, journeyedPercent);
+
+        }
 
     }
 
@@ -404,11 +430,17 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.parachuting:
-                HandleCameraZoomOut();
                 HandleCameraMovement();//move camera after all physics step have completed
-                
+                HandleCameraZoomOut();
+
                 break;
 
+            case SkyDivingStateENUM.startLanded:
+                break;
+
+            case SkyDivingStateENUM.landed:
+                HandleCameraZoomIn();
+                break;
             default:
                 break;
         }
@@ -422,6 +454,7 @@ public class SkyDiveTesting : MonoBehaviour
 
         //for zooming camera out
         zoomStartTime = Time.time;//start zooming camera out to see canopy
+
         zoomLength = Vector3.Distance(Camera.main.transform.position, zoomPoint.position);
     }
 
