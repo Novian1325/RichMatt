@@ -30,6 +30,8 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     //radius of spawn zone
     private float spawnBoundsCircleRadius = 100.0f;
+    private readonly int minimumDropZoneHeight = 1000;//drop zones should be really tall so they can be tested against
+    
 
     //start and end points for plane to fly through
     private Vector3 planeStartPoint;
@@ -77,6 +79,25 @@ public class BRS_PlaneDropManager : MonoBehaviour
         }
         
         return true;
+    }
+
+    private void ConfigureDropZones()
+    {
+        //MAKE SURE Y SCALE IS LARGE ENOUGH!
+        foreach(GameObject zone in playerDropZones)
+        {
+            if(zone.transform.localScale.y < minimumDropZoneHeight)
+                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);
+        }
+
+        foreach (GameObject zone in supplyDropZones)
+        {
+            if (zone.transform.localScale.y < minimumDropZoneHeight)
+                zone.transform.position = new Vector3(zone.transform.position.x, minimumDropZoneHeight / 2, zone.transform.position.z);//move up slightly
+                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);//increase y scale
+        }
+
+
     }
 
     private void ConfigureFlightType(DropTypeENUM dropZoneType)
@@ -131,6 +152,8 @@ public class BRS_PlaneDropManager : MonoBehaviour
         {
             Debug.Log("Failed to set up references.");
         }
+
+        ConfigureDropZones();//make sure drop zones are proper size
     }
 
     private Vector3 GetRandomPointOnCircle()
