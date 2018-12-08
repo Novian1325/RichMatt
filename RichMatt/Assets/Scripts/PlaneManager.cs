@@ -37,9 +37,9 @@ public class PlaneManager : MonoBehaviour
         return playerIsOnBoard;
     }
 
-    public Vector3 GetDropSpot()
+    public Transform GetDropSpot()
     {
-        return dropSpot.position;
+        return dropSpot;
     }
 
     //this is basically the constructor class
