@@ -11,7 +11,7 @@ public enum degreeIncrement
 public class Compass : MonoBehaviour
 {
 	public RawImage CompassImage;
-	public Transform Player;
+	public Transform mainCamera;
 	public Text CompassDirectionText;
 
     [Header("Readout Options")]
@@ -20,17 +20,19 @@ public class Compass : MonoBehaviour
 
     private void Start()
     {
-        if (Player == null) Player = GameObject.FindGameObjectWithTag("Player").transform;
-        if (Player == null) Debug.LogError("ERROR! No GameObject tagged \"Player\" in scene.");
+        //find it 
+        if (mainCamera == null) mainCamera = Camera.main.transform;
+        //if STILL null
+        if (mainCamera == null) Debug.LogError("ERROR! No GameObject tagged \"MainCamera\" in scene.");
     }
 
     public void Update()
 	{
 		//Get a handle on the Image's uvRect
-		CompassImage.uvRect = new Rect(Player.localEulerAngles.y / 360, 0, 1, 1);
+		CompassImage.uvRect = new Rect(mainCamera.localEulerAngles.y / 360, 0, 1, 1);
 
 		// Get a copy of your forward vector
-		Vector3 facing = Camera.main.transform.forward; // camera transform, not player
+		Vector3 facing = mainCamera.forward; // camera transform, not player
 
 		// Zero out the y component of your forward vector to only get the direction in the X,Z plane
 		facing.y = 0;
