@@ -30,16 +30,17 @@ public class Compass : MonoBehaviour
 		CompassImage.uvRect = new Rect(Player.localEulerAngles.y / 360, 0, 1, 1);
 
 		// Get a copy of your forward vector
-		Vector3 forward = Player.transform.forward;
+		Vector3 facing = Camera.main.transform.forward; // camera transform, not player
 
 		// Zero out the y component of your forward vector to only get the direction in the X,Z plane
-		forward.y = 0;
+		facing.y = 0;
 
-		//Clamp our angles to specified degree increments
-		float headingAngle = Quaternion.LookRotation(forward).eulerAngles.y;//what is the player's angle
+        //get cangle between direction facing and 'north', world forward
+        float headingAngle = Vector3.Angle(facing, Vector3.forward);
 		headingAngle = (int)degreeInc * Mathf.RoundToInt(headingAngle / (int)degreeInc  );
 
-        if (ordinalLetters)//convert the numbers to letters if pointing towards a direction (N/E/S/W)
+        //convert the numbers to letters if pointing towards a direction (N/E/S/W)
+        if (ordinalLetters)
         {
             ConvertAngleToLetter( (int)headingAngle );
         }

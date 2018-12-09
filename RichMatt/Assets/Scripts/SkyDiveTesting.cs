@@ -93,8 +93,9 @@ public class SkyDiveTesting : MonoBehaviour
 
     void Start()
     {
+        this.enabled = false;//enable by calling BeginSkyDiving();
        
-        //verify input
+        //verify developer input
         if (terminalVelocity > 0)
         {
             terminalVelocity *= -1;//invert if above 0
