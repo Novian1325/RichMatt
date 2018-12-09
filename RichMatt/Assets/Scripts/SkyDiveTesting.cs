@@ -112,7 +112,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void StartFreeFalling()
     {
-        Debug.Log("StartFreeFalling()");
+        //Debug.Log("StartFreeFalling()");
         playerController.TogglePlayerControls(false);//turn off player controls except for skydiving controls
 
         anim.SetBool("SkyDive", true);
@@ -124,7 +124,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FreeFalling()
     {
-        Debug.Log("FreeFalling()");
+        //Debug.Log("FreeFalling()");
         //limit downward velocity to terminal velocity, or something
         SetTargetRotations();
         HandlePlayerMovement();
@@ -135,7 +135,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void StartParachute()
     {
-        Debug.Log("StartParachuting()");
+        //Debug.Log("StartParachuting()");
         DeployParachute();
         //if chute pulled, velocity limited further
         skyDivingState = SkyDivingStateENUM.parachuting;
@@ -143,7 +143,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void Parachuting()
     {
-        Debug.Log("Parachuting()");
+        //Debug.Log("Parachuting()");
         SetTargetRotations();
         HandlePlayerMovement();//rotate character model;//maybe handle drag differently here?
 
@@ -151,7 +151,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void StartLanded()
     {
-        Debug.Log("StartLanded()");
+        //Debug.Log("StartLanded()");
         //camera zoom stuff
         zoomStartTime = Time.time;//reset zoom timer
         zoomLength = Vector3.Distance(Camera.main.transform.localPosition, cameraTransformBeforeZoom.localPosition);
