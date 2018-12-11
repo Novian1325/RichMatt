@@ -380,21 +380,22 @@ public class BRS_PlaneDropManager : MonoBehaviour
             //set it active or inactive
             dropZone.GetComponent<CapsuleCollider>().enabled = active;
         }
-        if (DEBUG)
-        {
-            if(acceptableDropZones == playerDropZones)
-            {
-                Debug.Log("PlayerDropZones" + active);
-            }
-            else if(acceptableDropZones == supplyDropZones)
-            {
-                if (acceptableDropZones == playerDropZones)
-                {
-                    Debug.Log("SupplyDropZones" + active);
-                }
+        //if (DEBUG)
+        //{
+        //    if(acceptableDropZones == playerDropZones)
+        //    {
+        //        Debug.Log("PlayerDropZones" + active);
+        //    }
+        //    else if(acceptableDropZones == supplyDropZones)
+        //    {
+        //        if (acceptableDropZones == playerDropZones)
+        //        {
+        //            Debug.Log("SupplyDropZones" + active);
+        //        }
                 
-            }
+        //    }
             
-        }
+        //}
     }
 }
+
