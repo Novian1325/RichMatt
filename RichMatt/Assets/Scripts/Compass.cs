@@ -28,17 +28,11 @@ public class Compass : MonoBehaviour
 
     public void Update()
 	{
-		//Get a handle on the Image's uvRect
-		CompassImage.uvRect = new Rect(mainCamera.localEulerAngles.y / 360, 0, 1, 1);
+        float headingAngle = mainCamera.eulerAngles.y;
 
-		// Get a copy of your forward vector
-		Vector3 facing = mainCamera.forward; // camera transform, not player
-
-		// Zero out the y component of your forward vector to only get the direction in the X,Z plane
-		facing.y = 0;
-
-        //get cangle between direction facing and 'north', world forward
-        float headingAngle = Vector3.Angle(facing, Vector3.forward);
+        //Get a handle on the Image's uvRect
+        CompassImage.uvRect = new Rect(headingAngle / 360, 0, 1, 1);
+        
 		headingAngle = (int)degreeInc * Mathf.RoundToInt(headingAngle / (int)degreeInc  );
 
         //convert the numbers to letters if pointing towards a direction (N/E/S/W)
