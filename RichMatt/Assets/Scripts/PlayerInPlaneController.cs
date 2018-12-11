@@ -5,11 +5,14 @@ public class PlayerInPlaneController : MonoBehaviour
 {
 	//private Transform _XForm_Camera;
 	//private Transform _XForm_Parent;
-	private Vector3 _LocalRotation;
     private Transform originalPivot;
     private Transform cameraPivot;//saved transform
+    private Transform playerTransform;
+    private Transform originalParent;//used for moving player in plane
+    private Vector3 _LocalRotation;
     private Vector3 cameraStartingPosition;
     private PlaneManager planeManager;
+
 
     //private readonly float _CameraDistance = 10f;
     public float MouseSensitivity = 4.0f;
@@ -30,6 +33,7 @@ public class PlayerInPlaneController : MonoBehaviour
     private SkyDiveTesting skyDiveController;
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
+    private Rigidbody rb;
 
     private void ShowJumpPrompt(bool active)
     {
@@ -60,11 +64,20 @@ public class PlayerInPlaneController : MonoBehaviour
         this.skyDiveController = GetComponent<SkyDiveTesting>();//get handle on SkyDive controller script
         this.playerCharacter = GetComponent<BRS_TPCharacter>();//get a reference to the character to get at its model
         this.playerController = GetComponent<BRS_TPController>();
+        this.playerTransform = this.transform;
+        this.originalParent = this.transform.parent;//player will be parented to plane, and then re-parented back here
+        this.rb = GetComponent<Rigidbody>();
         this.enabled = true;//make sure it is turned on
 
         this.skyDiveController.enabled = false;//disable it, as we are not yet skydiving
+
+        //handle player init
         playerCharacter.ShowPlayerModel(false);//make player invisible
         playerController.TogglePlayerControls(false);
+        
+        playerTransform.SetParent(planeManager.transform);//set as child to easily handle movement
+        playerTransform.localPosition = Vector3.zero;//origin relative to parent
+        rb.useGravity = false; //turn off gravity so player doesn't fall out of the sky
 
         //init camera
         InitCamera();
@@ -108,9 +121,14 @@ public class PlayerInPlaneController : MonoBehaviour
         ShowJumpPrompt(false);//disable tooltip UI
         skyDiveController.enabled = true;//turn on skydive controller and let it take control from here
         skyDiveController.BeginSkyDive();//tell player to do animations and stuff for skydiving
-        this.transform.position = planeManager.GetDropSpot().position; // set player to appear at planes location from wherever they were
-        this.transform.rotation = planeManager.GetDropSpot().rotation; // match rotation of player to rotation of drop spot
+
+        //handle player stuff
+        playerTransform.SetParent(originalParent);
+        playerTransform.position = planeManager.GetDropSpot().position; // set player to appear at planes location from wherever they were
+        playerTransform.rotation = planeManager.GetDropSpot().rotation; // match rotation of player to rotation of drop spot
+        rb.useGravity = true;//turn gravity back on for player
         playerCharacter.ShowPlayerModel(true);//make the player visible again
+
         //playerController.TogglePlayerControls(true);//normal control does not resume until after skydiving
         Camera.main.transform.SetParent(originalPivot);//set parent back to player's pivot
         Camera.main.transform.localPosition = cameraStartingPosition;//reset
