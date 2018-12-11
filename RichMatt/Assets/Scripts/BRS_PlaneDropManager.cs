@@ -19,7 +19,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
     public bool DEBUG = true;//if true, prints debug statements
     
     private GameObject[] acceptableDropZones;
-    private GameObject endpointMarkerPrefab;//marks beginnning and end points. for debugging purposes, also as raycast target
     private List<GameObject> endpointMarkerList = new List<GameObject>();
 
     //how high does the plane fly?
@@ -68,14 +67,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
             Debug.LogError("ERROR: No Supply Drop Zones in list!");
             Debug.Break();
             return false;
-        }
-
-        if(endpointMarkerPrefab == null)
-        {
-            if (DEBUG) Debug.Log("No EndpointMarker prefab set. Creating one from scratch.");
-            endpointMarkerPrefab = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            endpointMarkerPrefab.name = "Runtime endpoint marker";//give it a name to not confuse anyone
-            if (!DEBUG) endpointMarkerPrefab.GetComponent<MeshRenderer>().enabled = false;//make it invisible
         }
         
         return true;
@@ -126,9 +117,9 @@ public class BRS_PlaneDropManager : MonoBehaviour
     private void DestroyMarkerObjects()
     {
         //destorys each marker that was used.
-        foreach (GameObject endPointMarker in endpointMarkerList)
+        foreach (GameObject marker in endpointMarkerList)
         {
-            Destroy(endPointMarker);
+            if(!DEBUG) Destroy(marker);
         }
         endpointMarkerList.Clear();//clear list so it doesn't balloon infinitely
     }
@@ -201,6 +192,23 @@ public class BRS_PlaneDropManager : MonoBehaviour
         return InitPlaneDrop(dropType);//"boil up"
     }
 
+    private GameObject ConfigureEndpoint(Vector3 targetPosition)
+    {
+        GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        marker.transform.position = targetPosition;
+        endpointMarkerList.Add(marker);//add to list to delete later
+        if (DEBUG)
+        {
+            marker.transform.SetParent(this.transform);//set parent to locate easier in hierarchy
+        }
+        else
+        {
+            marker.GetComponent<MeshRenderer>().enabled = false;//show marker if debugging; hide if not
+        }
+        return marker;
+
+    }
+
     private bool SetupFlightPath()
     {
         bool endpointHit = false;
@@ -211,8 +219,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //spawn debugger object. this object is the parent, so both will be destroyed
         if (DEBUG)
         {
-            GameObject startMark = Instantiate(endpointMarkerPrefab, planeStartPoint, Quaternion.identity, this.transform);
-            endpointMarkerList.Add(startMark);//add to list to delete later
+            GameObject startMark = ConfigureEndpoint(planeStartPoint);
             startMark.name = "StartMarker: " + unsuccessfulPasses;
             if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
@@ -225,8 +232,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             //get end point on circle
             planeEndPoint = GetRandomPointOnCircle();
             //create a new endpoint marker at that location
-            endpointMarker = Instantiate(endpointMarkerPrefab, planeEndPoint, Quaternion.identity, this.transform);
-            endpointMarkerList.Add(endpointMarker);//add to list to delete later
+            endpointMarker = ConfigureEndpoint(planeEndPoint);
             if (DEBUG)
             {
                 endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
@@ -239,7 +245,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             }
             else
             {
-                if (DEBUG) Debug.Log("Flight Path INVALID: Flight path not through LZ.");
+                if (DEBUG) Debug.Log("INVALID: Flight path not through LZ.");
             }
 
             //test if flight path is clear all the way to endpoint
@@ -249,16 +255,17 @@ public class BRS_PlaneDropManager : MonoBehaviour
             }
             else
             {
-                if (DEBUG) Debug.Log("Flight Path INVALID: Endpoint Marker Not Hit.");
+                if (DEBUG) Debug.Log("INVALID: Endpoint Marker Not Hit.");
             }
 
-            //does the flight unobstructed and through a drop zone
+            //is the flight unobstructed and through a drop zone
             if(endpointHit && flightPathThroughLZ)
             {
                 //SUCCESS!!!!!!!
                 ToggleDropZones(true);//turn LZ on
                 planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
                 unsuccessfulPasses = 0;//reset failures
+                DestroyMarkerObjects();//clear excess markers
                 return true;
             }
             else
@@ -281,12 +288,13 @@ public class BRS_PlaneDropManager : MonoBehaviour
         {
             Debug.LogWarning("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
 
+            DestroyMarkerObjects();
             return false;
         }
         //raise altitude and try again
         planeFlightAltitude += failedPathAltitudeIncrementAmount;
         //destroy markers
-        if (!DEBUG) DestroyMarkerObjects();
+        DestroyMarkerObjects();
         //try again
         return SetupFlightPath();
         
@@ -323,7 +331,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
             {
                 if (raycastHitInfo.collider.gameObject == acceptableDropZones[i])//if the game object that was hit is inside this list of good zones
                 {
-                    if(DEBUG) Debug.Log("Passing Through Drop Zone: " + raycastHitInfo.collider.gameObject.name);
                     targetDropZone = acceptableDropZones[i];//this zone will be passed to the plane, so it knows when it hits said zone
                     raycastThroughDropZone = true;//booyah!
                     break;//break out of for loop looking through gameObjects in list
@@ -355,7 +362,6 @@ public class BRS_PlaneDropManager : MonoBehaviour
             if (raycastHitInfo.collider.gameObject == targetObject)//were we trying to hit this thing?
             {
                 raycastHitEndpoint = true;//booyah!
-                if (DEBUG) Debug.Log("Endpoint Marker Hit: " + raycastHitInfo.collider.gameObject.name);
             }
         }
         else
