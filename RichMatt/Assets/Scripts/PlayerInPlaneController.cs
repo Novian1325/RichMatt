@@ -146,8 +146,13 @@ public class PlayerInPlaneController : MonoBehaviour
 
 			_LocalRotation.y = Mathf.Clamp(_LocalRotation.y, -30f, 90f);
 
-			Quaternion QT = Quaternion.Euler (_LocalRotation.y, _LocalRotation.x, 0);
-			this.cameraPivot.rotation = Quaternion.Lerp (this.cameraPivot.rotation, QT, Time.deltaTime * OrbitDampening);
-		}
+			Quaternion cameraTargetRotation = Quaternion.Euler (_LocalRotation.y, _LocalRotation.x, 0);
+			cameraPivot.rotation = Quaternion.Lerp (cameraPivot.rotation, cameraTargetRotation, Time.deltaTime * OrbitDampening);
+
+            //rotate the player to update minimap facing and show orientation to other players
+            Quaternion playerTargetRotation = Quaternion.Euler(0, _LocalRotation.x, 0);
+            playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, playerTargetRotation, Time.deltaTime * OrbitDampening);
+
+        }
 	}
 }

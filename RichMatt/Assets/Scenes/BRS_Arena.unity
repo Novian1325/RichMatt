@@ -236,6 +236,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &343839962 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97,
+    type: 2}
+  m_PrefabInternal: {fileID: 1571523709}
 --- !u!1001 &449304065
 Prefab:
   m_ObjectHideFlags: 0
@@ -392,6 +397,11 @@ Prefab:
       propertyPath: RotateWithPlayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114894427430186796, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: targetTransform
+      value: 
+      objectReference: {fileID: 343839962}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}
   m_IsPrefabAsset: 0
@@ -556,7 +566,7 @@ Prefab:
     - target: {fileID: 114630260696749518, guid: 4be5ada959d178b4db3e40c4a3443be4,
         type: 2}
       propertyPath: planeSpeed_PlayerDrop
-      value: 75
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4be5ada959d178b4db3e40c4a3443be4, type: 2}
