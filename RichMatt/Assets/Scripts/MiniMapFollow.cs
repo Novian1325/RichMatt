@@ -25,12 +25,12 @@ public class MiniMapFollow : MonoBehaviour
         if(RotateWithPlayer)
         {
             transform.SetParent(PlayerParent);
-            transform.position = new Vector3(transform.position.x, MiniMapHeight, transform.position.z);
+            transform.localPosition = new Vector3(0, MiniMapHeight, 0);
         }
         else
         {
             transform.SetParent(origParent);
-            transform.position = new Vector3(player.transform.position.x, MiniMapHeight, player.transform.position.z);
+            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + MiniMapHeight, player.transform.position.z);
         }
 	}
 }
