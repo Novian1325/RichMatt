@@ -25,15 +25,16 @@ public class MiniMapFollow : MonoBehaviour
 	{
         if(rotateWithPlayer)
         {
-            transform.SetParent(targetTransform);
+            transform.SetParent(targetTransform);//deprecate this and replace with direct reference to target orientation
             //TODO orient rotation with character's if toggled
         }
         else
         {
             transform.rotation = originalRotation;
-            transform.SetParent(origParent);
+            transform.SetParent(origParent);//deprecate this when rotateWithPlayer above integrated
         }
 
-        transform.localPosition = new Vector3(0, miniMapHeight, 0);
+        //move minimap
+        transform.position = new Vector3(targetTransform.position.x, targetTransform.position.y + miniMapHeight, targetTransform.position.z);
     }
 }
