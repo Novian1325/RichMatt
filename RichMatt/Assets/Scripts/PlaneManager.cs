@@ -5,7 +5,6 @@ public class PlaneManager : MonoBehaviour
     [SerializeField] private int airspeed = 100;
     [SerializeField] private GameObject cargo_Supplies;
     [SerializeField] private PlayerInPlaneController[] cargo_Players;
-    [SerializeField] private bool hasDroppedCargo = false;
     [SerializeField] private GameObject planeCameraPivot;//tells player camera which object to pivot/orbit around
     [SerializeField] private Transform dropSpot;//where does the player appear when they jump out of the plane?
 
