@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MiniMapFollow : MonoBehaviour
 {
-	
     [SerializeField] private bool rotateWithPlayer = true;
     [SerializeField] private int miniMapHeight = 1000;
     [SerializeField] private Transform targetTransform;
