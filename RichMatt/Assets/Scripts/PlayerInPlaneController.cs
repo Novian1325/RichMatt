@@ -135,7 +135,7 @@ public class PlayerInPlaneController : MonoBehaviour
         //playerController.TogglePlayerControls(true);//normal control does not resume until after skydiving
         Camera.main.transform.SetParent(originalPivot);//set parent back to player's pivot
         Camera.main.transform.localPosition = cameraStartingPosition;//reset
-        //Camera.main.transform.localRotation = Quaternion.identity;//set rotation to neutral relative to parent
+        Camera.main.transform.localRotation = Quaternion.identity;//set rotation to neutral relative to parent
         Destroy(this);//remove this component  //this.enabled = false; //maybe even Destroy(this);
 
     }

@@ -2355,7 +2355,7 @@ Prefab:
     - target: {fileID: 114630260696749518, guid: 4be5ada959d178b4db3e40c4a3443be4,
         type: 2}
       propertyPath: planeSpeed_PlayerDrop
-      value: 25
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4898155963366666, guid: 4be5ada959d178b4db3e40c4a3443be4, type: 2}
       propertyPath: m_LocalPosition.y
