@@ -43,7 +43,6 @@ public class SkyDiveTesting : MonoBehaviour
 
     [Range(5f, 50f)]
     public float FallingDragTuning = 30.0f;
-    private float distanceToTerrain;
 
     //component references
     private Rigidbody rb;
@@ -52,9 +51,10 @@ public class SkyDiveTesting : MonoBehaviour
     
     //clamp limits
     private readonly float minSwoopAngle = -15f;
-    private readonly float maxSwoopAngle = 30f;
+    private readonly float maxSwoopAngle = 85f;
     private readonly float minRollRotation = -45f;
     private readonly float maxRollRotation = 45f;
+    private readonly float returnToNeutralSpeed = .25f;//used for unwinding when no input
 
     //target rotations
     private Quaternion m_CharacterTargetRot;
@@ -115,6 +115,7 @@ public class SkyDiveTesting : MonoBehaviour
         //Debug.Log("StartFreeFalling()");
         playerController.TogglePlayerControls(false);//turn off player controls except for skydiving controls
 
+        CheckForRipCord();
         anim.SetBool("SkyDive", true);
         anim.SetBool("OnGround", false);
         rb.drag = fallDrag;
@@ -128,7 +129,6 @@ public class SkyDiveTesting : MonoBehaviour
         //limit downward velocity to terminal velocity, or something
         SetTargetRotations();
         HandlePlayerMovement();
-        HandleDrag();
         if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)//pull parachute if too close to ground
             skyDivingState = SkyDivingStateENUM.startparachute;//put in state to pull parachute
     }
@@ -166,38 +166,41 @@ public class SkyDiveTesting : MonoBehaviour
     private void SetTargetRotations()
     {
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera pitch input
-        float characterRotationX = Input.GetAxis("Vertical") * attitudeChangeSpeed;//get swoop input
+        float characterRotationX = Input.GetAxis("Vertical") * Vector3.Angle(Camera.main.transform.forward, Vector3.forward);//get swoop input
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
         float characterRotationZ = (rollFactor * characterRotationY) * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
         float charRoll = characterRollAxis.localRotation.z;//cache
-        float charSwoop = characterSwoopTransform.localRotation.x;//cache
+        float cameraPitch = cameraPivotTransform.rotation.x;
 
         //restrict rolling to freefalling only, for now.  Can swing when parachuting
         characterRotationZ = (skyDivingState == SkyDivingStateENUM.freeFalling) ? characterRotationZ : 0;//force to zero roll if not skydiving
-
-
-        #region unwind to center if no input
+        
+ #region unwind to center if no input
         //unwind swoop amount
         //if input in deadzone and swoop axis not at identity
-        if (System.Math.Abs(characterRotationX) < Mathf.Epsilon && System.Math.Abs(charSwoop) > .01f)
+        if (System.Math.Abs(characterRotationX) < Mathf.Epsilon && System.Math.Abs(GetCurrentSwoopAngle()) > .01f)
         {
-            characterRotationX = charSwoop > 0 ? -1 : 1;
+            characterRotationX = GetCurrentSwoopAngle() > 0 ? -returnToNeutralSpeed : returnToNeutralSpeed;
         }
-        
+
         //unwind roll
         //if input in deadzone and roll axis not at identity
         if (System.Math.Abs(characterRotationZ) < Mathf.Epsilon && System.Math.Abs(charRoll) > .01f)
         {
-            characterRotationZ = charRoll > 0 ? .8f : -.8f;
+            characterRotationZ = charRoll > 0 ? returnToNeutralSpeed : -returnToNeutralSpeed;
         }
-        #endregion
+#endregion
 
         //only roll if skydiving, otherwise reset rotation
-         m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);
+        m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);
+
+        //TODO SET characterRotationX to no rotation if going looking the wrong direction! Don't pitch forward when looking up
 
         //set target rotations for axes
-        m_CharacterSwoopTargetRot *= Quaternion.Euler(characterRotationX, 0f, 0f);//pitch
+        //swoop the percentage of the input plus the angle of the camera; pitch is same as camera
+        m_CharacterSwoopTargetRot = Quaternion.Euler(characterRotationX, 0f, 0f);//pitch
+
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);//yaw
         //only roll when freefalling, not when 'chute deployed
         if(skyDivingState == SkyDivingStateENUM.freeFalling) m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);//roll
@@ -209,8 +212,9 @@ public class SkyDiveTesting : MonoBehaviour
         {
             m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
         }
-        m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, minSwoopAngle, maxSwoopAngle);
+        m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, 0, maxSwoopAngle);
         m_CharacterRollTargetRot = ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
+
     }
 
     private void HandleCameraZoomOut()
@@ -398,7 +402,6 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void FixedUpdate()
 	{
-        distanceToTerrain = PPBRS_Utility.GetDistanceToTerrain(this.transform.position);
         switch (skyDivingState)
         {
             case SkyDivingStateENUM.startFreeFalling:
@@ -406,7 +409,6 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
-                CheckForRipCord();
                 HandleDrag();
                 break;
 
