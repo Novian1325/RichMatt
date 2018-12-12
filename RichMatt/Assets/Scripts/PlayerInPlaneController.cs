@@ -77,6 +77,7 @@ public class PlayerInPlaneController : MonoBehaviour
         
         playerTransform.SetParent(planeManager.transform);//set as child to easily handle movement
         playerTransform.localPosition = Vector3.zero;//origin relative to parent
+        rb.isKinematic = true;//body will now be moved by the plane (using translation) and not by physical forces
         rb.useGravity = false; //turn off gravity so player doesn't fall out of the sky
 
         //init camera
@@ -93,6 +94,7 @@ public class PlayerInPlaneController : MonoBehaviour
         cameraStartingPosition = cameraTransform.localPosition;//cache starting orientation to player 
         cameraTransform.SetParent(planeManager.GetCameraPivot());//change the parent transform to this spot on the plane
         cameraTransform.localRotation = Quaternion.identity;//remove all rotation
+        //_LocalRotation = cameraTransform.localEulerAngles;//mayvbe?
         cameraTransform.localPosition = new Vector3(0, 0, orbitDistance);//camera starting position
     }
 
@@ -100,6 +102,7 @@ public class PlayerInPlaneController : MonoBehaviour
     {
         jumpToolTip = GameObject.FindGameObjectWithTag("ToolTip");//TODO Maybe more than one tooltip
         ShowJumpPrompt(false);
+
     }
 
     private void Update()
@@ -117,7 +120,7 @@ public class PlayerInPlaneController : MonoBehaviour
 
     private void JumpFromPlane()
     {
-        planeManager.OnPlayerJump(this);
+        planeManager.OnPlayerJump(this);//tell the plane that this player has left
         ShowJumpPrompt(false);//disable tooltip UI
         skyDiveController.enabled = true;//turn on skydive controller and let it take control from here
         skyDiveController.BeginSkyDive();//tell player to do animations and stuff for skydiving
@@ -125,14 +128,14 @@ public class PlayerInPlaneController : MonoBehaviour
         //handle player stuff
         playerTransform.SetParent(originalParent);
         playerTransform.position = planeManager.GetDropSpot().position; // set player to appear at planes location from wherever they were
-        playerTransform.rotation = planeManager.GetDropSpot().rotation; // match rotation of player to rotation of drop spot
+        rb.isKinematic = false;//body will now be controlled by physics forces
         rb.useGravity = true;//turn gravity back on for player
         playerCharacter.ShowPlayerModel(true);//make the player visible again
 
         //playerController.TogglePlayerControls(true);//normal control does not resume until after skydiving
         Camera.main.transform.SetParent(originalPivot);//set parent back to player's pivot
         Camera.main.transform.localPosition = cameraStartingPosition;//reset
-        Camera.main.transform.localRotation = Quaternion.identity;//set rotation to neutral relative to parent
+        //Camera.main.transform.localRotation = Quaternion.identity;//set rotation to neutral relative to parent
         Destroy(this);//remove this component  //this.enabled = false; //maybe even Destroy(this);
 
     }
