@@ -125,10 +125,8 @@ public class SkyDiveTesting : MonoBehaviour
     private void FreeFalling()
     {
         //Debug.Log("FreeFalling()");
-        //limit downward velocity to terminal velocity, or something
-        SetTargetRotations();
-        HandlePlayerMovement();
-        HandleDrag();
+        SetTargetRotations();//get input
+        CheckForRipCord();//get input
         if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)//pull parachute if too close to ground
             skyDivingState = SkyDivingStateENUM.startparachute;//put in state to pull parachute
     }
@@ -172,11 +170,7 @@ public class SkyDiveTesting : MonoBehaviour
 
         float charRoll = characterRollAxis.localRotation.z;//cache
         float charSwoop = characterSwoopTransform.localRotation.x;//cache
-
-        //restrict rolling to freefalling only, for now.  Can swing when parachuting
-        characterRotationZ = (skyDivingState == SkyDivingStateENUM.freeFalling) ? characterRotationZ : 0;//force to zero roll if not skydiving
-
-
+        
         #region unwind to center if no input
         //unwind swoop amount
         //if input in deadzone and swoop axis not at identity
@@ -192,10 +186,7 @@ public class SkyDiveTesting : MonoBehaviour
             characterRotationZ = charRoll > 0 ? .8f : -.8f;
         }
         #endregion
-
-        //only roll if skydiving, otherwise reset rotation
-         m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);
-
+        
         //set target rotations for axes
         m_CharacterSwoopTargetRot *= Quaternion.Euler(characterRotationX, 0f, 0f);//pitch
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);//yaw
@@ -207,10 +198,10 @@ public class SkyDiveTesting : MonoBehaviour
         //CLAMP 'EM ALL!
         if (clampVerticalRotation)
         {
-            m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
+            m_CameraTargetRot = PPBRS_Utility.ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
         }
-        m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, minSwoopAngle, maxSwoopAngle);
-        m_CharacterRollTargetRot = ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
+        m_CharacterSwoopTargetRot = PPBRS_Utility.ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, minSwoopAngle, maxSwoopAngle);
+        m_CharacterRollTargetRot = PPBRS_Utility.ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
     }
 
     private void HandleCameraZoomOut()
@@ -397,7 +388,7 @@ public class SkyDiveTesting : MonoBehaviour
     }
 
     private void FixedUpdate()
-	{
+	{//for physics calculations
         distanceToTerrain = PPBRS_Utility.GetDistanceToTerrain(this.transform.position);
         switch (skyDivingState)
         {
@@ -406,7 +397,7 @@ public class SkyDiveTesting : MonoBehaviour
                 break;
 
             case SkyDivingStateENUM.freeFalling:
-                CheckForRipCord();
+                HandlePlayerMovement();//move player
                 HandleDrag();
                 break;
 
@@ -424,20 +415,24 @@ public class SkyDiveTesting : MonoBehaviour
     }
 
     private void LateUpdate()
-    {
+    {//for operations that occur last in this cycle
         switch (skyDivingState)
         {
             case SkyDivingStateENUM.startFreeFalling:
+                HandleCameraMovement();//move camera after all physics step have completed
                 break;
 
             case SkyDivingStateENUM.freeFalling:
                 HandleCameraMovement();//move camera after all physics step have completed
                 break;
 
+            case SkyDivingStateENUM.startparachute:
+                HandleCameraMovement();//move camera after all physics step have completed
+                break;
+
             case SkyDivingStateENUM.parachuting:
                 HandleCameraMovement();//move camera after all physics step have completed
                 HandleCameraZoomOut();
-
                 break;
 
             case SkyDivingStateENUM.startLanded:
@@ -475,34 +470,6 @@ public class SkyDiveTesting : MonoBehaviour
             rb.drag = 0;
             if (skyDivingState != SkyDivingStateENUM.landed) skyDivingState = SkyDivingStateENUM.startLanded;
         }
-    }
-  
-    private Quaternion ClampRotationAroundXAxis(Quaternion q, float min, float max)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1.0f;
-
-        float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
-        angleX = Mathf.Clamp(angleX, min, max);
-        q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
-
-        return q;
-    }
-
-    private Quaternion ClampRotationAroundZAxis(Quaternion q, float min, float max)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1.0f;
-
-        float angleZ = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.z);
-        angleZ = Mathf.Clamp(angleZ, min, max);
-        q.z = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleZ);
-
-        return q;
     }
 
 }
