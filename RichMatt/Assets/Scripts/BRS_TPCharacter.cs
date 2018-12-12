@@ -81,6 +81,7 @@ public class BRS_TPCharacter : MonoBehaviour {
 
     void ScaleCapsuleForCrouching(bool crouch)
     {
+        if (!this.isActiveAndEnabled) return; //added so game can run while script is disabled
         if (m_IsGrounded && crouch)
         {
             if (m_Crouching) return;
@@ -105,6 +106,8 @@ public class BRS_TPCharacter : MonoBehaviour {
 
     void PreventStandingInLowHeadroom()
     {
+
+        if (!this.isActiveAndEnabled) return;//added so game can run while script is disabled
         // prevent standing up in crouch-only zones
         if (!m_Crouching)
         {
@@ -120,6 +123,7 @@ public class BRS_TPCharacter : MonoBehaviour {
 
     void UpdateAnimator(Vector3 move)
     {
+        if (!this.isActiveAndEnabled) return;//added so game can run while script is disabled
         // update the animator parameters
         m_Animator.SetFloat("Forward", m_ForwardAmount, 0.1f, Time.deltaTime);
         m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
@@ -215,13 +219,13 @@ public class BRS_TPCharacter : MonoBehaviour {
         {
             m_GroundNormal = hitInfo.normal;
             m_IsGrounded = true;
-            m_Animator.applyRootMotion = true;
+            if(m_Animator) m_Animator.applyRootMotion = true;
         }
         else
         {
             m_IsGrounded = false;
             m_GroundNormal = Vector3.up;
-            m_Animator.applyRootMotion = false;
+            if (m_Animator) m_Animator.applyRootMotion = false;
         }
     }
 }
