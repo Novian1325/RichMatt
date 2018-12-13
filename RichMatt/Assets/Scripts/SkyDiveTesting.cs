@@ -265,7 +265,7 @@ public class SkyDiveTesting : MonoBehaviour
             m_CharacterRollTargetRot,
             smoothTime * Time.deltaTime);
 
-
+        //do special things if parachute is pulled
         //float currentSwoopAngle = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
 
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
