@@ -6,8 +6,8 @@ public class SkyDiveTesting : MonoBehaviour
 {
     #region Variables
 
-    public SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
-
+    [SerializeField] private SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
+    
     [Header("SkyDiving Settings")]
     [SerializeField] private float slowDrag = 0.6f; //target drag when slowing
     [SerializeField] private float fallDrag = 0.5f;//normal drag
@@ -17,11 +17,9 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private int forceParachuteHeight = 100; //height at which parachute auto deploys
     [SerializeField] private int deployParachuteLimit = 250; //character must be at least this distance to ground before being able to deploy 'chute
     [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
-    [SerializeField] private float forwardMomentum = 5f;//player moves forward while falling not straight down "forward momentum"
-    [SerializeField] private float parachuteStallModifier = 1.3f;//modifies the glide that occurs when pulling back while parachute deployed
+    [SerializeField] private float forwardMomentum = 10f;//player moves forward while falling not straight down "forward momentum"
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
-    [SerializeField] private Parachute Parachute;
     //MUST BE NEGATIVE! Gets inverted if above 0
 
     //private readonly float _CameraDistance = 10f;
@@ -41,26 +39,26 @@ public class SkyDiveTesting : MonoBehaviour
     private readonly float cameraMinPitch = -90;
     private readonly float cameraMaxPitch = 90;
 
-    [Range(5f, 50f)]
-    public float FallingDragTuning = 30.0f;
-
     //component references
     private Rigidbody rb;
     private Animator anim;
     private BRS_TPController playerController;
-    
+    [SerializeField] private Parachute Parachute;
+
     //clamp limits
     private readonly float minSwoopAngle = -15f;
     private readonly float maxSwoopAngle = 85f;
     private readonly float minRollRotation = -45f;
     private readonly float maxRollRotation = 45f;
-    private readonly float returnToNeutralSpeed = .25f;//used for unwinding when no input
+    private readonly float returnToNeutralSpeed = .5f;//used for unwinding when no input
 
     //target rotations
     private Quaternion m_CharacterTargetRot;
     private Quaternion m_CameraTargetRot;
     private Quaternion m_CharacterSwoopTargetRot;
     private Quaternion m_CharacterRollTargetRot;
+
+    private float targetForwardMomentum = 0f;
 
     //camera zoom during parachute deploy and reset after landing
     [SerializeField] private Transform zoomPoint;
@@ -115,7 +113,6 @@ public class SkyDiveTesting : MonoBehaviour
         //Debug.Log("StartFreeFalling()");
         playerController.TogglePlayerControls(false);//turn off player controls except for skydiving controls
 
-        CheckForRipCord();
         anim.SetBool("SkyDive", true);
         anim.SetBool("OnGround", false);
         rb.drag = fallDrag;
@@ -126,8 +123,8 @@ public class SkyDiveTesting : MonoBehaviour
     private void FreeFalling()
     {
         //Debug.Log("FreeFalling()");
-        //limit downward velocity to terminal velocity, or something
-        SetTargetRotations();
+        CheckForRipCord();
+        SetTargetRotations();//get input and do calculations
         HandlePlayerMovement();
         if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)//pull parachute if too close to ground
             skyDivingState = SkyDivingStateENUM.startparachute;//put in state to pull parachute
@@ -165,24 +162,34 @@ public class SkyDiveTesting : MonoBehaviour
 
     private void SetTargetRotations()
     {
+        //cache rotations for comparisions
+        float camPitch = PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation);
+        float charPitch = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
+        float charRoll = characterRollAxis.localRotation.z;//cache
+
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera pitch input
-        float characterRotationX = Input.GetAxis("Vertical") * Vector3.Angle(Camera.main.transform.forward, Vector3.forward);//get swoop input
+        //float characterRotationX = Input.GetAxis("Vertical") * Vector3.Angle(Camera.main.transform.forward, Vector3.forward);//get swoop input
+        float characterRotationX = Input.GetAxis("Vertical") * camPitch;//get swoop input
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
         float characterRotationZ = (rollFactor * characterRotationY) * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
-        float charRoll = characterRollAxis.localRotation.z;//cache
-        float cameraPitch = cameraPivotTransform.rotation.x;
-
+        
         //restrict rolling to freefalling only, for now.  Can swing when parachuting
         characterRotationZ = (skyDivingState == SkyDivingStateENUM.freeFalling) ? characterRotationZ : 0;//force to zero roll if not skydiving
-        
- #region unwind to center if no input
+
+        ////if the player is swooping, steadily increase forward speed based on how 'level' the player is. if the player is looking straight down, no forward speed; otherwise, steadily return to zero.
+        targetForwardMomentum = Input.GetAxis("Vertical") > .01f ? 
+            Mathf.Lerp(targetForwardMomentum, forwardMomentum * (1 - (camPitch / maxSwoopAngle)), Time.deltaTime * returnToNeutralSpeed) //if swooping
+            : Mathf.Lerp(targetForwardMomentum, 0, Time.deltaTime * returnToNeutralSpeed); //if not swooping
+
+        #region unwind to center if no input
         //unwind swoop amount
         //if input in deadzone and swoop axis not at identity
-        if (System.Math.Abs(characterRotationX) < Mathf.Epsilon && System.Math.Abs(GetCurrentSwoopAngle()) > .01f)
+        if (System.Math.Abs(characterRotationX) < 0.01f && System.Math.Abs(charPitch) > .01f)
         {
-            characterRotationX = GetCurrentSwoopAngle() > 0 ? -returnToNeutralSpeed : returnToNeutralSpeed;
-        }
+            //override input to reset char to zero rotation
+            characterRotationX = charPitch > 0 ? -returnToNeutralSpeed : returnToNeutralSpeed;
+        }       
 
         //unwind roll
         //if input in deadzone and roll axis not at identity
@@ -192,11 +199,9 @@ public class SkyDiveTesting : MonoBehaviour
         }
 #endregion
 
-        //only roll if skydiving, otherwise reset rotation
-        m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);
-
-        //TODO SET characterRotationX to no rotation if going looking the wrong direction! Don't pitch forward when looking up
-
+        //apply rotation
+        m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);//roll
+       
         //set target rotations for axes
         //swoop the percentage of the input plus the angle of the camera; pitch is same as camera
         m_CharacterSwoopTargetRot = Quaternion.Euler(characterRotationX, 0f, 0f);//pitch
@@ -259,33 +264,37 @@ public class SkyDiveTesting : MonoBehaviour
         characterRollAxis.localRotation = Quaternion.Slerp(characterRollAxis.localRotation,
             m_CharacterRollTargetRot,
             smoothTime * Time.deltaTime);
-        
-        float currentSwoopAngle = GetCurrentSwoopAngle();
+
+
+        //float currentSwoopAngle = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
 
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
-        float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : minSwoopAngle;
+        //float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : minSwoopAngle;
 
         //if parachuting, pulling back increases forward momentum
-        if (skyDivingState == SkyDivingStateENUM.parachuting)
-        {
-            //pulling back has a different effect than pushing forward
-            localMaxAngle = localMaxAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
-        }
+        //if (skyDivingState == SkyDivingStateENUM.parachuting)
+        //{
+        //pulling back has a different effect than pushing forward
+        //localMaxAngle = localMaxAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
+        //}
 
         //drag varies inversely with swoopAngle: y = k/x.           
         //where x is the ratio of our currentSwoop angle to maxSwoop angle
         //if we swoop a little bit, we want the drag to change a little bit
-        float targetForwardMove = 1 + (forwardMomentum * (1 - (currentSwoopAngle / localMaxAngle)));
-        //should not be totally zero....
+        //float targetForwardMove = 1 + (forwardMomentum * (1 - (currentSwoopAngle / localMaxAngle)));
 
-        //if parachuting, pulling back increases forward drastically
-        if(skyDivingState == SkyDivingStateENUM.parachuting)
-        {
-            targetForwardMove *= parachuteStallModifier;//elongate arc when pulling back
-        }
+
+        ////if parachuting, pulling back increases forward drastically
+        //if (skyDivingState == SkyDivingStateENUM.parachuting)
+        //{
+        //    targetForwardMomentum *= parachuteStallModifier;//elongate arc when pulling back
+        //}
 
         //move character forward a bit
-        characterTransform.Translate(Vector3.forward * targetForwardMove * Time.deltaTime);
+
+
+        //move player
+        characterTransform.Translate(Vector3.forward * targetForwardMomentum * Time.deltaTime);
     }
 
     private void HandleCameraMovement()
@@ -306,25 +315,11 @@ public class SkyDiveTesting : MonoBehaviour
         }
     }
 
-    private float GetCurrentSwoopAngle()
-    {
-        Quaternion q = characterSwoopTransform.localRotation;
-        //normalize
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1.0f;
-
-        //hooray trigonometry!
-        return 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
-
-    }
-
     private void HandleDrag()
     {
         //convert rotation to angle!
 
-        float currentSwoopAngle = GetCurrentSwoopAngle();
+        float currentSwoopAngle = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
         
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : -minSwoopAngle;

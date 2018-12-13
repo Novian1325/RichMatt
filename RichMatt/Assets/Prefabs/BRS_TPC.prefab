@@ -1713,7 +1713,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941973348895546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.9, z: 0}
+  m_LocalPosition: {x: 99.4, y: 26.9, z: -96.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4943463622790514}
@@ -3071,11 +3071,9 @@ MonoBehaviour:
   forceParachuteHeight: 100
   deployParachuteLimit: 10000
   attitudeChangeSpeed: 5
-  forwardMomentum: 5
-  parachuteStallModifier: 1.2
-  terminalVelocity: -25
-  parachuteTerminalVelocityModifier: 0.75
-  Parachute: {fileID: 114718193495057154}
+  forwardMomentum: 10
+  terminalVelocity: -50
+  parachuteTerminalVelocityModifier: 0.25
   cameraPivotTransform: {fileID: 4750000278564472}
   characterSwoopTransform: {fileID: 4194695862080004}
   characterRollAxis: {fileID: 4728676684435884}
@@ -3083,7 +3081,7 @@ MonoBehaviour:
   MouseYSensitivity: 4
   smoothTime: 5
   smoothCamera: 1
-  FallingDragTuning: 5
+  Parachute: {fileID: 114718193495057154}
   zoomPoint: {fileID: 4532797397029042}
   cameraTransformBeforeZoom: {fileID: 4943463622790514}
   zoomSpeed: 0.1

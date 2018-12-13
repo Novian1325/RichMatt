@@ -53,4 +53,18 @@ public static class PPBRS_Utility {
 
         return distanceToLanding;
     }
+
+    static public float GetPitch(Quaternion q)
+    {
+        //Quaternion q = characterSwoopTransform.localRotation;
+        //normalize
+        q.x /= q.w;
+        q.y /= q.w;
+        q.z /= q.w;
+        q.w = 1.0f;
+
+        //hooray trigonometry!
+        return 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
+
+    }
 }
