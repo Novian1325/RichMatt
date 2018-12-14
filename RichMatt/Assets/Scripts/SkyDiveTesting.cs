@@ -166,17 +166,22 @@ public class SkyDiveTesting : MonoBehaviour
         float targetFM = 0;
         if (Mathf.Abs(verticalInput) > .01f)
         {
-            if(verticalInput > 0)
-            targetFM = Mathf.Lerp(targetForwardMomentum, forwardMomentum * (1 - (PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)), Time.deltaTime * returnToNeutralSpeed); //if swooping
+
+            if (verticalInput > 0)
+            {
+                //if freefalling, camera pitch affects forward move
+                float swoopEffect = (skyDivingState == SkyDivingStateENUM.freeFalling) ? (1 - (PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)) : 1;
+                targetFM = Mathf.Lerp(targetForwardMomentum, forwardMomentum * swoopEffect, Time.deltaTime * returnToNeutralSpeed); //if swooping
+            }
 
             else if (skyDivingState == SkyDivingStateENUM.parachuting && verticalInput < 0)
             {
-
-                Debug.Log("Going Backwards! ");
+                
                 //can move backwards when parachuting
                 targetFM = Mathf.Lerp(targetForwardMomentum, -forwardMomentum, Time.deltaTime * returnToNeutralSpeed); //if swooping
             }
         }
+
         else
         {
             //do the normal stuff
@@ -184,8 +189,6 @@ public class SkyDiveTesting : MonoBehaviour
                
         }
         
-       
-
         return targetFM;
     }
 
@@ -209,7 +212,6 @@ public class SkyDiveTesting : MonoBehaviour
 
         ////if the player is swooping, steadily increase forward speed based on how 'level' the player is. if the player is looking straight down, no forward speed; otherwise, steadily return to zero.
         targetForwardMomentum = GetTargetForwardMomentum(verticalInput);
-        Debug.Log(targetForwardMomentum);
 
         #region unwind to center if no input
         //unwind swoop amount
@@ -293,38 +295,6 @@ public class SkyDiveTesting : MonoBehaviour
         characterRollAxis.localRotation = Quaternion.Slerp(characterRollAxis.localRotation,
             m_CharacterRollTargetRot,
             smoothTime * Time.deltaTime);
-
-        //do special things if parachute is pulled
-        //float currentSwoopAngle = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
-
-        //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
-        //float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : minSwoopAngle;
-
-        //if parachuting, pulling back increases forward momentum
-        //if (skyDivingState == SkyDivingStateENUM.parachuting)
-        //{
-        //    pulling back has a different effect than pushing forward
-        //    localMaxAngle = localMaxAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
-        //}
-
-
-
-        //drag varies inversely with swoopAngle: y = k/x.           
-        //where x is the ratio of our currentSwoop angle to maxSwoop angle
-        //if we swoop a little bit, we want the drag to change a little bit
-        //float targetForwardMove = 1 + (forwardMomentum * (1 - (currentSwoopAngle / localMaxAngle)));
-
-
-        ////if parachuting, pulling back increases forward drastically
-        //if (skyDivingState == SkyDivingStateENUM.parachuting)
-        //{
-        //    if(targetForwardMomentum )
-        //    targetForwardMomentum *= parachuteStallModifier;//elongate arc when pulling back
-        //}
-
-        //move character forward a bit
-        //concerning parachuting
-        //targetForwardMomentum = skyDivingState == SkyDivingStateENUM.parachuting ? targetForwardMomentum
 
         //move player
         characterTransform.Translate(Vector3.forward * targetForwardMomentum * Time.deltaTime);
