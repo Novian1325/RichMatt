@@ -18,6 +18,7 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private int deployParachuteLimit = 250; //character must be at least this distance to ground before being able to deploy 'chute
     [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
     [SerializeField] private float forwardMomentum = 10f;//player moves forward while falling not straight down "forward momentum"
+    [SerializeField] private float parachuteMometumModifier = .8f;
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
     //MUST BE NEGATIVE! Gets inverted if above 0
@@ -60,7 +61,6 @@ public class SkyDiveTesting : MonoBehaviour
 
     //momentum stuff
     private float targetForwardMomentum = 0f;
-    private float parachuteMometumModifier = .8f;
 
     //camera zoom during parachute deploy and reset after landing
     [SerializeField] private Transform zoomPoint;
