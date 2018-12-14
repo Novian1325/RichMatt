@@ -8,12 +8,19 @@ public class SimpleCarController : MonoBehaviour
     private float m_verticalInput;
     private float m_steeringAngle;
 
+    private Rigidbody rb;
+
     public WheelCollider frontDriverW, frontPassengerW;
     public WheelCollider rearDriverW, rearPassengerW;
     public Transform frontDriverT, frontPassengerT;
     public Transform rearDriverT, rearPassengerT;
     public float maxSteerAngle = 30;
     public float motorForce = 50;
+
+    public void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     public void GetInput()
     {
@@ -60,6 +67,14 @@ public class SimpleCarController : MonoBehaviour
         Steer();
         Accelerate();
         UpdateWheelPoses();
+    }
+
+    public void OnPlayerExit()
+    {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        frontDriverW.motorTorque = 0;
+        frontPassengerW.motorTorque = 0;
     }
 
 }
