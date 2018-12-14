@@ -58,7 +58,9 @@ public class SkyDiveTesting : MonoBehaviour
     private Quaternion m_CharacterSwoopTargetRot;
     private Quaternion m_CharacterRollTargetRot;
 
+    //momentum stuff
     private float targetForwardMomentum = 0f;
+    private float parachuteMometumModifier = .8f;
 
     //camera zoom during parachute deploy and reset after landing
     [SerializeField] private Transform zoomPoint;
@@ -191,7 +193,7 @@ public class SkyDiveTesting : MonoBehaviour
         }
 
         //cut in half if parachuting
-        targetFM = skyDivingState == SkyDivingStateENUM.parachuting ? targetFM / 2 : targetFM;
+        targetFM = skyDivingState == SkyDivingStateENUM.parachuting ? targetFM * parachuteMometumModifier : targetFM;
 
         return targetFM;
     }
