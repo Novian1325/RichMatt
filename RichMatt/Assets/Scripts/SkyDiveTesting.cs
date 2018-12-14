@@ -169,19 +169,20 @@ public class SkyDiveTesting : MonoBehaviour
         float targetFM = 0;
         if (Mathf.Abs(verticalInput) > .01f)
         {
+            float maxFM = skyDivingState == SkyDivingStateENUM.parachuting ? forwardMomentum * parachuteMometumModifier : forwardMomentum;
 
             if (verticalInput > 0)
             {
                 //if freefalling, camera pitch affects forward move
                 float swoopEffect = (skyDivingState == SkyDivingStateENUM.freeFalling) ? (1 - (PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)) : 1;
-                targetFM = Mathf.Lerp(targetForwardMomentum, forwardMomentum * swoopEffect, Time.deltaTime * returnToNeutralSpeed); //if swooping
+                targetFM = Mathf.Lerp(targetForwardMomentum, maxFM * swoopEffect, Time.deltaTime * returnToNeutralSpeed); //if swooping
             }
 
             else if (skyDivingState == SkyDivingStateENUM.parachuting && verticalInput < 0)
             {
                 
                 //can move backwards when parachuting
-                targetFM = Mathf.Lerp(targetForwardMomentum, -forwardMomentum, Time.deltaTime * returnToNeutralSpeed); //if swooping
+                targetFM = Mathf.Lerp(targetForwardMomentum, -maxFM, Time.deltaTime * returnToNeutralSpeed); //if swooping
             }
         }
 
@@ -191,9 +192,6 @@ public class SkyDiveTesting : MonoBehaviour
             targetFM = Mathf.Lerp(targetForwardMomentum, 0, Time.deltaTime * returnToNeutralSpeed); //if not swooping
                
         }
-
-        //cut in half if parachuting
-        targetFM = skyDivingState == SkyDivingStateENUM.parachuting ? targetFM * parachuteMometumModifier : targetFM;
 
         return targetFM;
     }
