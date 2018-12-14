@@ -156,7 +156,9 @@ public class SkyDiveTesting : MonoBehaviour
         Parachute.DestroyParachute();//parachute class handles destroying itself (playing anims, whatever)
         playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
+        Debug.Log(anim.GetBool("OnGround") + " before.");
         anim.SetBool("OnGround", true);
+        Debug.Log(anim.GetBool("OnGround") + " after.");
         anim.SetBool("Parachuting", false);
         skyDivingState = SkyDivingStateENUM.landed;
     }
