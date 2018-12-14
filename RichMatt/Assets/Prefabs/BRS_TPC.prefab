@@ -1336,6 +1336,7 @@ GameObject:
   - component: {fileID: 20109728096473184}
   - component: {fileID: 114696388325903184}
   - component: {fileID: 81966060833717112}
+  - component: {fileID: 114073933161775386}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3051,6 +3052,21 @@ MonoBehaviour:
   m_MouseOrbitSensitivityX: 0.5
   m_MousePitchSensitivityY: 4
   m_CameraPitchPivotTransform: {fileID: 4750000278564472}
+--- !u!114 &114073933161775386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1926282694239218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78c24b00d1d7d9d45969e2e8f9d4ffab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToFollow: {fileID: 0}
+  offset: {x: 0, y: 1.84, z: -3.45}
+  followSpeed: 10
+  lookSpeed: 10
 --- !u!114 &114565705077904430
 MonoBehaviour:
   m_ObjectHideFlags: 1
