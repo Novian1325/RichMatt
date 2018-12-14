@@ -160,6 +160,35 @@ public class SkyDiveTesting : MonoBehaviour
         skyDivingState = SkyDivingStateENUM.landed;
     }
 
+    private float GetTargetForwardMomentum(float verticalInput)
+    {
+        //calculate the distance the player will travel forward based on pitch
+        float targetFM = 0;
+        if (Mathf.Abs(verticalInput) > .01f)
+        {
+            if(verticalInput > 0)
+            targetFM = Mathf.Lerp(targetForwardMomentum, forwardMomentum * (1 - (PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)), Time.deltaTime * returnToNeutralSpeed); //if swooping
+
+            else if (skyDivingState == SkyDivingStateENUM.parachuting && verticalInput < 0)
+            {
+
+                Debug.Log("Going Backwards! ");
+                //can move backwards when parachuting
+                targetFM = Mathf.Lerp(targetForwardMomentum, -forwardMomentum, Time.deltaTime * returnToNeutralSpeed); //if swooping
+            }
+        }
+        else
+        {
+            //do the normal stuff
+            targetFM = Mathf.Lerp(targetForwardMomentum, 0, Time.deltaTime * returnToNeutralSpeed); //if not swooping
+               
+        }
+        
+       
+
+        return targetFM;
+    }
+
     private void SetTargetRotations()
     {
         //cache rotations for comparisions
@@ -169,7 +198,8 @@ public class SkyDiveTesting : MonoBehaviour
 
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera pitch input
         //float characterRotationX = Input.GetAxis("Vertical") * Vector3.Angle(Camera.main.transform.forward, Vector3.forward);//get swoop input
-        float characterRotationX = Input.GetAxis("Vertical") * camPitch;//get swoop input
+        float verticalInput = Input.GetAxis("Vertical");
+        float characterRotationX = verticalInput * camPitch;//get swoop input
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
         float characterRotationZ = (rollFactor * characterRotationY) * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
@@ -178,9 +208,8 @@ public class SkyDiveTesting : MonoBehaviour
         characterRotationZ = (skyDivingState == SkyDivingStateENUM.freeFalling) ? characterRotationZ : 0;//force to zero roll if not skydiving
 
         ////if the player is swooping, steadily increase forward speed based on how 'level' the player is. if the player is looking straight down, no forward speed; otherwise, steadily return to zero.
-        targetForwardMomentum = Input.GetAxis("Vertical") > .01f ? 
-            Mathf.Lerp(targetForwardMomentum, forwardMomentum * (1 - (camPitch / maxSwoopAngle)), Time.deltaTime * returnToNeutralSpeed) //if swooping
-            : Mathf.Lerp(targetForwardMomentum, 0, Time.deltaTime * returnToNeutralSpeed); //if not swooping
+        targetForwardMomentum = GetTargetForwardMomentum(verticalInput);
+        Debug.Log(targetForwardMomentum);
 
         #region unwind to center if no input
         //unwind swoop amount
@@ -215,10 +244,10 @@ public class SkyDiveTesting : MonoBehaviour
         //CLAMP 'EM ALL!
         if (clampVerticalRotation)
         {
-            m_CameraTargetRot = ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
+            m_CameraTargetRot = PPBRS_Utility.ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
         }
-        m_CharacterSwoopTargetRot = ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, 0, maxSwoopAngle);
-        m_CharacterRollTargetRot = ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
+        m_CharacterSwoopTargetRot = PPBRS_Utility.ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, 0, maxSwoopAngle);
+        m_CharacterRollTargetRot = PPBRS_Utility.ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
 
     }
 
@@ -274,9 +303,11 @@ public class SkyDiveTesting : MonoBehaviour
         //if parachuting, pulling back increases forward momentum
         //if (skyDivingState == SkyDivingStateENUM.parachuting)
         //{
-        //pulling back has a different effect than pushing forward
-        //localMaxAngle = localMaxAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
+        //    pulling back has a different effect than pushing forward
+        //    localMaxAngle = localMaxAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
         //}
+
+
 
         //drag varies inversely with swoopAngle: y = k/x.           
         //where x is the ratio of our currentSwoop angle to maxSwoop angle
@@ -287,11 +318,13 @@ public class SkyDiveTesting : MonoBehaviour
         ////if parachuting, pulling back increases forward drastically
         //if (skyDivingState == SkyDivingStateENUM.parachuting)
         //{
+        //    if(targetForwardMomentum )
         //    targetForwardMomentum *= parachuteStallModifier;//elongate arc when pulling back
         //}
 
         //move character forward a bit
-
+        //concerning parachuting
+        //targetForwardMomentum = skyDivingState == SkyDivingStateENUM.parachuting ? targetForwardMomentum
 
         //move player
         characterTransform.Translate(Vector3.forward * targetForwardMomentum * Time.deltaTime);
@@ -347,7 +380,7 @@ public class SkyDiveTesting : MonoBehaviour
         //clamp downward velocity to terminalVelocity
         rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
-        //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity.y);
+        //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity);
     }
 
     private void CheckForRipCord()
@@ -474,32 +507,4 @@ public class SkyDiveTesting : MonoBehaviour
         }
     }
   
-    private Quaternion ClampRotationAroundXAxis(Quaternion q, float min, float max)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1.0f;
-
-        float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
-        angleX = Mathf.Clamp(angleX, min, max);
-        q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
-
-        return q;
-    }
-
-    private Quaternion ClampRotationAroundZAxis(Quaternion q, float min, float max)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1.0f;
-
-        float angleZ = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.z);
-        angleZ = Mathf.Clamp(angleZ, min, max);
-        q.z = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleZ);
-
-        return q;
-    }
-
 }
