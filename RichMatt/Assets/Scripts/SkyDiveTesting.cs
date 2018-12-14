@@ -157,6 +157,7 @@ public class SkyDiveTesting : MonoBehaviour
         playerController.TogglePlayerControls(true);
         anim.SetBool("SkyDive", false);
         anim.SetBool("OnGround", true);
+        anim.SetBool("Parachuting", false);
         skyDivingState = SkyDivingStateENUM.landed;
     }
 
