@@ -155,10 +155,8 @@ public class SkyDiveTesting : MonoBehaviour
 
         Parachute.DestroyParachute();//parachute class handles destroying itself (playing anims, whatever)
         playerController.TogglePlayerControls(true);
-        anim.SetBool("SkyDive", false);
-        Debug.Log(anim.GetBool("OnGround") + " before.");
         anim.SetBool("OnGround", true);
-        Debug.Log(anim.GetBool("OnGround") + " after.");
+        anim.SetBool("SkyDive", false);
         anim.SetBool("Parachuting", false);
         skyDivingState = SkyDivingStateENUM.landed;
     }
@@ -191,7 +189,10 @@ public class SkyDiveTesting : MonoBehaviour
             targetFM = Mathf.Lerp(targetForwardMomentum, 0, Time.deltaTime * returnToNeutralSpeed); //if not swooping
                
         }
-        
+
+        //cut in half if parachuting
+        targetFM = skyDivingState == SkyDivingStateENUM.parachuting ? targetFM / 2 : targetFM;
+
         return targetFM;
     }
 
