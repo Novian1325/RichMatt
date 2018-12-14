@@ -162,6 +162,7 @@ public class SkyDiveTesting : MonoBehaviour
 
     private float GetTargetForwardMomentum(float verticalInput)
     {
+        //calculate the distance the player will travel forward based on pitch
         float targetFM = 0;
         if (Mathf.Abs(verticalInput) > .01f)
         {
@@ -173,7 +174,7 @@ public class SkyDiveTesting : MonoBehaviour
 
                 Debug.Log("Going Backwards! ");
                 //can move backwards when parachuting
-                targetFM = Mathf.Lerp(targetForwardMomentum, -forwardMomentum * (1 - (PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)), Time.deltaTime * returnToNeutralSpeed); //if swooping
+                targetFM = Mathf.Lerp(targetForwardMomentum, -forwardMomentum, Time.deltaTime * returnToNeutralSpeed); //if swooping
             }
         }
         else
