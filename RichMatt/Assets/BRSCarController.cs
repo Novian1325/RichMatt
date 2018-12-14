@@ -55,7 +55,7 @@ public class BRSCarController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if(Input.GetButtonDown("Interact"))
+        if(Input.GetButtonDown("Interact") && InVehicleRange)
         {
             if(InCar)
             {
