@@ -3087,7 +3087,8 @@ MonoBehaviour:
   forceParachuteHeight: 100
   deployParachuteLimit: 10000
   attitudeChangeSpeed: 5
-  forwardMomentum: 15
+  forwardMomentum: 38
+  parachuteMometumModifier: 0.5
   terminalVelocity: -50
   parachuteTerminalVelocityModifier: 0.25
   cameraPivotTransform: {fileID: 4750000278564472}
