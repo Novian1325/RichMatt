@@ -8,6 +8,7 @@ TagManager:
   - MapBounds
   - Terrain
   - ToolTip
+  - ToolTipManager
   layers:
   - Default
   - TransparentFX
