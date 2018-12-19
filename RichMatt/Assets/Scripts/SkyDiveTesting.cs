@@ -206,7 +206,7 @@ public class SkyDiveTesting : MonoBehaviour
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera pitch input
         //float characterRotationX = Input.GetAxis("Vertical") * Vector3.Angle(Camera.main.transform.forward, Vector3.forward);//get swoop input
         float verticalInput = Input.GetAxis("Vertical");
-        float characterRotationX = verticalInput * camPitch;//get swoop input
+        float characterRotationX = verticalInput * camPitch;//get swoop input //character pitch
         float characterRotationY = Input.GetAxis("Mouse X") * MouseXSensitivity;//get yaw input
         float characterRotationZ = (rollFactor * characterRotationY) * attitudeChangeSpeed;//get roll input, also adding a portion of the yaw input means the char rolls into turns
 
@@ -232,13 +232,15 @@ public class SkyDiveTesting : MonoBehaviour
         {
             characterRotationZ = charRoll > 0 ? returnToNeutralSpeed : -returnToNeutralSpeed;
         }
-#endregion
+        #endregion
 
+        //set target rotations for axes
         //apply rotation
         m_CharacterRollTargetRot *= Quaternion.Euler(0f, 0f, -characterRotationZ);//roll
-       
-        //set target rotations for axes
-        //swoop the percentage of the input plus the angle of the camera; pitch is same as camera
+
+        //if parachuting, char cannot pitch forward
+        if (skyDivingState == SkyDivingStateENUM.parachuting) characterRotationX = 0;
+
         m_CharacterSwoopTargetRot = Quaternion.Euler(characterRotationX, 0f, 0f);//pitch
 
         m_CharacterTargetRot *= Quaternion.Euler(0f, characterRotationY, 0f);//yaw
@@ -261,13 +263,13 @@ public class SkyDiveTesting : MonoBehaviour
     {
         //TODO
         //Camera may need to orbit forward over the canopy when in parachute mode
-        ////zoom out when chute is deployed
-        //Transform cameraXform = Camera.main.transform;
-        ////Transform cameraXform = cameraPivotTransform;
-        //float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
-        //if (journeyedPercent >= .95f) return; //stop after the camera gets close enough
-        //cameraXform.position = Vector3.Lerp(cameraXform.position, zoomPoint.position, journeyedPercent);
-        ////cameraXform.transform.LookAt(cameraTransformBeforeZoom);
+        //zoom out when chute is deployed
+        Transform cameraXform = Camera.main.transform;
+        //Transform cameraXform = cameraPivotTransform;
+        float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
+        if (journeyedPercent >= .95f) return; //stop after the camera gets close enough
+        cameraXform.position = Vector3.Lerp(cameraXform.position, zoomPoint.position, journeyedPercent);
+        //cameraXform.transform.LookAt(cameraTransformBeforeZoom);
 
     }
 
@@ -463,7 +465,6 @@ public class SkyDiveTesting : MonoBehaviour
 
         //for zooming camera out
         zoomStartTime = Time.time;//start zooming camera out to see canopy
-
         zoomLength = Vector3.Distance(Camera.main.transform.position, zoomPoint.position);
     }
 
