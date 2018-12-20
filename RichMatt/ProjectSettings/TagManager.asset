@@ -8,6 +8,7 @@ TagManager:
   - MapBounds
   - Terrain
   - ToolTip
+  - ToolTipManager
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - PostProcessing
   - MiniMap
   - MiniMap Icons
-  - 
+  - CaptureUI
   - 
   - 
   - 

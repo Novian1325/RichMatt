@@ -23,8 +23,8 @@ public class PlayerInPlaneController : MonoBehaviour
     //public float ScrollDampening = 6.0f;
     //public bool CameraDisabled = false;
     
-    //tooltips
-    [SerializeField] private GameObject jumpToolTip;
+    //tooltip Manager
+    [SerializeField] private ToolTipManager toolTipManager;
 
 
     private bool isAllowedToJump = false;
@@ -37,13 +37,13 @@ public class PlayerInPlaneController : MonoBehaviour
 
     private void ShowJumpPrompt(bool active)
     {
-        if(jumpToolTip != null)
+        if(toolTipManager != null)
         {
-            jumpToolTip.SetActive(active);
+            toolTipManager.ShowToolTip(ToolTipENUM.SKYDIVE, active);
         }
         else
         {
-            Debug.LogError("ERROR! Jump Tool Tip reference not set.");
+            Debug.LogError("ERROR! ToolTip Manager not found in scene.");
         }
 
     }
@@ -100,8 +100,7 @@ public class PlayerInPlaneController : MonoBehaviour
 
     private void Start()
     {
-        jumpToolTip = GameObject.FindGameObjectWithTag("ToolTip");//TODO Maybe more than one tooltip
-        ShowJumpPrompt(false);
+        toolTipManager = GameObject.FindGameObjectWithTag("ToolTipManager").GetComponent<ToolTipManager>();
 
     }
 
