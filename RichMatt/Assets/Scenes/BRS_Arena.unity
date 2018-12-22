@@ -1765,6 +1765,11 @@ Prefab:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 20417887494782220, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_CullingMask.m_Bits
+      value: 1552
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}
   m_IsPrefabAsset: 0
