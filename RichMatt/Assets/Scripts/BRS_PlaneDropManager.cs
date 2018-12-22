@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class BRS_PlaneDropManager : MonoBehaviour
 
@@ -12,23 +12,25 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     [Header("Plane Settings")]
     public GameObject BRS_PlaneSpawn;//plane object (model) to spawn
-    public GameObject endpointMarkerPrefab;//marks beginnning and end points for debugging purposes
 
     public int planeSpeed_PlayerDrop = 150;
     public int planeSpeed_SupplyDrop = 300;
 
     public bool DEBUG = true;//if true, prints debug statements
-
-    private bool verifiedPath = false;
+    
     private GameObject[] acceptableDropZones;
+    private List<GameObject> endpointMarkerList = new List<GameObject>();
 
     //how high does the plane fly?
     private float planeFlightAltitude = 800.0f;
+    private float startingFlightAltitude;
 
     private readonly int failedPathAltitudeIncrementAmount = 25;//if the flight path fails, raise the altitude by this much before trying again
 
     //radius of spawn zone
     private float spawnBoundsCircleRadius = 100.0f;
+    private readonly int minimumDropZoneHeight = 1000;//drop zones should be really tall so they can be tested against
+    
 
     //start and end points for plane to fly through
     private Vector3 planeStartPoint;
@@ -36,11 +38,12 @@ public class BRS_PlaneDropManager : MonoBehaviour
     private GameObject endpointMarker;
 
     private int unsuccessfulPasses = 0;
-    private readonly int flightPathChecksUntilFailure = 12;
+    private readonly int flightPathChecksUntilFailure = 10;
 
     //stuff to pass on to plane when deployed
     private GameObject targetDropZone;
-    private GameObject[] planeCargo;
+    private List<GameObject> cargo_Players = new List<GameObject>();
+    private GameObject cargo_Supplies;//can only carry one supply drop per sortie
     private int planeFlightSpeed = 200;
 
     private bool VerifyReferences()
@@ -65,15 +68,27 @@ public class BRS_PlaneDropManager : MonoBehaviour
             Debug.Break();
             return false;
         }
-
-        //set and check altitude
-        planeFlightAltitude = planeSpawnBounds.position.y > 0 ? planeSpawnBounds.position.y : 200f;//verifies that altitude is above 0
-
-        //set radius of spawnBoundsCircleRadius
-        //leave at default value if local scale is too small
-        spawnBoundsCircleRadius = planeSpawnBounds.localScale.x / 2 > spawnBoundsCircleRadius ? planeSpawnBounds.localScale.x / 2 : spawnBoundsCircleRadius;
         
         return true;
+    }
+
+    private void ConfigureDropZones()
+    {
+        //MAKE SURE Y SCALE IS LARGE ENOUGH!
+        foreach(GameObject zone in playerDropZones)
+        {
+            if(zone.transform.localScale.y < minimumDropZoneHeight)
+                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);
+        }
+
+        foreach (GameObject zone in supplyDropZones)
+        {
+            if (zone.transform.localScale.y < minimumDropZoneHeight)
+                zone.transform.position = new Vector3(zone.transform.position.x, minimumDropZoneHeight / 2, zone.transform.position.z);//move up slightly
+                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);//increase y scale
+        }
+
+
     }
 
     private void ConfigureFlightType(DropTypeENUM dropZoneType)
@@ -83,6 +98,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             case DropTypeENUM.PLAYER:
                 acceptableDropZones =  playerDropZones;
                 planeFlightSpeed = planeSpeed_PlayerDrop;
+
                 break;
 
             case DropTypeENUM.SUPPLY:
@@ -101,15 +117,23 @@ public class BRS_PlaneDropManager : MonoBehaviour
     private void DestroyMarkerObjects()
     {
         //destorys each marker that was used.
-        //warning! DESTROYS ALL CHILDREN!
-        foreach (Transform child in transform)
+        foreach (GameObject marker in endpointMarkerList)
         {
-            Destroy(child.gameObject);
+            if(!DEBUG) Destroy(marker);
         }
+        endpointMarkerList.Clear();//clear list so it doesn't balloon infinitely
     }
 
     void Start()
     {
+        //set and check altitude
+        planeFlightAltitude = planeSpawnBounds.position.y > 0 ? planeSpawnBounds.position.y : 200f;//verifies that altitude is above 0
+        startingFlightAltitude = planeFlightAltitude;//set starting value
+
+        //set radius of spawnBoundsCircleRadius
+        //leave at default value if local scale is too small
+        spawnBoundsCircleRadius = planeSpawnBounds.localScale.x / 2 > spawnBoundsCircleRadius ? planeSpawnBounds.localScale.x / 2 : spawnBoundsCircleRadius;
+
         //error checking
         if (VerifyReferences())
         {
@@ -119,6 +143,8 @@ public class BRS_PlaneDropManager : MonoBehaviour
         {
             Debug.Log("Failed to set up references.");
         }
+
+        ConfigureDropZones();//make sure drop zones are proper size
     }
 
     private Vector3 GetRandomPointOnCircle()
@@ -134,19 +160,56 @@ public class BRS_PlaneDropManager : MonoBehaviour
 
     }
 
-    public void InitPlaneDrop(DropTypeENUM dropType)
+    private void LoadCargo(GameObject[] cargo)
+    {
+        foreach (GameObject burden in cargo)
+        {
+            if (burden.CompareTag("Player")) cargo_Players.Add(burden);
+            else
+            {
+                if(burden != null) cargo_Supplies = burden;//set supplies
+            }
+        }
+
+
+    }
+
+    public bool InitPlaneDrop(DropTypeENUM dropType)
     {
         ConfigureFlightType(dropType);
-        SetupFlightPath();
+        if (SetupFlightPath())
+        {
+            SpawnPlane();//catch the plane Manager to keep track of the plane further
+            return true;
+        }
+
+        return false;
     }
 
-    public void InitPlaneDrop(DropTypeENUM dropType, GameObject[] incomingCargo)
+    public bool InitPlaneDrop(DropTypeENUM dropType, GameObject[] incomingCargo)
     {
-        planeCargo = incomingCargo;
-        InitPlaneDrop(dropType);
+        if(incomingCargo.Length > 0) LoadCargo(incomingCargo);
+        return InitPlaneDrop(dropType);//"boil up"
     }
 
-    private void SetupFlightPath()
+    private GameObject ConfigureEndpoint(Vector3 targetPosition)
+    {
+        GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        marker.transform.position = targetPosition;
+        endpointMarkerList.Add(marker);//add to list to delete later
+        if (DEBUG)
+        {
+            marker.transform.SetParent(this.transform);//set parent to locate easier in hierarchy
+        }
+        else
+        {
+            marker.GetComponent<MeshRenderer>().enabled = false;//show marker if debugging; hide if not
+        }
+        return marker;
+
+    }
+
+    private bool SetupFlightPath()
     {
         bool endpointHit = false;
         bool flightPathThroughLZ = false;
@@ -156,7 +219,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //spawn debugger object. this object is the parent, so both will be destroyed
         if (DEBUG)
         {
-            GameObject startMark = Instantiate(endpointMarkerPrefab, planeStartPoint, Quaternion.identity, this.transform);
+            GameObject startMark = ConfigureEndpoint(planeStartPoint);
             startMark.name = "StartMarker: " + unsuccessfulPasses;
             if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
@@ -169,11 +232,10 @@ public class BRS_PlaneDropManager : MonoBehaviour
             //get end point on circle
             planeEndPoint = GetRandomPointOnCircle();
             //create a new endpoint marker at that location
-            endpointMarker = Instantiate(endpointMarkerPrefab, planeEndPoint, Quaternion.identity, this.transform);
+            endpointMarker = ConfigureEndpoint(planeEndPoint);
             if (DEBUG)
             {
                 endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
-                endpointMarker.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
             }
 
             //test if flight path goes through LZ
@@ -183,7 +245,7 @@ public class BRS_PlaneDropManager : MonoBehaviour
             }
             else
             {
-                if (DEBUG) Debug.Log("Flight Path INVALID: Flight path not through LZ.");
+                if (DEBUG) Debug.Log("INVALID: Flight path not through LZ.");
             }
 
             //test if flight path is clear all the way to endpoint
@@ -193,59 +255,62 @@ public class BRS_PlaneDropManager : MonoBehaviour
             }
             else
             {
-                if (DEBUG) Debug.Log("Flight Path INVALID: Endpoint Marker Not Hit.");
+                if (DEBUG) Debug.Log("INVALID: Endpoint Marker Not Hit.");
             }
 
-            //does the flight unobstructed and through a drop zone
+            //is the flight unobstructed and through a drop zone
             if(endpointHit && flightPathThroughLZ)
             {
-                //SUCCESSS!!!!!!!
+                //SUCCESS!!!!!!!
                 ToggleDropZones(true);//turn LZ on
-                SpawnPlane();
-                if(!DEBUG) DestroyMarkerObjects();
-                verifiedPath = true;
-                return;
+                planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
+                unsuccessfulPasses = 0;//reset failures
+                DestroyMarkerObjects();//clear excess markers
+                return true;
             }
             else
             {
+                if (DEBUG)
+                {
+                    if (!endpointHit) Debug.Log("Flight path failed because ENDPOINT NOT HIT.");
+                    if (!flightPathThroughLZ) Debug.Log("Flight path failed because NOT THROUGH LZ.");
+                    Debug.Log(".................New test.......................");
+                }
                 endpointHit = false;
                 flightPathThroughLZ = false;
-                verifiedPath = false;
             }
 
             
         }//end for
+        
+        //this altitude is not working. keep raising
+        if (++unsuccessfulPasses > flightPathChecksUntilFailure)//we've been here before
+        {
+            Debug.LogWarning("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
 
-        if (!verifiedPath)
-        {
-            //this altitude is not working. keep raising
-            if (++unsuccessfulPasses > flightPathChecksUntilFailure)//we've been here before
-            {
-                Debug.LogError("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
-                return;
-            }
-            //Debug.Log("Altitude too low. Raising Altitude and trying again.");
-            //raise altitude and try again
-            planeFlightAltitude += failedPathAltitudeIncrementAmount;
-            //try again
-            SetupFlightPath();
+            DestroyMarkerObjects();
+            return false;
         }
-        else
-        {
-            return;
-        }
+        //raise altitude and try again
+        planeFlightAltitude += failedPathAltitudeIncrementAmount;
+        //destroy markers
+        DestroyMarkerObjects();
+        //try again
+        return SetupFlightPath();
         
         
     }//end func
 
-    private void SpawnPlane()
+    public PlaneManager SpawnPlane()
     {
         //create this plane in the world at this position, with no rotation
         GameObject plane = Instantiate(BRS_PlaneSpawn, planeStartPoint, Quaternion.identity);//do not set plane to be child of this object!
         plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
         //get plane manager
         PlaneManager planeManager = plane.GetComponent<PlaneManager>();
-        planeManager.InitPlane(targetDropZone, planeCargo, planeFlightSpeed);
+        planeManager.InitPlane(targetDropZone, cargo_Players.ToArray(), cargo_Supplies, planeFlightSpeed);
+        cargo_Players.Clear();
+        return planeManager;
 
     }
 
@@ -261,15 +326,13 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //raycast
         if (Physics.Raycast(startPoint, targetObject - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2))
         {
-            if (DEBUG) Debug.Log("Object Hit: " + raycastHitInfo.collider.gameObject.name);
+            if (DEBUG) Debug.Log("Testing Raycast Through DropZone. Hit: " + raycastHitInfo.collider.gameObject.name);
             for (int i = 0; i < acceptableDropZones.Length; ++i)//look through each drop zone in list
             {
                 if (raycastHitInfo.collider.gameObject == acceptableDropZones[i])//if the game object that was hit is inside this list of good zones
                 {
-                    if(DEBUG) Debug.Log("Passing Through Drop Zone: " + raycastHitInfo.collider.gameObject.name);
                     targetDropZone = acceptableDropZones[i];//this zone will be passed to the plane, so it knows when it hits said zone
                     raycastThroughDropZone = true;//booyah!
-                    //if (DEBUG) Instantiate(debugEndpointMarker, raycastHitInfo.point, Quaternion.identity, this.transform);
                     break;//break out of for loop looking through gameObjects in list
                 }//end if
             }//end for
@@ -295,11 +358,10 @@ public class BRS_PlaneDropManager : MonoBehaviour
         //if something was hit...
         if (Physics.Raycast(startPoint, targetObject.transform.position - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2))
         {
-            if (DEBUG) Debug.Log("Object Hit: " + raycastHitInfo.collider.gameObject.name);
+            if (DEBUG) Debug.Log("Testing Raycast against Endpoint. Hit: " + raycastHitInfo.collider.gameObject.name);
             if (raycastHitInfo.collider.gameObject == targetObject)//were we trying to hit this thing?
             {
                 raycastHitEndpoint = true;//booyah!
-                if (DEBUG) Debug.Log("Endpoint Marker Hit: " + raycastHitInfo.collider.gameObject.name);
             }
         }
         else
@@ -324,21 +386,22 @@ public class BRS_PlaneDropManager : MonoBehaviour
             //set it active or inactive
             dropZone.GetComponent<CapsuleCollider>().enabled = active;
         }
-        if (DEBUG)
-        {
-            if(acceptableDropZones == playerDropZones)
-            {
-                Debug.Log("PlayerDropZones" + active);
-            }
-            else if(acceptableDropZones == supplyDropZones)
-            {
-                if (acceptableDropZones == playerDropZones)
-                {
-                    Debug.Log("SupplyDropZones" + active);
-                }
+        //if (DEBUG)
+        //{
+        //    if(acceptableDropZones == playerDropZones)
+        //    {
+        //        Debug.Log("PlayerDropZones" + active);
+        //    }
+        //    else if(acceptableDropZones == supplyDropZones)
+        //    {
+        //        if (acceptableDropZones == playerDropZones)
+        //        {
+        //            Debug.Log("SupplyDropZones" + active);
+        //        }
                 
-            }
+        //    }
             
-        }
+        //}
     }
 }
+

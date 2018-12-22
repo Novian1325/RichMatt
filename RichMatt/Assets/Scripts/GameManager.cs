@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     [Header("GameSettings")]
-    public bool StartInPlane;
+    public bool StartInPlane = false;
+    public bool StartSkyDiving = false;
     public GameObject[] players;
 
     public BRS_PlaneDropManager planeDropManager;
@@ -15,6 +16,10 @@ public class GameManager : MonoBehaviour {
     [Header("Supply Drop")]
     public GameObject[] supplies;
     public bool QueSupplyDrop = false;
+
+    [Header("SkyDiving")]
+    public SkyDiveHandler skyDiveController;
+    public int skyDiveTestHeight = 500;
     
     private void Awake()
     {
@@ -30,7 +35,7 @@ public class GameManager : MonoBehaviour {
 
     public void DeploySupplyDrop()
     {
-        planeDropManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies);
+        planeDropManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies); //can catch plane manager and track it
 
     }
 
@@ -52,7 +57,19 @@ public class GameManager : MonoBehaviour {
             DeployPlayersInPlane();
         }
 
-        if (QueSupplyDrop)
+        else if (StartSkyDiving)
+        {
+            StartSkyDiving = false;
+            //if you're lower than 100 feet, raise it up to a default value
+            if (skyDiveController.transform.position.y < skyDiveTestHeight)
+                skyDiveController.transform.position = new Vector3(skyDiveController.transform.position.x,
+                    skyDiveTestHeight, skyDiveController.transform.position.z);
+
+            skyDiveController.BeginSkyDive();
+
+        }
+
+        else if (QueSupplyDrop)
         {
             QueSupplyDrop = false;//immediately set flag to false
             DeploySupplyDrop();
@@ -61,9 +78,35 @@ public class GameManager : MonoBehaviour {
 
     private bool VerifyReferences()
     {
-        if (players.Length < 1)
+        bool allReferencesOkay = true;
+        //verify players
+        if (players.Length < 1)//if no players loaded
         {
             players = GameObject.FindGameObjectsWithTag("Player");
+            if(players.Length < 1)//if no players tagged
+            {
+
+                Debug.LogError("ERROR! No Players found in scene. Tag one or double check BRS TPC.");
+                allReferencesOkay = false;
+            }
+            else
+            {
+            }
+        }
+        
+        //verify skyDiveController
+        if(skyDiveController == null)
+        {
+            if (players.Length < 1)
+            {
+                Debug.LogError("ERROR! cannot auto set skyDiveController without any players.");
+                allReferencesOkay = false;
+            }
+            else
+            {
+                skyDiveController = players[0].GetComponent<SkyDiveHandler>();
+            }
+
         }
 
         //if(supplies == null)
@@ -85,7 +128,7 @@ public class GameManager : MonoBehaviour {
         //    }
         //}
 
-        return true;
+        return allReferencesOkay;
 
     }
 }

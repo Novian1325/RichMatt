@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PlaneManager
+  - MapBounds
+  - Terrain
+  - ToolTip
+  - ToolTipManager
   layers:
   - Default
   - TransparentFX
@@ -14,9 +19,9 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
+  - MiniMap
+  - MiniMap Icons
+  - CaptureUI
   - 
   - 
   - 

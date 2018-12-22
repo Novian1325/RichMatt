@@ -67,7 +67,8 @@ namespace UnityStandardAssets.Vehicles.Aeroplane
             PitchInput = pitchInput;
             YawInput = yawInput;
             //ThrottleInput = throttleInput;
-            ThrottleInput = 1;
+            ThrottleInput = 1; //force plane always moving
+
             AirBrakes = airBrakes;
 
             ClampInputs();

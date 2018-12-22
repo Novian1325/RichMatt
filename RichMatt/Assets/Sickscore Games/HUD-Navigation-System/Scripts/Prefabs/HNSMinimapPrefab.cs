@@ -1,0 +1,42 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using SickscoreGames;
+
+namespace SickscoreGames.HUDNavigationSystem
+{
+	[AddComponentMenu (HNS.Name + "/HNS Minimap Prefab")]
+	public class HNSMinimapPrefab : HNSPrefab
+	{
+		#region Variables
+		[Header("Icon")]
+		[Tooltip("Assign an image component.")]
+		public Image Icon;
+
+		[Header("Height Arrows")]
+		[Tooltip("Assign the above arrow image component.")]
+		public Image ArrowAbove;
+		[Tooltip("Assign the above arrow image component.")]
+		public Image ArrowBelow;
+		#endregion
+
+
+		#region Main Methods
+		#endregion
+
+
+		#region Override Methods
+		/// <summary>
+		/// Change the color of the minimap icon.
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public override void ChangeIconColor (Color color)
+		{
+			base.ChangeIconColor (color);
+			if (Icon != null)
+				Icon.color = color;
+		}
+		#endregion
+	}
+}
