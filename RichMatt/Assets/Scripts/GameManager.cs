@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
     public bool QueSupplyDrop = false;
 
     [Header("SkyDiving")]
-    public SkyDiveTesting skyDiveController;
+    public SkyDiveHandler skyDiveController;
     public int skyDiveTestHeight = 500;
     
     private void Awake()

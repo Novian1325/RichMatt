@@ -30,7 +30,7 @@ public class PlayerInPlaneController : MonoBehaviour
     private bool isAllowedToJump = false;
 
     //references to other components
-    private SkyDiveTesting skyDiveController;
+    private SkyDiveHandler skyDiveController;
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
     private Rigidbody rb;
