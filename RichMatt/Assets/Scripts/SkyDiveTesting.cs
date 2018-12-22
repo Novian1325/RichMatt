@@ -9,22 +9,34 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
     
     [Header("SkyDiving Settings")]
-    [SerializeField] private float slowDrag = 0.6f; //target drag when slowing
-    [SerializeField] private float fallDrag = 0.5f;//normal drag
-    [SerializeField] private float swoopDrag = 0.01f;//drag when swooping (pitching)
-    [SerializeField] private float chuteDrag = 1.2f;// drag while chute is deployed
+    [Tooltip("Target drag when slowing.")]
+    [SerializeField] private float slowDrag = 0.6f; //
+    [Tooltip("Normal Drag when skydiving")]
+    [SerializeField] private float fallDrag = 0.5f;
+    [Tooltip("Drag when swooping(pitching)")]
+    [SerializeField] private float swoopDrag = 0.01f;//
+    [Tooltip("Drag while chute is deployed")]
+    [SerializeField] private float chuteDrag = 1.2f;// 
+    [Tooltip("How fast the character rolls")]
     [SerializeField] private float rollFactor = .25f;
-    [SerializeField] private int forceParachuteHeight = 100; //height at which parachute auto deploys
-    [SerializeField] private int deployParachuteLimit = 250; //character must be at least this distance to ground before being able to deploy 'chute
-    [SerializeField] private float attitudeChangeSpeed = 5f;//roll, yaw, pitch speed
-    [SerializeField] private float forwardMomentum = 10f;//player moves forward while falling not straight down "forward momentum"
-    [SerializeField] private float parachuteMometumModifier = .8f;
-    [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
-    [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
-    [SerializeField] private float parachuteStrafeSpeed = 7.5f;//how fast can the player move left to right when parachuting
-    //MUST BE NEGATIVE! Gets inverted if above 0
-
-    //private readonly float _CameraDistance = 10f;
+    [Tooltip("Height at which parachute auto deploys")]
+    [SerializeField] private int forceParachuteHeight = 100; //
+    [Tooltip("Character must be at least this distance to ground before being able to deploy 'chute")]
+    [SerializeField] private int deployParachuteLimit = 250; //
+    [Tooltip("roll, yaw, pitch speed")]
+    [SerializeField] private float attitudeChangeSpeed = 5f;//
+    [Tooltip("Rate at which player can move forward or backwards while swooping/parachuting")]
+    [SerializeField] private float forwardMomentum = 10f;//
+    [Tooltip("While parachuting, momentum is modified by this much.")]
+    [SerializeField] private float parachuteMomentumModifier = .8f;
+    [Tooltip("Maximum velocity a body can achieve in a freefall state")]
+    [SerializeField] private float terminalVelocity = -20f;//
+    [Tooltip("Maximum velocity a body can achieve in a parachute state")]
+    [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//
+    [Tooltip("How fast the player can move left to right when parachuting")]
+    [SerializeField] private float parachuteStrafeSpeed = 7.5f;
+    
+    [Tooltip("")]
     public Transform cameraPivotTransform; //camera look
     public Transform characterSwoopTransform; //used for pitch
     public Transform characterRollAxis;//used for rolling
@@ -171,7 +183,7 @@ public class SkyDiveTesting : MonoBehaviour
         float targetFM = 0;
         if (Mathf.Abs(verticalInput) > .01f)
         {
-            float maxFM = skyDivingState == SkyDivingStateENUM.parachuting ? forwardMomentum * parachuteMometumModifier : forwardMomentum;
+            float maxFM = skyDivingState == SkyDivingStateENUM.parachuting ? forwardMomentum * parachuteMomentumModifier : forwardMomentum;
 
             if (verticalInput > 0)
             {
