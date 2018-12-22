@@ -368,7 +368,6 @@ public class SkyDiveTesting : MonoBehaviour
         {
             float move = Input.GetAxis("Horizontal") * parachuteStrafeSpeed * Time.deltaTime;
             Vector3 moveVector = new Vector3(move, 0, 0);
-            Debug.Log(move);
             characterTransform.Translate(moveVector, Space.Self);
         }
 
