@@ -4,11 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PlaneManager
-  - MapBounds
-  - Terrain
-  - ToolTip
-  - ToolTipManager
+  - PlayerCollider
+  - Concrete
+  - Dirt
+  - Metal
+  - Wood
+  - Blood
   layers:
   - Default
   - TransparentFX
@@ -18,10 +19,12 @@ TagManager:
   - UI
   - 
   - 
-  - PostProcessing
-  - MiniMap
-  - MiniMap Icons
-  - CaptureUI
+  - PlayerRoot
+  - PlayerColliders
+  - IgnoreCollisionWithPlayer
+  - PlayerRagdoll
+  - LoadoutMenu
+  - PlayerBotSpottingCollider
   - 
   - 
   - 
@@ -39,9 +42,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - Minimap
   m_SortingLayers:
   - name: Default
     uniqueID: 0
