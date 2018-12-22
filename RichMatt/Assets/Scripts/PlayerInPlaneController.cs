@@ -119,6 +119,8 @@ public class PlayerInPlaneController : MonoBehaviour
 
     private void JumpFromPlane()
     {
+        Transform camTrans = Camera.main.transform;
+
         planeManager.OnPlayerJump(this);//tell the plane that this player has left
         ShowJumpPrompt(false);//disable tooltip UI
         skyDiveController.enabled = true;//turn on skydive controller and let it take control from here
@@ -127,12 +129,13 @@ public class PlayerInPlaneController : MonoBehaviour
         //handle player stuff
         playerTransform.SetParent(originalParent);
         playerTransform.position = planeManager.GetDropSpot().position; // set player to appear at planes location from wherever they were
+        playerTransform.rotation = camTrans.rotation;//player faces the same direction camera was facing when in plane
         rb.isKinematic = false;//body will now be controlled by physics forces
         rb.useGravity = true;//turn gravity back on for player
         playerCharacter.ShowPlayerModel(true);//make the player visible again
 
         //playerController.TogglePlayerControls(true);//normal control does not resume until after skydiving
-        Transform camTrans = Camera.main.transform;
+        
         camTrans.SetParent(originalPivot);//set parent back to player's pivot
         camTrans.localPosition = cameraStartingPosition;//reset
         camTrans.localRotation = Quaternion.identity;//set rotation to neutral relative to parent
