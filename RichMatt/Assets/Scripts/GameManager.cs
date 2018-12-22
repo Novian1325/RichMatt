@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour {
             }
             else
             {
-                skyDiveController = players[0].GetComponent<SkyDiveTesting>();
+                skyDiveController = players[0].GetComponent<SkyDiveHandler>();
             }
 
         }

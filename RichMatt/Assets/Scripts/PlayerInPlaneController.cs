@@ -61,7 +61,7 @@ public class PlayerInPlaneController : MonoBehaviour
         //disable player controls
         this.planeManager = planeMan;//will need to tell plane manager that it wants to jump
         this.cameraPivot = planeManager.GetCameraPivot();//sett the pivot to that of the plane
-        this.skyDiveController = GetComponent<SkyDiveTesting>();//get handle on SkyDive controller script
+        this.skyDiveController = GetComponent<SkyDiveHandler>();//get handle on SkyDive controller script
         this.playerCharacter = GetComponent<BRS_TPCharacter>();//get a reference to the character to get at its model
         this.playerController = GetComponent<BRS_TPController>();
         this.playerTransform = this.transform;
