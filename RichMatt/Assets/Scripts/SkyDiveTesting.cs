@@ -21,6 +21,7 @@ public class SkyDiveTesting : MonoBehaviour
     [SerializeField] private float parachuteMometumModifier = .8f;
     [SerializeField] private float terminalVelocity = -20f;//maximum velocity a body can achieve in a freefall state /
     [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//maximum velocity a body can achieve in a parachute state /
+    [SerializeField] private float parachuteStrafeSpeed = 7.5f;//how fast can the player move left to right when parachuting
     //MUST BE NEGATIVE! Gets inverted if above 0
 
     //private readonly float _CameraDistance = 10f;
@@ -144,6 +145,7 @@ public class SkyDiveTesting : MonoBehaviour
     {
         //Debug.Log("Parachuting()");
         SetTargetRotations();
+        ParachuteStrafe();//move left/right when parachuting
         HandlePlayerMovement();//rotate character model;//maybe handle drag differently here?
 
     }
@@ -357,6 +359,19 @@ public class SkyDiveTesting : MonoBehaviour
         rb.velocity = rb.velocity.y < velocityCap ? new Vector3(rb.velocity.x, velocityCap, rb.velocity.z) : rb.velocity;
         
         //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity);
+    }
+
+    private void ParachuteStrafe()
+    {
+        //moves the character left and right based on user input
+        if(Input.GetAxis("Horizontal") != 0)
+        {
+            float move = Input.GetAxis("Horizontal") * parachuteStrafeSpeed * Time.deltaTime;
+            Vector3 moveVector = new Vector3(move, 0, 0);
+            Debug.Log(move);
+            characterTransform.Translate(moveVector, Space.Self);
+        }
+
     }
 
     private void CheckForRipCord()
