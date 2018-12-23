@@ -20,6 +20,9 @@ public class BRS_TacticalMarker : MonoBehaviour
     private float distancePollingTimer = 0f; //used to keep track of time and limit distance polling rate
     private readonly int distanceToMarkerPollsPerSecond = 2;// this affects perfomance. How often should the distance between the player and marker be checked?
 
+    private Transform minimapCameraXform;
+    private readonly int iconHeightOffset = 1000;
+
     //TODO
     //hold 't' for 3 seconds to remove marker from map
     //destroy marker if distance is too great
@@ -30,7 +33,9 @@ public class BRS_TacticalMarker : MonoBehaviour
 	{
         if (TacticalMarkerPrefab == null) Debug.LogError("ERROR! No Tactical Marker Prefab set!");
 		playerCameraXform = Camera.main.transform;//get the player's camera
-	}
+        minimapCameraXform = GameObject.FindGameObjectWithTag("MiniMap Camera").transform;
+
+    }
 
     private void DestroyExistingTacticalMarkerAtDistanceLimit()
     {
@@ -110,6 +115,12 @@ public class BRS_TacticalMarker : MonoBehaviour
             tacticalMarkerInstance.transform.SetParent(hitInfo.collider.gameObject.transform);
             //TODO change the color of this marker to match the player's color for identification purposes
             
+            //raise children icons above everything else in scene
+            foreach(Transform child in tacticalMarkerInstance.transform)
+            {
+                child.Translate(0, minimapCameraXform.position.y - iconHeightOffset, 0);
+            }
+
 		}
 	}
     
