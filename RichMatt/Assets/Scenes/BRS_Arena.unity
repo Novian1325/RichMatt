@@ -1755,6 +1755,11 @@ Prefab:
       propertyPath: m_TagString
       value: MiniMap Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 114894427430186796, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: miniMapHeight
+      value: 5000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}
   m_IsPrefabAsset: 0
