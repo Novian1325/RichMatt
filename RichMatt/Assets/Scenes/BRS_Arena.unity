@@ -336,6 +336,14 @@ Prefab:
       propertyPath: objectToFollow
       value: 
       objectReference: {fileID: 975978108}
+    - target: {fileID: 4736738986692252, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4736738986692252, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.65
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
   m_IsPrefabAsset: 0
@@ -609,7 +617,7 @@ Prefab:
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
       propertyPath: StartInPlane
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
@@ -1742,6 +1750,10 @@ Prefab:
         type: 2}
       propertyPath: m_CullingMask.m_Bits
       value: 1552
+      objectReference: {fileID: 0}
+    - target: {fileID: 1145657273543764, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}
+      propertyPath: m_TagString
+      value: MiniMap Camera
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}
