@@ -117,7 +117,11 @@ public class PlaneManager : MonoBehaviour
         if (cargo_Supplies != null)
         {
             if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
-            Instantiate(cargo_Supplies, dropSpot.position, Quaternion.identity);
+            Instantiate(cargo_Supplies, dropSpot.position, this.transform.rotation);
+        }
+        else
+        {
+            Debug.Log("No Supplies Given to Plane. This text lets you know the code worked correctly.");
         }
 
     }
@@ -163,8 +167,8 @@ public class PlaneManager : MonoBehaviour
             //Force All Players out (if there are any)
             if (this.cargo_Players != null && cargo_Players.Length > 0) ForceOutPlayers();
 
-            //drop supplies, if any
-            if (this.cargo_Supplies != null) DropSupplies();
+            //drop supplies
+            DropSupplies();
             
         }
 

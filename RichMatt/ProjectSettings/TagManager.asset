@@ -9,6 +9,7 @@ TagManager:
   - Terrain
   - ToolTip
   - ToolTipManager
+  - MiniMap Camera
   layers:
   - Default
   - TransparentFX

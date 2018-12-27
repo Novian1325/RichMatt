@@ -7,10 +7,15 @@ public class SupplyDrop : MonoBehaviour
 {
     
     [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
+    [Tooltip("Fastest downward speed of object. MUST BE NEGATIVE.")]
     [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
+    [Tooltip("Fastest downward speed of object when in parachute state. MUST BE NEGATIVE.")]
     [SerializeField] private int parachuteTerminalVelocity = -9;
-    [SerializeField] private float forwardMomentum = .03f;
-    [Range(0, 1)]//after the object is this percentage of the distance to the ground, pull the chute
+    [Tooltip("How much physics force is applied to the Supply Drop to drift forward")]
+    [SerializeField] private float forwardMomentum = .05f;
+
+    [Range(.2f, 1)]//after the object is this percentage of the distance to the ground, pull the chute
+    [Tooltip("At what percent of initial height should the parachute deploy at? Lower number means lower altitude.")]
     [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
     private readonly float supplyDropDrag = .5f;
 
@@ -19,10 +24,11 @@ public class SupplyDrop : MonoBehaviour
     private int initialDistanceToGround = 0;//distance from instantiated point to ground
     private Animator anim;
     private Rigidbody rb;
+    [Tooltip("Prefab of Parachute")]
     [SerializeField] private Parachute parachute;
     //[SerializeField] private bool parachuteDeployed = false;
 
-    public GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
+    [SerializeField] private GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
     
     private void AddIconToMiniMap()
     {
@@ -135,7 +141,7 @@ public class SupplyDrop : MonoBehaviour
                 //fall
             case SkyDivingStateENUM.parachuting:
                 //force forward
-                this.rb.AddForce(Vector3.forward * forwardMomentum, ForceMode.Impulse);
+                this.rb.AddForce(this.transform.forward * forwardMomentum, ForceMode.Impulse);
                 break;
 
             case SkyDivingStateENUM.startLanded:

@@ -1420,6 +1420,7 @@ GameObject:
   - component: {fileID: 114565705077904430}
   - component: {fileID: 114623461945884066}
   - component: {fileID: 114072262533309348}
+  - component: {fileID: 114150605340197970}
   m_Layer: 0
   m_Name: BRS_TPC
   m_TagString: Player
@@ -3068,6 +3069,20 @@ MonoBehaviour:
   offset: {x: 0, y: 1.84, z: -3.45}
   followSpeed: 10
   lookSpeed: 10
+--- !u!114 &114150605340197970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1941973348895546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257d2703d2be0f747a802f5095a942d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TacticalMarkerPrefab: {fileID: 1719107597108838, guid: 8a952bd2b71bddc40b3833f03149bf4b,
+    type: 2}
+  distanceText: {fileID: 0}
 --- !u!114 &114565705077904430
 MonoBehaviour:
   m_ObjectHideFlags: 1
