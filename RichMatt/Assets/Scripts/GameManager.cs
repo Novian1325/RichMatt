@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
     public bool StartSkyDiving = false;
     public GameObject[] players;
 
-    public BRS_PlaneDropManager planeDropManager;
+    public BRS_PlanePathManager planeDropManager;
 
     public GameObject zoneWall;
     //public BRS_ChangeCircle zoneWallChangeCircle;
@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
     public bool QueSupplyDrop = false;
 
     [Header("SkyDiving")]
-    public SkyDiveTesting skyDiveController;
+    public SkyDiveHandler skyDiveController;
     public int skyDiveTestHeight = 500;
     
     private void Awake()
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour {
             }
             else
             {
-                skyDiveController = players[0].GetComponent<SkyDiveTesting>();
+                skyDiveController = players[0].GetComponent<SkyDiveHandler>();
             }
 
         }

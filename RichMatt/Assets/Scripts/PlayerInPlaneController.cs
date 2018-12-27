@@ -30,7 +30,7 @@ public class PlayerInPlaneController : MonoBehaviour
     private bool isAllowedToJump = false;
 
     //references to other components
-    private SkyDiveTesting skyDiveController;
+    private SkyDiveHandler skyDiveController;
     private BRS_TPCharacter playerCharacter;
     private BRS_TPController playerController;
     private Rigidbody rb;
@@ -61,7 +61,7 @@ public class PlayerInPlaneController : MonoBehaviour
         //disable player controls
         this.planeManager = planeMan;//will need to tell plane manager that it wants to jump
         this.cameraPivot = planeManager.GetCameraPivot();//sett the pivot to that of the plane
-        this.skyDiveController = GetComponent<SkyDiveTesting>();//get handle on SkyDive controller script
+        this.skyDiveController = GetComponent<SkyDiveHandler>();//get handle on SkyDive controller script
         this.playerCharacter = GetComponent<BRS_TPCharacter>();//get a reference to the character to get at its model
         this.playerController = GetComponent<BRS_TPController>();
         this.playerTransform = this.transform;
@@ -119,6 +119,8 @@ public class PlayerInPlaneController : MonoBehaviour
 
     private void JumpFromPlane()
     {
+        Transform camTrans = Camera.main.transform;
+
         planeManager.OnPlayerJump(this);//tell the plane that this player has left
         ShowJumpPrompt(false);//disable tooltip UI
         skyDiveController.enabled = true;//turn on skydive controller and let it take control from here
@@ -127,12 +129,13 @@ public class PlayerInPlaneController : MonoBehaviour
         //handle player stuff
         playerTransform.SetParent(originalParent);
         playerTransform.position = planeManager.GetDropSpot().position; // set player to appear at planes location from wherever they were
+        playerTransform.rotation = camTrans.rotation;//player faces the same direction camera was facing when in plane
         rb.isKinematic = false;//body will now be controlled by physics forces
         rb.useGravity = true;//turn gravity back on for player
         playerCharacter.ShowPlayerModel(true);//make the player visible again
 
         //playerController.TogglePlayerControls(true);//normal control does not resume until after skydiving
-        Transform camTrans = Camera.main.transform;
+        
         camTrans.SetParent(originalPivot);//set parent back to player's pivot
         camTrans.localPosition = cameraStartingPosition;//reset
         camTrans.localRotation = Quaternion.identity;//set rotation to neutral relative to parent

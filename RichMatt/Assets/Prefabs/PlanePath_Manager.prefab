@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4997161275527798}
   - component: {fileID: 114630260696749518}
   m_Layer: 0
-  m_Name: PlaneDrop_Manager
+  m_Name: PlanePath_Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

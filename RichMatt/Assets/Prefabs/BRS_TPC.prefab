@@ -1337,6 +1337,7 @@ GameObject:
   - component: {fileID: 114696388325903184}
   - component: {fileID: 81966060833717112}
   - component: {fileID: 114073933161775386}
+  - component: {fileID: 114602218308527934}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2848,8 +2849,8 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
+  m_AllowMSAA: 0
+  m_AllowDynamicResolution: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -3088,9 +3089,10 @@ MonoBehaviour:
   deployParachuteLimit: 10000
   attitudeChangeSpeed: 5
   forwardMomentum: 38
-  parachuteMometumModifier: 0.5
+  parachuteMomentumModifier: 0.8
   terminalVelocity: -50
   parachuteTerminalVelocityModifier: 0.25
+  parachuteStrafeSpeed: 7.5
   cameraPivotTransform: {fileID: 4750000278564472}
   characterSwoopTransform: {fileID: 4194695862080004}
   characterRollAxis: {fileID: 4728676684435884}
@@ -3100,8 +3102,19 @@ MonoBehaviour:
   smoothCamera: 1
   Parachute: {fileID: 114718193495057154}
   zoomPoint: {fileID: 4532797397029042}
-  cameraTransformBeforeZoom: {fileID: 4943463622790514}
   zoomSpeed: 0.1
+--- !u!114 &114602218308527934
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1926282694239218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 6d227a7ee40c88b4eb968bea34f84e37, type: 2}
 --- !u!114 &114623461945884066
 MonoBehaviour:
   m_ObjectHideFlags: 1
