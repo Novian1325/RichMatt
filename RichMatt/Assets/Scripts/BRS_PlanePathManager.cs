@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BRS_PlaneDropManager : MonoBehaviour
+public class BRS_PlanePathManager : MonoBehaviour
 
 {
     //public GameObject EndPointBall;

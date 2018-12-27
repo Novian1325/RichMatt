@@ -6,14 +6,14 @@ public class GameManager : MonoBehaviour {
     [Header("GameSettings")]
     [Tooltip("Enable to have the Players start in the airplane. Disable to allow them to start on ground.")]
     [SerializeField] private bool startInPlane = false;
-
+    
     [Tooltip("Enable to have the Players start in the skydiving state up in the air.")]
     [SerializeField] private bool startSkyDiving = false;
     [Tooltip("Players in the game. If not a single player is found, a search will be done for all objects tagged \"Player\" in scene.")]
     [SerializeField] private GameObject[] players;
 
     [Tooltip("The object that will calculate the randomized flight path.")]
-    [SerializeField] private BRS_PlaneDropManager planeDropManager;
+    [SerializeField] private BRS_PlanePathManager planePathManager;
 
     [SerializeField] private GameObject zoneWall;
     //public BRS_ChangeCircle zoneWallChangeCircle;
@@ -35,14 +35,14 @@ public class GameManager : MonoBehaviour {
 
     private void DeployPlayersInPlane()
     {
-        planeDropManager.InitPlaneDrop(DropTypeENUM.PLAYER, players);
+        planePathManager.InitPlaneDrop(DropTypeENUM.PLAYER, players);
 
 
     }
 
     public void DeploySupplyDrop()
     {
-        planeDropManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies); //can catch plane manager and track it
+        planePathManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies); //can catch plane manager and track it
 
     }
 

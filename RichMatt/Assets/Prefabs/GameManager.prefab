@@ -51,12 +51,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0216c4f5c7a957445976b80c79c8378a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartInPlane: 1
-  StartSkyDiving: 0
+  startInPlane: 0
+  startSkyDiving: 0
   players: []
-  planeDropManager: {fileID: 0}
+  planePathManager: {fileID: 0}
   zoneWall: {fileID: 0}
-  supplies: []
-  QueSupplyDrop: 0
+  supplies:
+  - {fileID: 1622644923095192, guid: 8986455f71328ed47a1902a8f4fa9790, type: 2}
+  queSupplyDrop: 0
   skyDiveController: {fileID: 0}
-  skyDiveTestHeight: 300
+  skyDiveTestHeight: 500
