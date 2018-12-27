@@ -228,7 +228,10 @@ public class BRS_PlaneDropManager : MonoBehaviour
         if (DEBUG)
         {
             GameObject startMark = ConfigureEndpoint(planeStartPoint);
-            startMark.name = "StartMarker: " + unsuccessfulPasses;
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append("StartMarker: ");
+            stringBuilder.Append(unsuccessfulPasses);
+            startMark.name = stringBuilder.ToString();
             if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
         }
@@ -243,7 +246,13 @@ public class BRS_PlaneDropManager : MonoBehaviour
             endpointMarker = ConfigureEndpoint(planeEndPoint);
             if (DEBUG)
             {
-                endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
+                //name endpointMarker for debugging purposes
+                System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+                stringBuilder.Append("Endpoint Marker ");
+                stringBuilder.Append(unsuccessfulPasses);
+                stringBuilder.Append(".");
+                stringBuilder.Append(endPointsFound);
+                endpointMarker.name = stringBuilder.ToString();
             }
 
             //test if flight path goes through LZ
