@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: b6ae4424aa2aa0641b78255e646ccd5e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - splashTexture: {fileID: 2800000, guid: 5d7f9cb53d70f1342a62fd5f819067d7, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

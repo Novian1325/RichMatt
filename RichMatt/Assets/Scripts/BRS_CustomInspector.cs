@@ -11,9 +11,8 @@ public class BRS_CustomInspector : Editor
     public override void OnInspectorGUI()
     {
         //DrawDefaultInspector();
-
         Rect rect = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none, GUILayout.Height(100f));
-        GUI.DrawTexture(rect, splashTexture, ScaleMode.ScaleAndCrop, true, 0f);
+        GUI.DrawTexture(rect, splashTexture, ScaleMode.ScaleToFit, true, 0f);
         base.OnInspectorGUI();
     }
 }
