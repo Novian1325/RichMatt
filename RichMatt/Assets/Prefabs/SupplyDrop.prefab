@@ -468,7 +468,7 @@ MonoBehaviour:
   freefallingState: 1
   terminalVelocity: -18
   parachuteTerminalVelocity: -9
-  forwardMomentum: 0.03
+  forwardMomentum: 0.05
   deployParachuteDistancePercent: 0.25
   parachute: {fileID: 114618455601293862}
   supplies: []

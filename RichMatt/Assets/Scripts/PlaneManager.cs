@@ -117,7 +117,7 @@ public class PlaneManager : MonoBehaviour
         if (cargo_Supplies != null)
         {
             if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
-            Instantiate(cargo_Supplies, dropSpot.position, Quaternion.identity);
+            Instantiate(cargo_Supplies, dropSpot.position, this.transform.rotation);
         }
         else
         {
