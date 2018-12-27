@@ -194,6 +194,12 @@ public class BRS_PlanePathManager : MonoBehaviour
         return false;
     }
 
+    public bool InitPlaneDrop(DropTypeENUM dropType, GameObject incomingCargo)
+    {
+        cargo_Supplies = incomingCargo;
+        return InitPlaneDrop(dropType);
+    }
+
     public bool InitPlaneDrop(DropTypeENUM dropType, GameObject[] incomingCargo)
     {
         if(incomingCargo.Length > 0) LoadCargo(incomingCargo);

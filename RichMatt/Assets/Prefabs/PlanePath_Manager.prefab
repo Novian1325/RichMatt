@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 114630260696749518}
   m_Layer: 0
   m_Name: PlanePath_Manager
-  m_TagString: Untagged
+  m_TagString: PlanePathManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -272,7 +272,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1194410541224990}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 75, z: 0}
+  m_LocalPosition: {x: 0, y: 250, z: 0}
   m_LocalScale: {x: 1000, y: 1, z: 1000}
   m_Children: []
   m_Father: {fileID: 4997161275527798}
@@ -638,7 +638,7 @@ MonoBehaviour:
   - {fileID: 1489573941312442}
   BRS_PlaneSpawn: {fileID: 1535088515930718, guid: 561ed58d5b5b7d3428a78123e277914e,
     type: 2}
-  planeSpeed_PlayerDrop: 75
+  planeSpeed_PlayerDrop: 50
   planeSpeed_SupplyDrop: 350
   DEBUG: 0
 --- !u!136 &136116279990412144
