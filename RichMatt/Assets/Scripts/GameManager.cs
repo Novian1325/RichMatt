@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
     public bool StartSkyDiving = false;
     public GameObject[] players;
 
-    public BRS_PlaneDropManager planeDropManager;
+    public BRS_PlanePathManager planeDropManager;
 
     public GameObject zoneWall;
     //public BRS_ChangeCircle zoneWallChangeCircle;

@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 
-[CustomEditor(typeof(BRS_PlaneDropManager))]
-public class BRS_PlaneDropManagerInspector : Editor
+[CustomEditor(typeof(BRS_PlanePathManager))]
+public class BRS_PlanePathManagerInspector : Editor
 {
     public Texture2D splashTexture;
 
