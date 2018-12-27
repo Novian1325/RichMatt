@@ -4,22 +4,29 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     [Header("GameSettings")]
-    public bool StartInPlane = false;
-    public bool StartSkyDiving = false;
-    public GameObject[] players;
+    [Tooltip("Enable to have the Players start in the airplane. Disable to allow them to start on ground.")]
+    [SerializeField] private bool startInPlane = false;
 
-    public BRS_PlaneDropManager planeDropManager;
+    [Tooltip("Enable to have the Players start in the skydiving state up in the air.")]
+    [SerializeField] private bool startSkyDiving = false;
+    [Tooltip("Players in the game. If not a single player is found, a search will be done for all objects tagged \"Player\" in scene.")]
+    [SerializeField] private GameObject[] players;
 
-    public GameObject zoneWall;
+    [Tooltip("The object that will calculate the randomized flight path.")]
+    [SerializeField] private BRS_PlaneDropManager planeDropManager;
+
+    [SerializeField] private GameObject zoneWall;
     //public BRS_ChangeCircle zoneWallChangeCircle;
 
     [Header("Supply Drop")]
-    public GameObject[] supplies;
-    public bool QueSupplyDrop = false;
+    //THIS STUFF SHOULD BE MIGRATED TO A NEW SUPPLYDROP MANAGER CLASS
+    [SerializeField] private GameObject[] supplies;
+    [SerializeField] private bool queSupplyDrop = false;
 
     [Header("SkyDiving")]
-    public SkyDiveHandler skyDiveController;
-    public int skyDiveTestHeight = 500;
+    [SerializeField] private SkyDiveHandler skyDiveController;
+    [Tooltip("This is the height the Player will start at if \"startSkyDiving\" is true.")]
+    [SerializeField] private int skyDiveTestHeight = 500;
     
     private void Awake()
     {
@@ -51,15 +58,15 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (StartInPlane)
+        if (startInPlane)
         {
-            StartInPlane = false;//immediately set flag to false
+            startInPlane = false;//immediately set flag to false
             DeployPlayersInPlane();
         }
 
-        else if (StartSkyDiving)
+        else if (startSkyDiving)
         {
-            StartSkyDiving = false;
+            startSkyDiving = false;
             //if you're lower than 100 feet, raise it up to a default value
             if (skyDiveController.transform.position.y < skyDiveTestHeight)
                 skyDiveController.transform.position = new Vector3(skyDiveController.transform.position.x,
@@ -69,9 +76,9 @@ public class GameManager : MonoBehaviour {
 
         }
 
-        else if (QueSupplyDrop)
+        else if (queSupplyDrop)
         {
-            QueSupplyDrop = false;//immediately set flag to false
+            queSupplyDrop = false;//immediately set flag to false
             DeploySupplyDrop();
         }
     }
