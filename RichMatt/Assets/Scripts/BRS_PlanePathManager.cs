@@ -6,17 +6,25 @@ public class BRS_PlanePathManager : MonoBehaviour
 {
     //public GameObject EndPointBall;
     [Header("Map Settings")]
-    public Transform planeSpawnBounds;//where can the plane start and stop?
-    public GameObject[] playerDropZones;//how big should the zone be that the plane flies through
-    public GameObject[] supplyDropZones;//list containing all areas the player can drop into
+    [Tooltip("This is the spawn boundary for the airplane. Airplane will spawn at the very edge of this cylinder/sphere")]
+    [SerializeField] private Transform planeSpawnBounds;//where can the plane start and stop?
+    [Tooltip("This is the list of volumes where the players are allowed to jump from the plane.")]
+    [SerializeField] private GameObject[] playerDropZones;//how big should the zone be that the plane flies through
+    [Tooltip("These are the volumes for supply drops. Supplies drop as soon as plane enters this volume.")]
+    [SerializeField] private GameObject[] supplyDropZones;//list containing all areas the player can drop into
 
     [Header("Plane Settings")]
-    public GameObject BRS_PlaneSpawn;//plane object (model) to spawn
+    [Tooltip("This is the plane prefab. Must include a PlaneManager script.")]
+    [SerializeField] private GameObject BRS_PlaneSpawn;//plane object (model) to spawn
 
-    public int planeSpeed_PlayerDrop = 150;
-    public int planeSpeed_SupplyDrop = 300;
+    [Tooltip("The plane's airspeed when carrying Players")]
+    [SerializeField] private int planeSpeed_PlayerDrop = 150;
 
-    public bool DEBUG = true;//if true, prints debug statements
+    [Tooltip("The plane's airspeed when on a supply drop sortie")]
+    [SerializeField] private int planeSpeed_SupplyDrop = 300;
+
+    [Tooltip("Enables Debug.Log statements and persistence of objects for debugging purposes.")]
+    [SerializeField] private bool DEBUG = true;//if true, prints debug statements
     
     private GameObject[] acceptableDropZones;
     private List<GameObject> endpointMarkerList = new List<GameObject>();
@@ -220,7 +228,10 @@ public class BRS_PlanePathManager : MonoBehaviour
         if (DEBUG)
         {
             GameObject startMark = ConfigureEndpoint(planeStartPoint);
-            startMark.name = "StartMarker: " + unsuccessfulPasses;
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append("StartMarker: ");
+            stringBuilder.Append(unsuccessfulPasses);
+            startMark.name = stringBuilder.ToString();
             if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
         }
@@ -235,7 +246,13 @@ public class BRS_PlanePathManager : MonoBehaviour
             endpointMarker = ConfigureEndpoint(planeEndPoint);
             if (DEBUG)
             {
-                endpointMarker.name = "Endpoint Marker " + unsuccessfulPasses + "." + endPointsFound;//name it for debugging purposes
+                //name endpointMarker for debugging purposes
+                System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+                stringBuilder.Append("Endpoint Marker ");
+                stringBuilder.Append(unsuccessfulPasses);
+                stringBuilder.Append(".");
+                stringBuilder.Append(endPointsFound);
+                endpointMarker.name = stringBuilder.ToString();
             }
 
             //test if flight path goes through LZ
@@ -308,6 +325,10 @@ public class BRS_PlanePathManager : MonoBehaviour
         plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
         //get plane manager
         PlaneManager planeManager = plane.GetComponent<PlaneManager>();
+        if(planeManager == null)
+        {
+            plane.AddComponent<PlaneManager>();//create it if it doesn't exist
+        }
         planeManager.InitPlane(targetDropZone, cargo_Players.ToArray(), cargo_Supplies, planeFlightSpeed);
         cargo_Players.Clear();
         return planeManager;
