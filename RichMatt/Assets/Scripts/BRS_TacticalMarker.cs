@@ -25,9 +25,6 @@ public class BRS_TacticalMarker : MonoBehaviour
 
     //TODO
     //hold 't' for 3 seconds to remove marker from map
-    //destroy marker if distance is too great
-
-    //what is the maximum distance away a player can set a tactical marker
 
     void Start ()
 	{
