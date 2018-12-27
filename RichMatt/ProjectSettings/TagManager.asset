@@ -4,12 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PlaneManager
   - MapBounds
   - Terrain
   - ToolTip
   - ToolTipManager
   - MiniMap Camera
+  - PlanePathManager
   layers:
   - Default
   - TransparentFX
