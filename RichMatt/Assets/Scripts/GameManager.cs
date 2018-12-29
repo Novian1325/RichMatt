@@ -18,11 +18,6 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private GameObject zoneWall;
     //public BRS_ChangeCircle zoneWallChangeCircle;
 
-    [Header("Supply Drop")]
-    //THIS STUFF SHOULD BE MIGRATED TO A NEW SUPPLYDROP MANAGER CLASS
-    [SerializeField] private GameObject[] supplies;
-    [SerializeField] private bool queSupplyDrop = false;
-
     [Header("SkyDiving")]
     [SerializeField] private SkyDiveHandler skyDiveController;
     [Tooltip("This is the height the Player will start at if \"startSkyDiving\" is true.")]
@@ -40,12 +35,6 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    public void DeploySupplyDrop()
-    {
-        planePathManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplies); //can catch plane manager and track it
-
-    }
-
     // Use this for initialization
     void Start () {
 
@@ -55,9 +44,10 @@ public class GameManager : MonoBehaviour {
         
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (startInPlane)
         {
             startInPlane = false;//immediately set flag to false
@@ -76,11 +66,6 @@ public class GameManager : MonoBehaviour {
 
         }
 
-        else if (queSupplyDrop)
-        {
-            queSupplyDrop = false;//immediately set flag to false
-            DeploySupplyDrop();
-        }
     }
 
     private bool VerifyReferences()
