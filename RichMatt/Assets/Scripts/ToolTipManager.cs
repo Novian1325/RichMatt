@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ToolTipManager : MonoBehaviour {
 
+    private static ToolTipManager toolTipManagerInstance;//for singleton pattern
+
     [SerializeField] private GameObject skydivePrompt;
     [SerializeField] private GameObject deployParachutePrompt;
     private List<GameObject> toolTips = new List<GameObject>();
@@ -17,6 +19,9 @@ public class ToolTipManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        //singleton pattern
+        SingletonPattern(); //ensures only one exists, if any
+
         //verify and init tooltips
         InitToolTips();
 
@@ -25,9 +30,22 @@ public class ToolTipManager : MonoBehaviour {
 
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void SingletonPattern()
+    {
+        if (!toolTipManagerInstance)
+        {
+            toolTipManagerInstance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 
