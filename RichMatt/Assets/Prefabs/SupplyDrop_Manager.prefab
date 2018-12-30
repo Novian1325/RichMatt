@@ -53,5 +53,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   supplyDropPrefab: {fileID: 1622644923095192, guid: 8986455f71328ed47a1902a8f4fa9790,
     type: 2}
-  queSupplyDrop: 0
   planePathManager: {fileID: 0}
+  queSupplyDrop: 0
+  randomTimedDrops: 1
+  initialDelayInSeconds: 3
+  minSpawnTime: 0
+  maxSpawnTime: 1

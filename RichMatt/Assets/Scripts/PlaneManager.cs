@@ -149,7 +149,7 @@ public class PlaneManager : MonoBehaviour
                 player.OnDropZoneEnter();
             }
             //drop supplies
-            //signify to Players they can drop
+            DropSupplies();
         }
     }
 
@@ -167,8 +167,6 @@ public class PlaneManager : MonoBehaviour
             //Force All Players out (if there are any)
             if (this.cargo_Players != null && cargo_Players.Length > 0) ForceOutPlayers();
 
-            //drop supplies
-            DropSupplies();
             
         }
 

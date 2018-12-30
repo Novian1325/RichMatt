@@ -2754,7 +2754,6 @@ MonoBehaviour:
   airspeed: 100
   cargo_Supplies: {fileID: 0}
   cargo_Players: []
-  hasDroppedCargo: 0
   planeCameraPivot: {fileID: 1728888186039676}
   dropSpot: {fileID: 4264691176117806}
   DEBUG: 0

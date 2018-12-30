@@ -42,6 +42,12 @@ public class SupplyDropManager : MonoBehaviour
         InitSingletonPattern();
 
         nextSupplyDropSpawnTime = Time.time + initialDelayInSeconds;
+
+        //weird things happen if max spawn time is less than 2
+        if(maxSpawnTime < 2)
+        {
+            maxSpawnTime = 2;
+        }
 	}
 
     private void InitSingletonPattern()
@@ -88,6 +94,7 @@ public class SupplyDropManager : MonoBehaviour
 
     public void DeploySupplyDrop()
     {
+        if (!supplyDropPrefab) Debug.LogError("Prefab is null!");
         planePathManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplyDropPrefab); //can catch plane manager and track it
 
     }
