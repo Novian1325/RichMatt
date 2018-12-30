@@ -11,15 +11,15 @@ public class SupplyDropManager : MonoBehaviour
     
     [SerializeField] private BRS_PlanePathManager planePathManager;
 
-    [Tooltip("This many seconds will pass before the first supply drop is sent.")]
-    [SerializeField] private int initialDelayInSeconds = 60;
-
     [Header("Spawn Settings")]
     [Tooltip("Developer can use this to immediately cause a Supply Drop to occur.")]
     [SerializeField] private bool queSupplyDrop = false;
 
     [Tooltip("Should Supply Drops be Deployed on a random timeline? If false, relies on outside code.")]
     [SerializeField] private bool randomTimedDrops = true;
+
+    [Tooltip("This many seconds will pass before the first supply drop is sent.")]
+    [SerializeField] private int initialDelayInSeconds = 60;
 
     [Tooltip("Wait at least this long before queing next Supply Drop")]
     [SerializeField] private int minSpawnTime = 30;
@@ -58,9 +58,10 @@ public class SupplyDropManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update () {
-
-        if(Time.time > nextSupplyDropSpawnTime)
+    void Update ()
+    {
+        
+        if(randomTimedDrops && Time.time > nextSupplyDropSpawnTime)
         {
             DeploySupplyDrop();
             nextSupplyDropSpawnTime += Random.Range(minSpawnTime, maxSpawnTime);
