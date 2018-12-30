@@ -56,6 +56,6 @@ MonoBehaviour:
   planePathManager: {fileID: 0}
   queSupplyDrop: 0
   randomTimedDrops: 1
-  initialDelayInSeconds: 3
-  minSpawnTime: 0
-  maxSpawnTime: 1
+  initialDelayInSeconds: 30
+  minSpawnTime: 30
+  maxSpawnTime: 60
