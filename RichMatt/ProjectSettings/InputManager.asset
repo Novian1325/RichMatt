@@ -295,7 +295,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Interact
-    descriptiveName: 
+    descriptiveName: Interact with objects in the world
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: f
