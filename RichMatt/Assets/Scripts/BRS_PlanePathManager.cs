@@ -46,7 +46,7 @@ public class BRS_PlanePathManager : MonoBehaviour
     private GameObject endpointMarker;
 
     private int unsuccessfulPasses = 0;
-    private readonly int flightPathChecksUntilFailure = 10;
+    private readonly int flightPathChecksUntilFailure = 15;
 
     //stuff to pass on to plane when deployed
     private GameObject targetDropZone;
@@ -310,7 +310,7 @@ public class BRS_PlanePathManager : MonoBehaviour
         if (++unsuccessfulPasses > flightPathChecksUntilFailure)//we've been here before
         {
             Debug.LogWarning("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
-
+            unsuccessfulPasses = 0;//reset tracker
             DestroyMarkerObjects();
             return false;
         }
