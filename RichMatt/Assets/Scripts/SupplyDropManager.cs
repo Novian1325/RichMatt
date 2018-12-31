@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SupplyDropManager : MonoBehaviour
 {
+    //only one supplydropmanager should exist
+    public static SupplyDropManager supplyDropManagerInstance;
+    private static readonly int DestroySupplyDropDistance = 1000;
+
     [Header("Supply Drop")]
 
     [Tooltip("Prefab of the Supply Drop. Should have a SupplyDrop component attached.")]
@@ -28,15 +32,10 @@ public class SupplyDropManager : MonoBehaviour
     [SerializeField] private int maxSpawnTime = 60;
 
     private float nextSupplyDropSpawnTime;//at what time will the next supply drop happen?
-
-    //only one supplydropmanager should exist
-    public static SupplyDropManager supplyDropManagerInstance;
-
+    
     //keep track of the amount of supply drops in the scene;
     private List<SupplyDrop> supplyDropList = new List<SupplyDrop>();
-
-    private static readonly int DestroySupplyDropDistance = 1000;
-
+    
     // Use this for initialization
     void Start () {
         InitSingletonPattern();
