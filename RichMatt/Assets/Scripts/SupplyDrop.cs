@@ -5,7 +5,7 @@ using UnityEngine;
  [RequireComponent(typeof(Rigidbody))]
 public class SupplyDrop : Interactable
 {
-
+    [Header("SupplyDrop")]
     private static int supplyDropCount = 0;
 
     [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;

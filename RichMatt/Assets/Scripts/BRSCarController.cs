@@ -5,6 +5,7 @@ using UnityStandardAssets.Vehicles;
 
 public class BRSCarController : Interactable
 {
+    [Header("BRSCarController")]
     [Tooltip("Point in space where Player appears when exiting vehicle.")]
     [SerializeField] private GameObject ExitPoint;
 
