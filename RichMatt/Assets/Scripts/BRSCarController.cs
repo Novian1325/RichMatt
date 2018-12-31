@@ -3,43 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Vehicles;
 
-public class BRSCarController : MonoBehaviour
+public class BRSCarController : Interactable
 {
-    public GameObject ExitPoint;
-    public GameObject CameraPoint;
+    [SerializeField] private GameObject ExitPoint;
+    [SerializeField] private GameObject Visuals;
+    [SerializeField] private GameObject Player;
+    [SerializeField] private GameObject tooltipEnterVehicle;
+
     private UnityStandardAssets.Vehicles.Car.CarController CarController;
     private SimpleCarController SCC;
     private BRS_TPController TPCon;
     private BRS_TPCharacter TPChar;
     private UnityStandardAssets.Vehicles.Car.CarUserControl CarUserControl;
     private UnityStandardAssets.Vehicles.Car.CarAudio CarAudio;
-    private Collider CarZone;
-    private Camera cam;
+    private Transform cameraXform;
     private CameraFollowController CFC;
     private Quaternion PreviousCameraQuaternion;
     private Transform originalParent;
     private Vector3 originalPosition;
 
-    public GameObject Visuals;
-
-    public GameObject Player;
-
-    public bool InCar;
-    public bool InVehicleRange;
+    private bool playerInVehicle;
+    private InteractionManager playerIM;
 
 	// Use this for initialization
 	void Start ()
     {
+        if (!Player)
+        {
+            Player = GameObject.FindGameObjectWithTag("Player");
+        }
+
         Visuals.SetActive(false);
-        cam = Camera.main;
-        CFC = cam.GetComponent<CameraFollowController>();
+        cameraXform = Camera.main.transform;
+        CFC = cameraXform.GetComponent<CameraFollowController>();
         SCC = this.GetComponent<SimpleCarController>();
         TPCon = Player.GetComponent<BRS_TPController>();
         TPChar = Player.GetComponent<BRS_TPCharacter>();
         //CarController = gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarController>();
         //CarUserControl = gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>();
         //CarAudio = gameObject.GetComponent<UnityStandardAssets.Vehicles.Car.CarAudio>();
-        //CarZone = gameObject.GetComponent<BoxCollider>();
 
         //CarController.enabled = false;
         //CarUserControl.enabled = false;
@@ -49,48 +51,67 @@ public class BRSCarController : MonoBehaviour
         SCC.enabled = false;
 
         //Start the game with the Car turned off
-        InCar = false;
+        playerInVehicle = false;
+
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetButtonDown("Interact") && InVehicleRange)
+        if (playerInVehicle && Input.GetButtonDown("Interact"))
         {
-            if (InCar)
-            {
-                GetOutCar();
-            }
-            else
-            {
-                GetInCar();
-            }
+            Interact(playerIM);
+        }
+
+        ToggleTooltip(playerIsLookingAtObject);
+
+        if (playerIsLookingAtObject)
+        {
+            playerIsLookingAtObject = false;
+            
+        }
+        else
+        {
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    override public void Interact(InteractionManager im)
     {
-        if (other.gameObject.CompareTag("Player"))
+        playerIM = im;
+        if (playerInVehicle)
         {
-           InVehicleRange = true;
+            im.enabled = true;
+            playerIM = null;
+            ExitVehicle();
+        }
+        else
+        {
+            im.enabled = false;
+            EnterVehicle();
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    override public void ToggleTooltip(bool active)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (tooltipEnterVehicle)
         {
-            InVehicleRange = false;
+            tooltipEnterVehicle.SetActive(active);
+        }
+        else
+        {
+            
         }
     }
 
-    public void GetInCar()
+    public void EnterVehicle()
     {
-        InCar = true;
-        originalPosition = cam.transform.localPosition;
-        originalParent = cam.transform.parent.transform;
-        PreviousCameraQuaternion = cam.transform.localRotation;
-        cam.transform.SetParent(this.transform);
+        ToggleTooltip(false);
+
+        playerInVehicle = true;
+        originalPosition = cameraXform.transform.localPosition;
+        originalParent = cameraXform.transform.parent.transform;
+        PreviousCameraQuaternion = cameraXform.localRotation;
+        cameraXform.SetParent(this.transform);
 
         TPCon.TogglePlayerControls(false);
         TPChar.ShowPlayerModel(false);
@@ -106,9 +127,9 @@ public class BRSCarController : MonoBehaviour
         Visuals.SetActive(true);
     }
 
-    public void GetOutCar()
+    public void ExitVehicle()
     {
-        InCar = false;
+        playerInVehicle = false;
 
         //Player.SetActive(true);
         Player.transform.position = ExitPoint.transform.position;
@@ -125,8 +146,8 @@ public class BRSCarController : MonoBehaviour
         TPChar.ShowPlayerModel(true);
         Visuals.SetActive(false);
 
-        cam.transform.SetParent(originalParent);
-        cam.transform.localPosition = originalPosition;
-        cam.transform.localRotation = PreviousCameraQuaternion;
+        cameraXform.SetParent(originalParent);
+        cameraXform.localPosition = originalPosition;
+        cameraXform.localRotation = PreviousCameraQuaternion;
     }
 }
