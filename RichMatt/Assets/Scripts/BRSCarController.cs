@@ -6,7 +6,7 @@ using UnityStandardAssets.Vehicles;
 public class BRSCarController : Interactable
 {
     [SerializeField] private GameObject ExitPoint;
-    [SerializeField] private GameObject Visuals;
+    [SerializeField] private GameObject Visuals; //things like a player sitting on an ATV, players sitting in car seats
     [SerializeField] private GameObject Player;
 
     private UnityStandardAssets.Vehicles.Car.CarController CarController;
@@ -32,7 +32,7 @@ public class BRSCarController : Interactable
             Player = GameObject.FindGameObjectWithTag("Player");
         }
 
-        Visuals.SetActive(false);
+        if (Visuals) Visuals.SetActive(false);
         cameraXform = Camera.main.transform;
         CFC = cameraXform.GetComponent<CameraFollowController>();
         SCC = this.GetComponent<SimpleCarController>();
@@ -104,7 +104,7 @@ public class BRSCarController : Interactable
         CFC.objectToFollow = this.transform;
         SCC.enabled = true;
         TPCon.enabled = false;
-        Visuals.SetActive(true);
+        if(Visuals) Visuals.SetActive(true);
     }
 
     public void ExitVehicle()
@@ -124,7 +124,7 @@ public class BRSCarController : Interactable
         SCC.enabled = false;
         TPCon.TogglePlayerControls(true);
         TPChar.ShowPlayerModel(true);
-        Visuals.SetActive(false);
+        if (Visuals) Visuals.SetActive(false);
 
         cameraXform.SetParent(originalParent);
         cameraXform.localPosition = originalPosition;
