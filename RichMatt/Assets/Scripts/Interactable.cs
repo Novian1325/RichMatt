@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
 {
+    [Header("Interactable")]
     [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
     [SerializeField] protected GameObject tooltipObject;
 
@@ -29,6 +31,7 @@ public class Interactable : MonoBehaviour
 	protected void Update ()
     {
         //Update must be called from derived class!
+
         //Handle Tooltips
         HandleTooltip();
     }
@@ -38,7 +41,7 @@ public class Interactable : MonoBehaviour
         //this method should probably be overridden by derived class, ie a vehicle should do something that an item does not
         System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
-        stringBuilder.Append(interactingObject.name);
+        stringBuilder.Append(interactingObject.gameObject.name);
         stringBuilder.Append(" is interacting with ");
         stringBuilder.Append(this.gameObject.name);
 
