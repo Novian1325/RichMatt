@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Interactable : MonoBehaviour {
 
-    [SerializeField] private bool DEBUG = false;
+    protected bool playerIsLookingAtObject = false;
 
 	// Use this for initialization
 	void Start () {
@@ -16,30 +14,31 @@ public class Interactable : MonoBehaviour {
 		
 	}
 
-    public void Interact(InteractionManager interactingObject)
+    public virtual void Interact(InteractionManager interactingObject)
     {
-        if (DEBUG)
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+        //this method should probably be overridden by derived class, ie a vehicle should do something that an item does not
+        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
-            stringBuilder.Append(interactingObject.name);
-            stringBuilder.Append(" is interacting with ");
-            stringBuilder.Append(this.gameObject.name);
+        stringBuilder.Append(interactingObject.name);
+        stringBuilder.Append(" is interacting with ");
+        stringBuilder.Append(this.gameObject.name);
 
-            Debug.Log(stringBuilder.ToString());
-        }
-
-        SendMessage("OnInteract", interactingObject);
+        Debug.Log(stringBuilder.ToString());
     }
 
-    public void ToggleToolTipVisibility(bool active)
+    public virtual void PlayerIsLookingAtObject(bool b)
     {
-        if (DEBUG)
-        {
-            Debug.Log("Tooltip is visible: " + active);
-        }
+        playerIsLookingAtObject = b;
+    }
 
-        SendMessage("ToggleToolTipVisibility", active);
+    public virtual bool GetPlayerIsLookingAtObject()
+    {
+        return playerIsLookingAtObject;
+    }
+
+    public virtual void ToggleTooltip(bool active)
+    {
 
     }
+    
 }
