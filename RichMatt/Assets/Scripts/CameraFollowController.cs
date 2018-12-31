@@ -9,6 +9,14 @@ public class CameraFollowController : MonoBehaviour
     public float followSpeed = 10;
     public float lookSpeed = 10;
 
+    private void Start()
+    {
+        if (!objectToFollow)
+        {
+            this.enabled = false;
+        }
+    }
+
 
     public void LookAtTarget()
     {

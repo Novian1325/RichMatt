@@ -55,9 +55,9 @@ public class BRSCarController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if(Input.GetButtonDown("Interact") && InVehicleRange)
+        if (Input.GetButtonDown("Interact") && InVehicleRange)
         {
-            if(InCar)
+            if (InCar)
             {
                 GetOutCar();
             }
@@ -66,7 +66,7 @@ public class BRSCarController : MonoBehaviour
                 GetInCar();
             }
         }
-	}
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -100,6 +100,7 @@ public class BRSCarController : MonoBehaviour
         //CarAudio.enabled = false;
         //CameraPoint.SetActive(true);
         CFC.enabled = true;
+        CFC.objectToFollow = this.transform;
         SCC.enabled = true;
         TPCon.enabled = false;
         Visuals.SetActive(true);
