@@ -2148,11 +2148,10 @@ GameObject:
   - component: {fileID: 54665803426355838}
   - component: {fileID: 65561359121033826}
   - component: {fileID: 114887587083166644}
-  - component: {fileID: 65706342650163996}
   - component: {fileID: 114550139515015370}
   m_Layer: 0
   m_Name: BRS_Vehicle_ATV
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4513,8 +4512,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1793241539827872}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 103.55, y: 26.37, z: -133.18}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4667175487648242}
@@ -8280,18 +8279,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.9055905, y: 0.49173737, z: 1.5666883}
   m_Center: {x: 0, y: -0.08002472, z: 0.035994112}
---- !u!65 &65706342650163996
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1793241539827872}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.79, y: 0.61930156, z: 2.06}
-  m_Center: {x: 0, y: -0.00850381, z: 0.035994112}
 --- !u!95 &95856472578884712
 Animator:
   serializedVersion: 3
@@ -8325,8 +8312,7 @@ MonoBehaviour:
   CameraPoint: {fileID: 0}
   Visuals: {fileID: 1797908138247130}
   Player: {fileID: 0}
-  InCar: 0
-  InVehicleRange: 0
+  tooltipEnterVehicle: {fileID: 0}
 --- !u!114 &114887587083166644
 MonoBehaviour:
   m_ObjectHideFlags: 1
