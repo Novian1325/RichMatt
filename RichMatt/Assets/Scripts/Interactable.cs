@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 
-public class Interactable : MonoBehaviour {
-
+public class Interactable : MonoBehaviour
+{
+    [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
     [SerializeField] protected GameObject tooltipObject;
+
     protected bool playerIsLookingAtObject = false;
 
     // Use this for initialization
