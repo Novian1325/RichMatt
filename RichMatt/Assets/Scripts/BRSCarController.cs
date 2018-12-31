@@ -5,8 +5,12 @@ using UnityStandardAssets.Vehicles;
 
 public class BRSCarController : Interactable
 {
+    [Tooltip("Point in space where Player appears when exiting vehicle.")]
     [SerializeField] private GameObject ExitPoint;
+
+    [Tooltip("things like a player sitting on an ATV, players sitting in car seats")]
     [SerializeField] private GameObject Visuals; //things like a player sitting on an ATV, players sitting in car seats
+
     [SerializeField] private GameObject Player;
 
     private UnityStandardAssets.Vehicles.Car.CarController CarController;
