@@ -49,7 +49,7 @@ public class SimpleCarController : MonoBehaviour
         UpdateWheelPose(rearPassengerW, rearPassengerT);
     }
 
-    private void UpdateWheelPose(WheelCollider _collider, Transform _transform)
+    private static void UpdateWheelPose(WheelCollider _collider, Transform _transform)
     {
         Vector3 _pos = _transform.position;
         Quaternion _quat = _transform.rotation;
@@ -75,6 +75,7 @@ public class SimpleCarController : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
         frontDriverW.motorTorque = 0;
         frontPassengerW.motorTorque = 0;
+        //maybe also freeze all rb.Constraints to avoid sliding downhill
     }
 
 }
