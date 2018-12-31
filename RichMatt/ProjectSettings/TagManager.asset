@@ -10,6 +10,7 @@ TagManager:
   - ToolTipManager
   - MiniMap Camera
   - PlanePathManager
+  - Interactable
   layers:
   - Default
   - TransparentFX
