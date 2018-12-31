@@ -8,7 +8,6 @@ public class BRSCarController : Interactable
     [SerializeField] private GameObject ExitPoint;
     [SerializeField] private GameObject Visuals;
     [SerializeField] private GameObject Player;
-    [SerializeField] private GameObject tooltipEnterVehicle;
 
     private UnityStandardAssets.Vehicles.Car.CarController CarController;
     private SimpleCarController SCC;
@@ -56,23 +55,16 @@ public class BRSCarController : Interactable
     }
 	
 	// Update is called once per frame
-	void Update ()
+	new void Update ()
     {
         if (playerInVehicle && Input.GetButtonDown("Interact"))
         {
             Interact(playerIM);
         }
 
-        ToggleTooltip(playerIsLookingAtObject);
-
-        if (playerIsLookingAtObject)
-        {
-            playerIsLookingAtObject = false;
-            
-        }
-        else
-        {
-        }
+        base.Update();
+        //or HandleTooltip();
+        
     }
 
     override public void Interact(InteractionManager im)
@@ -88,18 +80,6 @@ public class BRSCarController : Interactable
         {
             im.enabled = false;
             EnterVehicle();
-        }
-    }
-
-    override public void ToggleTooltip(bool active)
-    {
-        if (tooltipEnterVehicle)
-        {
-            tooltipEnterVehicle.SetActive(active);
-        }
-        else
-        {
-            
         }
     }
 

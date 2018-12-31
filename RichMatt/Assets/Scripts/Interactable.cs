@@ -2,17 +2,34 @@
 
 public class Interactable : MonoBehaviour {
 
+    [SerializeField] protected GameObject tooltipObject;
     protected bool playerIsLookingAtObject = false;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start ()
+    {
 		
 	}
+
+    protected virtual void HandleTooltip()
+    {
+        ToggleTooltip(playerIsLookingAtObject);
+
+        if (playerIsLookingAtObject)
+        {
+            playerIsLookingAtObject = false;
+
+        }
+
+    }
 	
 	// Update is called once per frame
-	void Update () {
-		
-	}
+	protected void Update ()
+    {
+        //Update must be called from derived class!
+        //Handle Tooltips
+        HandleTooltip();
+    }
 
     public virtual void Interact(InteractionManager interactingObject)
     {
@@ -38,7 +55,14 @@ public class Interactable : MonoBehaviour {
 
     public virtual void ToggleTooltip(bool active)
     {
-
+        if (tooltipObject)
+        {
+            tooltipObject.SetActive(active);
+        }
+        else
+        {
+            //Debug.Log("No tooltip on Interactable. Tooltips active: " + active);
+        }
     }
     
 }
