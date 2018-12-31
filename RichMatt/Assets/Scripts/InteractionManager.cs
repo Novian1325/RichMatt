@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractionManager : MonoBehaviour {
-
-
+public class InteractionManager : MonoBehaviour
+{ 
+    [Tooltip("The player's 'reach'. The minimum distance one must be in order to interact with anything.")]
+    [SerializeField] private int interactionRaycastLimit = 5;
+    
     private Transform playerCameraXform;
-    private readonly int interactionRaycastLimit = 100;
-
-    //Variables for raycasting tooltips
-    [SerializeField] private List<Interactable> interactableObjectsWithinRange = new List<Interactable>();
-
-    //variables for inventory manager
-    //private InventoryManager inventoryManager;
+    
     private Interactable interactablePlayerIsLookingAt;
 
-
+    [SerializeField] private bool DEBUG = false;
     // Use this for initialization
     void Start () {
         
@@ -32,45 +28,47 @@ public class InteractionManager : MonoBehaviour {
         //handle interactions
         if (Input.GetButtonDown("Interact"))
         {
-            if (!interactablePlayerIsLookingAt)
-            {
-                Debug.Log("Interaction button pressed. Player is not looking at anything interactable.");
-            }
-            else
-            {
-                interactablePlayerIsLookingAt.Interact(this);
-            }
+            HandleInteraction();
 
+        }
+
+    }
+
+    private void HandleInteraction()
+    {
+        if (interactablePlayerIsLookingAt)
+        {
+            interactablePlayerIsLookingAt.Interact(this);
+        }
+        else
+        {
+            if (DEBUG) Debug.Log("Interaction button pressed. Player is not looking at anything interactable.");
         }
 
     }
 
     private void HandleToolTipRaycasting()
     {
-        if (interactableObjectsWithinRange.Count > 0)
-        {
-            Interactable interactable = WhatIsPlayerLookingAt(); 
-            //make sure player can only interact with things within their range
+        interactablePlayerIsLookingAt = WhatIsPlayerLookingAt(); 
 
-            if (interactable)
-            {
-                if (interactableObjectsWithinRange.Contains(interactable))
-                {
-                    interactable.ToggleToolTipVisibility(true);
-                }
+        if (interactablePlayerIsLookingAt)
+        {
+            interactablePlayerIsLookingAt.PlayerIsLookingAtObject(true);
                 
-            }
+        }
             
-        }
         else
-        {//there is nothing nearby for the player to look at
-            interactablePlayerIsLookingAt = null;
+        {
+            //there is nothing nearby for the player to look at
+            if (DEBUG) Debug.Log("Player not looking at an Interactable.");
         }
+        
     }
+    
 
     private Interactable WhatIsPlayerLookingAt()
     {
-        //returns the Interactable component that the player is looking at, if any
+        Interactable targetInteractable = null;
 
         //check to see if player is looking at interactable object's model
         RaycastHit hitInfo;
@@ -78,63 +76,23 @@ public class InteractionManager : MonoBehaviour {
         //shoot a raycast from the cameras position forward, store the info, limit the ray to this length, use normal raycast layers, ignore triggerColliders
         if (Physics.Raycast(new Ray(playerCameraXform.position, playerCameraXform.forward), out hitInfo, interactionRaycastLimit, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
-            //Debug.Log("Raycast hit: " + hitInfo.collider.gameObject.name);
+            if (DEBUG) Debug.Log("Raycast hit: " + hitInfo.collider.gameObject.name);
             //is the player looking at the item model?
             if (hitInfo.collider.CompareTag("Interactable"))
             {
-                return hitInfo.collider.GetComponent<Interactable>();
+                targetInteractable = hitInfo.collider.GetComponent<Interactable>();
             }
             else
             {
-                //Debug.Log("Raycast did not hit an ItemModel.");
+                if (DEBUG) Debug.Log("Raycast did not hit an Interactable.");
             }
         }
         else
         {
-            //Debug.Log("Raycast hit nothing.");
+            if (DEBUG) Debug.Log("Raycast hit nothing.");
         }
-
-        return null;
-
-    }
-
-    public void OnTriggerEnter(Collider triggerVolume)
-    {
-        Debug.Log("ONTriggerEnter.");
-        if (triggerVolume.CompareTag("Interactable"))
-        {
-            Interactable interactable = triggerVolume.GetComponent<Interactable>();
-            if (!interactable)//check against null
-
-            {
-                Debug.LogError("ERROR! No Interactable Component on object that is tagged \"Interactable\"!");
-            }
-            else
-            {
-                //if list does not already contain, then add
-                if (!interactableObjectsWithinRange.Contains(interactable))
-                    interactableObjectsWithinRange.Add(interactable);//add game object to list
-
-            }
-
-
-        }
-    }
-
-    public void OnTriggerStay(Collider triggerVolume)
-    {
-
-    }
-
-    public void OnTriggerExit(Collider triggerVolume)
-    {
-        if (triggerVolume.CompareTag("Interactable"))
-        {
-            Interactable interactable = triggerVolume.GetComponent<Interactable>();
-
-            interactable.ToggleToolTipVisibility(false);//stop showing item tooltip
-            interactableObjectsWithinRange.Remove(interactable);//remove game object from list
-        }
+        
+        return targetInteractable;
 
     }
 }
