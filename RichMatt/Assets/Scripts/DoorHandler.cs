@@ -73,8 +73,6 @@ public class DoorHandler : Interactable {
         bool openDoorBackwards = true;
         float angleOfPlayerToDoor = Vector3.Angle(actorDirection, xform.forward);
 
-        Debug.Log(angleOfPlayerToDoor);
-
         //is the player standing behind or in front of the door?
         if(angleOfPlayerToDoor < 90)
         {
