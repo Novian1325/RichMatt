@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 65971274725992716}
   m_Layer: 0
   m_Name: SupplyDrop
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -465,12 +465,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b511254aecef9e9448afc50663107652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tooltipObject: {fileID: 0}
   freefallingState: 1
   terminalVelocity: -18
   parachuteTerminalVelocity: -9
   forwardMomentum: 0.05
-  deployParachuteDistancePercent: 0.25
   parachute: {fileID: 114618455601293862}
+  destructionEffect: {fileID: 0}
+  deployParachuteDistancePercent: 0.25
+  destroySupplyDropAfterTime: 300
   supplies: []
 --- !u!114 &114618455601293862
 MonoBehaviour:

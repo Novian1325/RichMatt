@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
  [RequireComponent(typeof(Rigidbody))]
-public class SupplyDrop : MonoBehaviour
+public class SupplyDrop : Interactable
 {
-    
+    [Header("SupplyDrop")]
+    private static int supplyDropCount = 0;
+
     [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
 
     [Tooltip("Fastest downward speed of object. MUST BE NEGATIVE.")]
@@ -79,7 +81,6 @@ public class SupplyDrop : MonoBehaviour
         freefallingState = SkyDivingStateENUM.parachuting;
     }
 
-    private static int supplyDropCount = 0;
 
 	// Use this for initialization
 	void Start ()
@@ -104,12 +105,12 @@ public class SupplyDrop : MonoBehaviour
         if (this.parachute == null) this.parachute = this.GetComponentInChildren<Parachute>();
 
         //set name
-        this.gameObject.name = "Supply Drop # " + ++supplyDropCount;//track name
+        SetName(this.gameObject);
 		
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	new void Update () {
 
         switch (freefallingState)
         {
@@ -140,8 +141,8 @@ public class SupplyDrop : MonoBehaviour
             default:
                 break;
         }
-		
-	}
+
+    }
 
     private void FixedUpdate()
     {
@@ -184,12 +185,23 @@ public class SupplyDrop : MonoBehaviour
         }
     }
 
-    public void Interact()
+    private static void SetName(GameObject go)
+    {
+        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+
+        stringBuilder.Append("Supply Drop # ");
+        stringBuilder.Append(++supplyDropCount);//track name
+
+        go.name = stringBuilder.ToString();//faster than concatenation +
+
+    }
+
+    override public void Interact(InteractionManager im)
     {
         //throw loot all over the ground like a maniac
         //remove icons and effects
         //play an effect
-        Destroy(this.gameObject);
+        Destroy(this.gameObject); //Destroy(this.gameObject, 3);
         
     }
 
@@ -202,7 +214,6 @@ public class SupplyDrop : MonoBehaviour
         //do animations
         if(anim) anim.SetTrigger("Destroy");
         
-
         //play sounds
 
         //remove icons from minimap
