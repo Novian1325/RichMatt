@@ -14,7 +14,7 @@ public class Rotator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        xform.Rotate(rotateSpeed * Time.deltaTime, Space.World);
+        xform.Rotate(rotateSpeed * Time.deltaTime);
 		
 	}
 }
