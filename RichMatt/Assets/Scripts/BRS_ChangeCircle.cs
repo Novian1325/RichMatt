@@ -40,9 +40,9 @@ public class BRS_ChangeCircle : MonoBehaviour
 		circle = new WorldCircle(ref lineRenderer, Segments, Radius, Radius);
         ZoneWall = GameObject.FindGameObjectWithTag("ZoneWall");
 
-        
-        
-		ZoneWall.transform.position = new Vector3(transform.position.x, ZoneWall.transform.position.y, transform.position.z);
+        safeZone_Circle_Projector.orthographicSize = Radius;
+
+        ZoneWall.transform.position = new Vector3(transform.position.x, ZoneWall.transform.position.y, transform.position.z);
 
         timePassed = Time.deltaTime;
 	}
