@@ -2705,9 +2705,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tooltipObject: {fileID: 0}
   doorOpen: 0
-  doorOpensBothWays: 0
-  openLimit: 90
-  animationSpeed: 1.5
+  doorOpensBackward: 1
 --- !u!65 &1502967040
 BoxCollider:
   m_ObjectHideFlags: 0

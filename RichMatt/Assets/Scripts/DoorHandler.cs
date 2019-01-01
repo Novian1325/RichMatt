@@ -8,10 +8,11 @@ public class DoorHandler : Interactable {
     [Tooltip("Current state the door is in.")]
     [SerializeField] bool doorOpen = false;
 
-    [SerializeField] bool doorOpensBothWays = false;
+    [SerializeField] bool doorOpensBackward = false;
         
     private Animator animator;
     private Transform xform;
+    private Vector3 actorDirection;
     
     // Use this for initialization
     void Start () {
@@ -36,39 +37,59 @@ public class DoorHandler : Interactable {
             CloseDoor();
         }
 
-        Debug.Log("Door Open Angle: " + xform.eulerAngles.y);
+        //Debug.Log("Door Open Angle: " + xform.eulerAngles.y);
 
 
     }
 
     public override void Interact(InteractionManager interactingObject)
     {
-        //base.Interact(interactingObject); //posts info to Debug.Log
-        if (doorOpensBothWays && !doorOpen)
-        {
-            //determine which way the door should open
-            float angleOfPlayerToDoor = Vector3.Angle(interactingObject.transform.position, xform.position); 
-            
-
-        }
-
         //actual interaction stuff here
         doorOpen = !doorOpen;
+
+        if (doorOpensBackward)
+        {
+            actorDirection = interactingObject.transform.forward;
+        }
         
 
     }
 
     private void CloseDoor()
     {
-        animator.SetBool("DoopOpen", false);
-        
+        animator.SetBool("DoorOpen", false);
+
 
     }
 
     private void OpenDoor()
     {
 
-        animator.SetBool("DoopOpen", true);
+        animator.SetBool("DoorOpen", true);
+        animator.SetBool("OpenBackward", DetermineDoorOpenDirection());
 
     }
+
+    private bool DetermineDoorOpenDirection()
+    {
+        if (!doorOpensBackward) return false;
+
+        bool openDoorBackwards = true;
+        float angleOfPlayerToDoor = Vector3.Angle(actorDirection, xform.forward);
+
+        Debug.Log(angleOfPlayerToDoor);
+
+        if(angleOfPlayerToDoor < 90)
+        {
+            openDoorBackwards = false;
+        }
+        else
+        {
+            openDoorBackwards = true;
+        }
+
+        return openDoorBackwards;
+        
+    }
+
 }
