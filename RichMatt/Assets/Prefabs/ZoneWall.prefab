@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segments: 63
-  zoneWallRadius: 500
+  zoneWallRadius: 25
   timeToShrink: 5
   radiusShrinkFactor: 50
   safeZone_Circle_Projector: {fileID: 119075886879666166}
@@ -305,7 +305,7 @@ LineRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0

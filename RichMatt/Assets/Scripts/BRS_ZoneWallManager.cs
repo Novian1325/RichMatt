@@ -221,6 +221,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         LineRenderer lr = leadingCircle.AddComponent<LineRenderer>() as LineRenderer;
         lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lr.receiveShadows = false;
+        lr.allowOcclusionWhenDynamic = false;
 
         new WorldCircle(ref lr, segments, radius, radius);
 
