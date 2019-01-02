@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class WorldCircle: MonoBehaviour
+class WorldCircle
 {
 	//private members
 	private int _segments;
@@ -39,7 +39,6 @@ class WorldCircle: MonoBehaviour
 		_xradius = xradius;
 		_yradius = yradius;
         _renderer.positionCount = segments + 1;
-		//_renderer.SetVertexCount(segments + 1);deprecated RSO
 		_renderer.useWorldSpace = false;
 		CreatePoints();
 	}
