@@ -65,6 +65,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
         //init next shrink time
         nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];
+        timeToShrink = secondsToShrink[shrinkPhaseIndex];
 
         //apply Inspector values
         ShrinkEverything();
