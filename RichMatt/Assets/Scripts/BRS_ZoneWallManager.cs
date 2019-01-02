@@ -61,6 +61,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
         //draw minimap zone cirlce
         currentZoneWallCircle = new WorldCircle(ref lineRenderer, segments, zoneWallNativeSize, zoneWallNativeSize);
+        safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
         //apply Inspector values
         ShrinkEverything();
