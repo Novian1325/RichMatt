@@ -1424,19 +1424,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1941973348895546, guid: 08d65c8f8a074ac4d839c9204f543d97,
     type: 2}
   m_PrefabInternal: {fileID: 276361381}
---- !u!114 &1202512678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1202512677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ed8a34a37002b14a80962e74ff6fb68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionRaycastLimit: 5
-  DEBUG: 0
 --- !u!1 &1453050223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,59 +1710,45 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114894427430186796, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: targetTransform
-      value: 
-      objectReference: {fileID: 343839962}
     - target: {fileID: 114570605005987862, guid: af0ad4cdca6c5aa4091bde4b9356667d,
         type: 2}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 811908417}
-    - target: {fileID: 114055370729793518, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114055370729793518, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114176373897736152, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114176373897736152, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114213651462938166, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114213651462938166, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 20417887494782220, guid: af0ad4cdca6c5aa4091bde4b9356667d,
-        type: 2}
-      propertyPath: m_CullingMask.m_Bits
-      value: 1552
-      objectReference: {fileID: 0}
-    - target: {fileID: 1145657273543764, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}
-      propertyPath: m_TagString
-      value: MiniMap Camera
-      objectReference: {fileID: 0}
     - target: {fileID: 114894427430186796, guid: af0ad4cdca6c5aa4091bde4b9356667d,
         type: 2}
-      propertyPath: miniMapHeight
-      value: 5000
+      propertyPath: targetTransform
+      value: 
+      objectReference: {fileID: 343839962}
+    - target: {fileID: 114176373897736152, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114176373897736152, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114055370729793518, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114055370729793518, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114213651462938166, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114213651462938166, guid: af0ad4cdca6c5aa4091bde4b9356667d,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af0ad4cdca6c5aa4091bde4b9356667d, type: 2}

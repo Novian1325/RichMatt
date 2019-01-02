@@ -60,7 +60,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         zoneWallNativeSize = (int)capsuleCollider.radius;
 
         //draw minimap zone cirlce
-        currentZoneWallCircle = new WorldCircle(ref lineRenderer, segments, zoneWallNativeSize, zoneWallNativeSize);
+        currentZoneWallCircle = new WorldCircle(ref lineRenderer, segments, zoneWallNativeSize, zoneWallNativeSize, zoneWallNativeSize);
         safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
         //apply Inspector values
@@ -83,7 +83,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
                 newCenterObtained = true;
 
                 //show on minimap where zone will shrink to
-                nextZoneWallCircle = CreateLeadingCircle(centerPoint, ZoneWallXform.rotation, segments, zoneWallRadius / (100 / radiusShrinkFactor));
+                nextZoneWallCircle = CreateLeadingCircle(centerPoint, ZoneWallXform.rotation, segments, zoneWallRadius / (100 / radiusShrinkFactor), zoneWallNativeSize);
 
                 if (DEBUG)
                 {
@@ -212,11 +212,12 @@ public class BRS_ZoneWallManager : MonoBehaviour
 		return newCenterPoint;
     }
 
-    private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, Quaternion rotation, int segments, float radius)
+    private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, Quaternion rotation, int segments, float radius, float drawHeight)
     {
         GameObject leadingCircle = new GameObject();
         leadingCircle.transform.position = circleCenterPoint;
         leadingCircle.transform.rotation = rotation;
+        leadingCircle.layer = 10;// Minimap Icon layer
         leadingCircle.name = "Next Zone Wall Boundary Marker";
 
         LineRenderer lr = leadingCircle.AddComponent<LineRenderer>() as LineRenderer;
@@ -224,7 +225,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         lr.receiveShadows = false;
         lr.allowOcclusionWhenDynamic = false;
 
-        new WorldCircle(ref lr, segments, radius, radius);
+        new WorldCircle(ref lr, segments, radius, radius, drawHeight);
 
         return leadingCircle;
     }

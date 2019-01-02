@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 136965606202830200}
   - component: {fileID: 120132300918642498}
   - component: {fileID: 114821101170541108}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ZoneWall
   m_TagString: ZoneWall
   m_Icon: {fileID: 0}
