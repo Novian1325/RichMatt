@@ -34,12 +34,12 @@ class WorldCircle
 		Draw(segments, _xradius, _yradius);
 	}
 
-	public void Draw(int segments, float xradius, float yradius)
+	public void Draw(int segments, float xradius, float yradius, bool useWorldSpace = false)
 	{
 		_xradius = xradius;
 		_yradius = yradius;
         _renderer.positionCount = segments + 1;
-		_renderer.useWorldSpace = false;
+		_renderer.useWorldSpace = useWorldSpace;
 		CreatePoints();
 	}
 
@@ -58,7 +58,7 @@ class WorldCircle
 		float x = 0;
 		float y = 0;
 		float z = 0;
-		float angle = 20f;
+		float angle = 0;
 
 		for (int i = 0; i < (_segments + 1); i++)
 		{

@@ -10,7 +10,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
 	[Range(0, 360)]
     [Tooltip("How many segments should the circle that appears on the mimimap be? More segments means it looks crisper, but at cost of performance.")]
-    [SerializeField] private int Segments = 64;
+    [SerializeField] private int segments = 63;
 
 	[Range(10, 5000)]
     [Tooltip("Set the starting Radius here. Can track size during runtime.")]
@@ -41,7 +41,8 @@ public class BRS_ZoneWallManager : MonoBehaviour
     private float distanceToMoveCenter;
     private float shrinkRadius;
     private Vector3 centerPoint;//the
-    private WorldCircle circle;
+    private WorldCircle currentZoneWallCircle;
+    private GameObject nextZoneWallCircle;
 	private LineRenderer lineRenderer;
 	private Transform ZoneWallXform;
     private CapsuleCollider capsuleCollider;
@@ -59,7 +60,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         zoneWallNativeSize = (int)capsuleCollider.radius;
 
         //draw minimap zone cirlce
-        circle = new WorldCircle(ref lineRenderer, Segments, zoneWallNativeSize, zoneWallNativeSize);
+        currentZoneWallCircle = new WorldCircle(ref lineRenderer, segments, zoneWallNativeSize, zoneWallNativeSize);
 
         //apply Inspector values
         ShrinkEverything();
@@ -67,7 +68,6 @@ public class BRS_ZoneWallManager : MonoBehaviour
         //init next shrink time
         nextShrinkTime = Time.time + shrinkTimes[shrinkTimeIndex];
 	}
-
 
 	void Update ()
 	{
@@ -80,6 +80,9 @@ public class BRS_ZoneWallManager : MonoBehaviour
 			    centerPoint = NewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor);
 				distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
                 newCenterObtained = true;
+
+                //show on minimap where zone will shrink to
+                nextZoneWallCircle = CreateLeadingCircle(centerPoint, ZoneWallXform.rotation, segments, zoneWallRadius / (100 / radiusShrinkFactor));
 
                 if (DEBUG)
                 {
@@ -105,7 +108,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         // have we passed the next threshold for time delay?
         else if (Time.time > nextShrinkTime)
         {
-            shrinkRadius = zoneWallRadius - (float)(zoneWallRadius * (radiusShrinkFactor * 0.01));  //use the ZoneRadiusFactor as a percentage
+            shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
             Shrinking = true;
         }
             
@@ -161,6 +164,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
                 Debug.Log("Zone Wall has finished shrinking.");
             }
 
+            Destroy(nextZoneWallCircle);
 
         }
 
@@ -205,5 +209,22 @@ public class BRS_ZoneWallManager : MonoBehaviour
             }
 		}
 		return newCenterPoint;
-	}
+    }
+
+    private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, Quaternion rotation, int segments, float radius)
+    {
+        GameObject leadingCircle = new GameObject();
+        leadingCircle.transform.position = circleCenterPoint;
+        leadingCircle.transform.rotation = rotation;
+        leadingCircle.name = "Next Zone Wall Boundary Marker";
+
+        LineRenderer lr = leadingCircle.AddComponent<LineRenderer>() as LineRenderer;
+        lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        lr.receiveShadows = false;
+
+        new WorldCircle(ref lr, segments, radius, radius);
+
+        return leadingCircle;
+    }
+
 }

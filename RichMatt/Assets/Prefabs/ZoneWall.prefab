@@ -271,12 +271,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51bdf48d37f3fb74384d3fa60573bd85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Segments: 64
+  segments: 63
   zoneWallRadius: 500
   timeToShrink: 5
   radiusShrinkFactor: 50
   safeZone_Circle_Projector: {fileID: 119075886879666166}
-  shrinkTimes: 0400000004000000040000000400000004000000040000000400000004000000
+  shrinkTimes: 0300000003000000030000000300000003000000030000000300000003000000
   DEBUG: 0
 --- !u!119 &119075886879666166
 Projector:
@@ -331,9 +331,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 2
     widthMultiplier: 1
