@@ -95,13 +95,13 @@ public class BRS_ZoneWallManager : MonoBehaviour
         //is it time to start shrinking?
         else if (Time.time > nextShrinkTime)
         {
+            //when all shrinking is done, behavior runs this ad infinitum.  this update() could be slightly restructured to avoid unnecessary operations
             shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
             Shrinking = true;
         }
             
         else
         {
-            //hmmm this body is suspicious. does it do what i think it does?
             if (DEBUG)
             {
                 //use string builder because concatentation ( + ) is expensive
