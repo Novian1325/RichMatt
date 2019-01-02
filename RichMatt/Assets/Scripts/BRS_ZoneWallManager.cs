@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(LineRenderer))]
 public class BRS_ZoneWallManager : MonoBehaviour
 {
@@ -34,26 +35,33 @@ public class BRS_ZoneWallManager : MonoBehaviour
     private float nextShrinkTime;
 
     #region Private Members
-    private bool Shrinking;  // this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector
+    private bool Shrinking = false;  // this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector
 	private bool newCenterObtained = false;// has a new center been obtained?
+    private int zoneWallNativeSize;//this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider
     private float distanceToMoveCenter;
     private float shrinkRadius;
     private Vector3 centerPoint;//the
     private WorldCircle circle;
 	private LineRenderer lineRenderer;
 	private Transform ZoneWallXform;
+    private CapsuleCollider capsuleCollider;
     #endregion
 
     [Tooltip("Would the developer like to see Debug statements about what's going on during runtime?")]
     [SerializeField] private bool DEBUG = false;
-
+    
 	void Start ()
 	{
+        capsuleCollider = GetComponent<CapsuleCollider>();
 		lineRenderer = gameObject.GetComponent<LineRenderer>();
-		circle = new WorldCircle(ref lineRenderer, Segments, zoneWallRadius, zoneWallRadius);
         ZoneWallXform = this.transform;
 
-        //set everything up to values set in Inspector
+        zoneWallNativeSize = (int)capsuleCollider.radius;
+
+        //draw minimap zone cirlce
+        circle = new WorldCircle(ref lineRenderer, Segments, zoneWallNativeSize, zoneWallNativeSize);
+
+        //apply Inspector values
         ShrinkEverything();
 
         //init next shrink time
@@ -121,7 +129,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
     private void ShrinkEverything()
     {
         //shrink the zoneWall object and all of its children
-        ZoneWallXform.localScale = new Vector3((zoneWallRadius * 0.01f), 1, (zoneWallRadius * 0.01f)); //set local scale of zone wall
+        ZoneWallXform.localScale = new Vector3((zoneWallRadius / zoneWallNativeSize), 1, (zoneWallRadius / zoneWallNativeSize)); //set local scale of zone wall
 
         // shrink the zone diameter, over time
         zoneWallRadius = Mathf.MoveTowards(zoneWallRadius, shrinkRadius, (shrinkRadius / timeToShrink) * Time.deltaTime);
@@ -131,9 +139,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
         // shrink circle projector
         if (safeZone_Circle_Projector) safeZone_Circle_Projector.orthographicSize = zoneWallRadius;
-
-        //draw minimap circle
-        circle.Draw(Segments, zoneWallRadius, zoneWallRadius);
+        
     }
 
     private void HandleStopShrinking()
