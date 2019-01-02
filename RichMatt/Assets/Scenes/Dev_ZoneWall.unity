@@ -751,6 +751,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: zoneWallRadius
+      value: 500
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
   m_IsPrefabAsset: 0
@@ -2042,8 +2047,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1084251066}
-  m_LocalRotation: {x: 0.0033141382, y: 0.98383427, z: -0.1781125, w: 0.018305313}
-  m_LocalPosition: {x: 34.197075, y: 1.9703318, z: -91.4079}
+  m_LocalRotation: {x: -0.35505566, y: -0.6185909, z: 0.5963569, w: -0.3682923}
+  m_LocalPosition: {x: -8.722228, y: 293.99954, z: 24.245972}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

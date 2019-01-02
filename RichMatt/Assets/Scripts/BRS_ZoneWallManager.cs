@@ -11,7 +11,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
     [Tooltip("How many segments should the circle that appears on the mimimap be? More segments means it looks crisper, but at cost of performance.")]
     [SerializeField] private int Segments = 64;
 
-	[Range(0, 5000)]
+	[Range(10, 5000)]
     [Tooltip("Set the starting Radius here. Can track size during runtime.")]
     [SerializeField] private float zoneWallRadius = 1000;
 
@@ -167,17 +167,23 @@ public class BRS_ZoneWallManager : MonoBehaviour
 	{
 		Vector3 newCenterPoint = Vector3.zero;
 
-		int attemptsUntilFailure = 30000; //prevent endless loop which will kill Unity
+		int attemptsUntilFailure = 500; //prevent endless loop which will kill Unity
+        int attemptCounter = 0;
 		bool foundSuitable = false;
         
 		while (!foundSuitable)
 		{
-			 Vector2 randPoint = Random.insideUnitCircle * (currentRadius / (100 / shrinkFactor));
-			 newCenterPoint = currentCenter + new Vector3(randPoint.x, currentCenter.y, randPoint.y);
-			 foundSuitable = (Vector3.Distance(currentCenter, newCenterPoint) < currentRadius);
+			Vector2 randPoint = Random.insideUnitCircle * (currentRadius / (100 / shrinkFactor));
+			newCenterPoint = currentCenter + new Vector3(randPoint.x, currentCenter.y, randPoint.y);
+			foundSuitable = (Vector3.Distance(currentCenter, newCenterPoint) < currentRadius);
 
-			 if (--attemptsUntilFailure < 1)
-             {
+            //DEBUGS
+            //Debug.Log("RandomPoint: " + randPoint);
+            //Debug.Log("NewCenterPoint: " + newCenterPoint);
+            //Debug.Log("Distance: " + Vector3.Distance(currentCenter, newCenterPoint) + " Current Radius: " + currentRadius);
+            
+			if (++attemptCounter > attemptsUntilFailure)
+            {
                 //build error message
                 System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
@@ -190,7 +196,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
                 newCenterPoint = currentCenter;//return same position to keep the game moving
 
                 break;//break out of while loop
-             }
+            }
 		}
 		return newCenterPoint;
 	}
