@@ -55,9 +55,9 @@ class WorldCircle
 
 	private void CreatePoints ()
 	{
-		float x;
-		float y;
-		float z;
+		float x = 0;
+		float y = 0;
+		float z = 0;
 		float angle = 20f;
 
 		for (int i = 0; i < (_segments + 1); i++)
@@ -65,7 +65,7 @@ class WorldCircle
 			x = Mathf.Sin (Mathf.Deg2Rad * angle) * _xradius;
 			z = Mathf.Cos (Mathf.Deg2Rad * angle) * _yradius;
 
-			_renderer.SetPosition (i,new Vector3(x,0,z) );
+			_renderer.SetPosition (i, new Vector3(x,y,z) );
 
 			angle += (360f / _segments);
 		}
