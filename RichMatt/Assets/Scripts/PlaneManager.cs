@@ -13,11 +13,7 @@ public class PlaneManager : MonoBehaviour
     //to which drop zone is the plane headed?
     private GameObject targetDropZone;
     
-
     private static int planeCounter = 0;
-    
-
-    //public UnityStandardAssets.Characters.FirstPerson.FirstPersonController fpsController;
 
     private bool CheckIfPlayerOnBoard()
     {
@@ -168,9 +164,6 @@ public class PlaneManager : MonoBehaviour
             }
             else Destroy(this.gameObject);
         }
-
         
-
-
     }
 }
