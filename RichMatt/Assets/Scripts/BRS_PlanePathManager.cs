@@ -32,6 +32,7 @@ public class BRS_PlanePathManager : MonoBehaviour
     //how high does the plane fly?
     private float planeFlightAltitude = 800.0f;
     private float startingFlightAltitude;
+    private bool planeContainsPlayers = false;
 
     private readonly int failedPathAltitudeIncrementAmount = 25;//if the flight path fails, raise the altitude by this much before trying again
 
@@ -39,7 +40,6 @@ public class BRS_PlanePathManager : MonoBehaviour
     private float spawnBoundsCircleRadius = 100.0f;
     private readonly int minimumDropZoneHeight = 1000;//drop zones should be really tall so they can be tested against
     
-
     //start and end points for plane to fly through
     private Vector3 planeStartPoint;
     private Vector3 planeEndPoint;
@@ -93,33 +93,26 @@ public class BRS_PlanePathManager : MonoBehaviour
         {
             if (zone.transform.localScale.y < minimumDropZoneHeight)
                 zone.transform.position = new Vector3(zone.transform.position.x, minimumDropZoneHeight / 2, zone.transform.position.z);//move up slightly
-                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);//increase y scale
+            zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);//increase y scale
         }
 
 
     }
 
-    private void ConfigureFlightType(DropTypeENUM dropZoneType)
+    private void ConfigureFlightType()
     {
-        switch (dropZoneType)
+        if (planeContainsPlayers)
         {
-            case DropTypeENUM.PLAYER:
-                acceptableDropZones =  playerDropZones;
-                planeFlightSpeed = planeSpeed_PlayerDrop;
-
-                break;
-
-            case DropTypeENUM.SUPPLY:
-                acceptableDropZones = supplyDropZones;
-                planeFlightSpeed = planeSpeed_SupplyDrop;
-                break;
-
-            default:
-                Debug.LogError("ERROR! Default hit");
-                Debug.Break();
-                break;
+            acceptableDropZones = playerDropZones;
+            planeFlightSpeed = planeSpeed_PlayerDrop;
         }
+        else
+        {
+            acceptableDropZones = supplyDropZones;
+            planeFlightSpeed = planeSpeed_SupplyDrop;
 
+        }
+        
     }
 
     private void DestroyMarkerObjects()
@@ -168,23 +161,25 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     }
 
-    private void LoadCargo(GameObject[] cargo)
+    private void LoadCargo(GameObject cargo)
     {
-        foreach (GameObject burden in cargo)
+        
+        if (cargo.CompareTag("Player"))
         {
-            if (burden.CompareTag("Player")) cargo_Players.Add(burden);
-            else
-            {
-                if(burden != null) cargo_Supplies = burden;//set supplies
-            }
+            cargo_Players.Add(cargo);
+            planeContainsPlayers = true;
+        }
+        else
+        {
+            cargo_Supplies = cargo;//set supplies
         }
 
 
     }
 
-    public bool InitPlaneDrop(DropTypeENUM dropType)
+    public bool InitPlaneDrop()
     {
-        ConfigureFlightType(dropType);
+        ConfigureFlightType();
         if (SetupFlightPath())
         {
             SpawnPlane();//catch the plane Manager to keep track of the plane further
@@ -194,16 +189,21 @@ public class BRS_PlanePathManager : MonoBehaviour
         return false;
     }
 
-    public bool InitPlaneDrop(DropTypeENUM dropType, GameObject incomingCargo)
+    public bool InitPlaneDrop(GameObject cargo)
     {
-        cargo_Supplies = incomingCargo;
-        return InitPlaneDrop(dropType);
+        LoadCargo(cargo);
+
+        return InitPlaneDrop();
     }
 
-    public bool InitPlaneDrop(DropTypeENUM dropType, GameObject[] incomingCargo)
+    public bool InitPlaneDrop(GameObject[] incomingCargo)
     {
-        if(incomingCargo.Length > 0) LoadCargo(incomingCargo);
-        return InitPlaneDrop(dropType);//"boil up"
+        foreach (GameObject cargo in incomingCargo)
+        {
+            LoadCargo(cargo);
+        }
+        
+        return InitPlaneDrop();
     }
 
     private GameObject ConfigureEndpoint(Vector3 targetPosition)
@@ -238,7 +238,7 @@ public class BRS_PlanePathManager : MonoBehaviour
             stringBuilder.Append("StartMarker: ");
             stringBuilder.Append(unsuccessfulPasses);
             startMark.name = stringBuilder.ToString();
-            if (DEBUG) startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
+            startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
         }
 
@@ -284,11 +284,12 @@ public class BRS_PlanePathManager : MonoBehaviour
             //is the flight unobstructed and through a drop zone
             if(endpointHit && flightPathThroughLZ)
             {
-                //SUCCESS!!!!!!!
+                //SUCCESS!!!!!!! reset for next path
                 ToggleDropZones(true);//turn LZ on
                 planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
                 unsuccessfulPasses = 0;//reset failures
                 DestroyMarkerObjects();//clear excess markers
+                planeContainsPlayers = false;//prove me right
                 return true;
             }
             else
@@ -413,22 +414,7 @@ public class BRS_PlanePathManager : MonoBehaviour
             //set it active or inactive
             dropZone.GetComponent<CapsuleCollider>().enabled = active;
         }
-        //if (DEBUG)
-        //{
-        //    if(acceptableDropZones == playerDropZones)
-        //    {
-        //        Debug.Log("PlayerDropZones" + active);
-        //    }
-        //    else if(acceptableDropZones == supplyDropZones)
-        //    {
-        //        if (acceptableDropZones == playerDropZones)
-        //        {
-        //            Debug.Log("SupplyDropZones" + active);
-        //        }
-                
-        //    }
-            
-        //}
+       
     }
 }
 

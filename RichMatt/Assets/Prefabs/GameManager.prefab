@@ -55,9 +55,5 @@ MonoBehaviour:
   startSkyDiving: 0
   players: []
   planePathManager: {fileID: 0}
-  zoneWall: {fileID: 0}
-  supplies:
-  - {fileID: 1622644923095192, guid: 8986455f71328ed47a1902a8f4fa9790, type: 2}
-  queSupplyDrop: 0
   skyDiveController: {fileID: 0}
   skyDiveTestHeight: 500

@@ -94,7 +94,7 @@ public class SupplyDropManager : MonoBehaviour
     public void DeploySupplyDrop()
     {
         if (!supplyDropPrefab) Debug.LogError("Prefab is null!");
-        planePathManager.InitPlaneDrop(DropTypeENUM.SUPPLY, supplyDropPrefab); //can catch plane manager and track it
+        planePathManager.InitPlaneDrop(supplyDropPrefab); //can catch plane manager and track it
 
     }
 

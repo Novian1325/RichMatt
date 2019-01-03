@@ -14,10 +14,7 @@ public class GameManager : MonoBehaviour {
 
     [Tooltip("The object that will calculate the randomized flight path.")]
     [SerializeField] private BRS_PlanePathManager planePathManager;
-
-    [SerializeField] private GameObject zoneWall;
-    //public BRS_ChangeCircle zoneWallChangeCircle;
-
+    
     [Header("SkyDiving")]
     [SerializeField] private SkyDiveHandler skyDiveController;
     [Tooltip("This is the height the Player will start at if \"startSkyDiving\" is true.")]
@@ -30,7 +27,7 @@ public class GameManager : MonoBehaviour {
 
     private void DeployPlayersInPlane()
     {
-        planePathManager.InitPlaneDrop(DropTypeENUM.PLAYER, players);
+        planePathManager.InitPlaneDrop(players);
 
 
     }
@@ -100,26 +97,6 @@ public class GameManager : MonoBehaviour {
             }
 
         }
-
-        //if(supplies == null)
-        //{
-        //    Debug.LogError("ERROR! No supplies exist! Why is the plane flying?");
-        //    return false;
-        //}
-
-        //if (zoneWall == null)
-        //{
-        //    zoneWall = GameObject.FindGameObjectWithTag("ZoneWall");
-        //    zoneWallChangeCircle = zoneWall.GetComponentInChildren<BRS_ChangeCircle>();
-        //}
-        //else
-        //{
-        //    if (zoneWallChangeCircle == null)
-        //    {
-        //        zoneWallChangeCircle = zoneWall.GetComponentInChildren<BRS_ChangeCircle>();
-        //    }
-        //}
-
         return allReferencesOkay;
 
     }
