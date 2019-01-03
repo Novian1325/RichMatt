@@ -159,3 +159,4 @@ MonoBehaviour:
   tooltipObject: {fileID: 0}
   doorOpen: 0
   doorOpensBackward: 1
+  

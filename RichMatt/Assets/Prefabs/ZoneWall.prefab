@@ -399,3 +399,4 @@ CapsuleCollider:
   m_Height: 115
   m_Direction: 1
   m_Center: {x: 0, y: 50, z: 0}
+  
