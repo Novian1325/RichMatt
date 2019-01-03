@@ -159,7 +159,14 @@ public class PlaneManager : MonoBehaviour
         {
             if (DEBUG)
             {
-                Debug.Log("Plane " + this.name + " leaving boundary. Destroying....");
+                System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+
+                stringBuilder.Append("Plane ");
+                stringBuilder.Append(this.name);
+                stringBuilder.Append(" leaving boundary. Destroying....");
+
+                Debug.Log(stringBuilder.ToString());
+
                 this.gameObject.SetActive(false);
             }
             else Destroy(this.gameObject);
