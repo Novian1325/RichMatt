@@ -114,16 +114,8 @@ public class PlaneManager : MonoBehaviour
 
     private void DropSupplies()
     {
-        if (cargo_Supplies != null)
-        {
-            if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
-            Instantiate(cargo_Supplies, dropSpot.position, this.transform.rotation);
-        }
-        else
-        {
-            Debug.Log("No Supplies Given to Plane. This text lets you know the code worked correctly.");
-        }
-
+        if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
+        Instantiate(cargo_Supplies, dropSpot.position, this.transform.rotation);
     }
 
     private void ForceOutPlayers()
@@ -148,13 +140,10 @@ public class PlaneManager : MonoBehaviour
             {
                 player.OnDropZoneEnter();
             }
-            //drop supplies
-            DropSupplies();
-        }
-    }
 
-    private void OnTriggerStay(Collider other)
-    {
+            //drop supplies
+            if(cargo_Supplies) DropSupplies();
+        }
     }
 
     private void OnTriggerExit(Collider otherCollider)
@@ -166,7 +155,6 @@ public class PlaneManager : MonoBehaviour
 
             //Force All Players out (if there are any)
             if (this.cargo_Players != null && cargo_Players.Length > 0) ForceOutPlayers();
-
             
         }
 
