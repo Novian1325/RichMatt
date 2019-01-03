@@ -611,11 +611,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 2034220229}
     m_Modifications:
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: supplies.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4853479469286482, guid: 07b09818548fb4d41bfa95b56e1827cb, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -648,37 +643,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: planeDropManager
-      value: 
-      objectReference: {fileID: 938004517}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: StartSkyDiving
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: StartInPlane
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: skyDiveTestHeight
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: QueSupplyDrop
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: supplies.Array.data[0]
-      value: 
-      objectReference: {fileID: 1622644923095192, guid: 8986455f71328ed47a1902a8f4fa9790,
-        type: 2}
     - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
         type: 2}
       propertyPath: planePathManager
