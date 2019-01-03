@@ -83,17 +83,21 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     private void ConfigureDropZones()
     {
+        Transform zoneXform;
+
         //MAKE SURE Y SCALE IS LARGE ENOUGH!
         foreach(GameObject zone in playerDropZones)
         {
-            if(zone.transform.localScale.y < minimumDropZoneSize)
-                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneSize, zone.transform.localScale.z);
+            zoneXform = zone.transform;//cache
+            if (zoneXform.localScale.y < minimumDropZoneSize)
+                zoneXform.localScale = new Vector3(zoneXform.localScale.x, minimumDropZoneSize, zoneXform.localScale.z);
         }
 
         foreach (GameObject zone in supplyDropZones)
         {
+            zoneXform = zone.transform;//cache
             if (zone.transform.localScale.y < minimumDropZoneSize)
-                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneSize, zone.transform.localScale.z);//increase y scale
+                zoneXform.localScale = new Vector3(zoneXform.localScale.x, minimumDropZoneSize, zoneXform.localScale.z);//increase y scale
         }
 
 
