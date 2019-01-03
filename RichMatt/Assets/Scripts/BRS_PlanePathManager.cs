@@ -38,13 +38,14 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     //radius of spawn zone
     private float spawnBoundsCircleRadius = 100.0f;
-    private readonly int minimumDropZoneHeight = 1000;//drop zones should be really tall so they can be tested against
+    private readonly int minimumDropZoneSize = 1000;//drop zones should be really tall so they can be tested against
     
     //start and end points for plane to fly through
     private Vector3 planeStartPoint;
     private Vector3 planeEndPoint;
     private GameObject endpointMarker;
 
+    //to prevent infinite loops
     private int unsuccessfulPasses = 0;
     private readonly int flightPathChecksUntilFailure = 15;
 
@@ -85,15 +86,14 @@ public class BRS_PlanePathManager : MonoBehaviour
         //MAKE SURE Y SCALE IS LARGE ENOUGH!
         foreach(GameObject zone in playerDropZones)
         {
-            if(zone.transform.localScale.y < minimumDropZoneHeight)
-                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);
+            if(zone.transform.localScale.y < minimumDropZoneSize)
+                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneSize, zone.transform.localScale.z);
         }
 
         foreach (GameObject zone in supplyDropZones)
         {
-            if (zone.transform.localScale.y < minimumDropZoneHeight)
-                zone.transform.position = new Vector3(zone.transform.position.x, minimumDropZoneHeight / 2, zone.transform.position.z);//move up slightly
-            zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneHeight, zone.transform.localScale.z);//increase y scale
+            if (zone.transform.localScale.y < minimumDropZoneSize)
+                zone.transform.localScale = new Vector3(zone.transform.localScale.x, minimumDropZoneSize, zone.transform.localScale.z);//increase y scale
         }
 
 
