@@ -57,28 +57,26 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     private bool VerifyReferences()
     {
+        bool allReferencesOkay = true;
         if (planeSpawnBounds == null)
         {
             Debug.LogError("ERROR: plane spanw bounds not set!");
-            Debug.Break();
-            return false;
+            allReferencesOkay = false;
         }
 
         if (playerDropZones.Length < 1)
         {
             Debug.LogError("ERROR: No Player Drop Zones in list!");
-            Debug.Break();
-            return false;
+            allReferencesOkay = false;
         }
 
         if (supplyDropZones.Length < 1)
         {
             Debug.LogError("ERROR: No Supply Drop Zones in list!");
-            Debug.Break();
-            return false;
+            allReferencesOkay = false;
         }
         
-        return true;
+        return allReferencesOkay;
     }
 
     private void ConfigureDropZones()
@@ -105,17 +103,8 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     private void ConfigureFlightType()
     {
-        if (planeContainsPlayers)
-        {
-            acceptableDropZones = playerDropZones;
-            planeFlightSpeed = planeSpeed_PlayerDrop;
-        }
-        else
-        {
-            acceptableDropZones = supplyDropZones;
-            planeFlightSpeed = planeSpeed_SupplyDrop;
-
-        }
+        acceptableDropZones = planeContainsPlayers ? playerDropZones : playerDropZones;
+        planeFlightSpeed = planeContainsPlayers ? planeSpeed_PlayerDrop : planeSpeed_SupplyDrop;
         
     }
 
