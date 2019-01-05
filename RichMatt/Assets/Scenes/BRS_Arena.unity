@@ -648,11 +648,6 @@ Prefab:
       propertyPath: planePathManager
       value: 
       objectReference: {fileID: 938004517}
-    - target: {fileID: 114080687751938896, guid: 07b09818548fb4d41bfa95b56e1827cb,
-        type: 2}
-      propertyPath: startInPlane
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07b09818548fb4d41bfa95b56e1827cb, type: 2}
   m_IsPrefabAsset: 0

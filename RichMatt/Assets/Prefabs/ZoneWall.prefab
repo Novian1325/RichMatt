@@ -276,7 +276,7 @@ MonoBehaviour:
   radiusShrinkFactor: 50
   safeZone_Circle_Projector: {fileID: 119075886879666166}
   timeBetweenEachShrinkPhase: 0300000003000000030000000300000003000000030000000300000003000000
-  secondsToShrink: 060000000500000004000000
+  secondsToShrink: 3c0000003c0000003c000000
   DEBUG: 0
 --- !u!119 &119075886879666166
 Projector:
@@ -399,4 +399,3 @@ CapsuleCollider:
   m_Height: 115
   m_Direction: 1
   m_Center: {x: 0, y: 50, z: 0}
-  

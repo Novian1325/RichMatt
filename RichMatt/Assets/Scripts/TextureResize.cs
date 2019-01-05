@@ -4,6 +4,7 @@ using System.Collections;
 [ExecuteInEditMode]
 public class TextureResize : MonoBehaviour
 {
+    public int updatesPerSecond = 5;
     public float tilingX = 50;
     public float tilingY = 10;
     private Transform relativeTransform;
@@ -14,7 +15,8 @@ public class TextureResize : MonoBehaviour
         Debug.Log("Start");
         relativeTransform = transform;
         renderer = GetComponent<Renderer>();
-        UpdateTiling();
+        StartCoroutine(UpdateTiling2());
+        //UpdateTiling();
     }
 
     // Update is called once per frame
@@ -29,5 +31,14 @@ public class TextureResize : MonoBehaviour
     {
         Debug.Log("Updating the tiling!");
         renderer.sharedMaterial.mainTextureScale = new Vector2(tilingX * relativeTransform.lossyScale.x, tilingY);
+    }
+
+    private IEnumerator UpdateTiling2()
+    {
+        while (true)
+        {
+            UpdateTiling();
+            yield return new WaitForSeconds(.5f);
+        }
     }
 }
