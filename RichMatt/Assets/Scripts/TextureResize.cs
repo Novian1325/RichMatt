@@ -38,7 +38,7 @@ public class TextureResize : MonoBehaviour
         while (true)
         {
             UpdateTiling();
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(1 / updatesPerSecond);
         }
     }
 }
