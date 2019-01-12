@@ -1,0 +1,75 @@
+﻿using UnityEngine;
+
+class WorldCircle
+{
+	//private members
+	private int _segments;
+	private float _xradius;
+    private float _yheight;
+	private float _zradius;
+	private LineRenderer _renderer;
+
+	#region Constructors
+	// This one does all the work
+	public WorldCircle(ref LineRenderer renderer, int segments, float xradius, float zradius, float yheight = 0)
+	{
+		_renderer = renderer;
+		_segments = segments;
+		_xradius = xradius;
+        _yheight = yheight;
+		_zradius = zradius;
+		Draw(segments, _xradius, _zradius);
+	}
+
+	// these are 'convenience' constructors
+	public WorldCircle(ref LineRenderer renderer): this(ref renderer, 256, 5.0f, 5.0f) { }
+
+	public WorldCircle(ref LineRenderer renderer, int segments) : this(ref renderer, segments, 5.0f, 5.0f) { }
+
+	public WorldCircle(ref LineRenderer renderer, int segments, float [] radii) : this(ref renderer, segments, radii[0], radii[1]) { }
+	#endregion
+
+	public void Draw(int segments, float[] radii)
+	{
+		_xradius = radii[0];
+		_zradius = radii[1];
+		Draw(segments, _xradius, _zradius);
+	}
+
+	public void Draw(int segments, float xradius, float yradius, bool useWorldSpace = false)
+	{
+		_xradius = xradius;
+		_zradius = yradius;
+        _renderer.positionCount = segments + 1;
+		_renderer.useWorldSpace = useWorldSpace;
+		CreatePoints();
+	}
+
+	public float[] radii
+	{
+		get {
+			float [] values = new float[2];
+			values[0] = _xradius;
+			values[1] = _zradius;
+			return values;
+		}
+	}
+
+	private void CreatePoints ()
+	{
+		float x = 0;
+		float y = _yheight;
+		float z = 0;
+		float angle = 0;
+
+		for (int i = 0; i < (_segments + 1); i++)
+		{
+			x = Mathf.Sin (Mathf.Deg2Rad * angle) * _xradius;
+			z = Mathf.Cos (Mathf.Deg2Rad * angle) * _zradius;
+
+			_renderer.SetPosition (i, new Vector3(x,y,z) );
+
+			angle += (360f / _segments);
+		}
+	}
+}

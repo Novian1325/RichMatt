@@ -13,11 +13,7 @@ public class PlaneManager : MonoBehaviour
     //to which drop zone is the plane headed?
     private GameObject targetDropZone;
     
-
     private static int planeCounter = 0;
-    
-
-    //public UnityStandardAssets.Characters.FirstPerson.FirstPersonController fpsController;
 
     private bool CheckIfPlayerOnBoard()
     {
@@ -114,16 +110,8 @@ public class PlaneManager : MonoBehaviour
 
     private void DropSupplies()
     {
-        if (cargo_Supplies != null)
-        {
-            if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
-            Instantiate(cargo_Supplies, dropSpot.position, this.transform.rotation);
-        }
-        else
-        {
-            Debug.Log("No Supplies Given to Plane. This text lets you know the code worked correctly.");
-        }
-
+        if (DEBUG) Debug.Log("GET OUT OF MY PLANE, " + cargo_Supplies.gameObject.name);
+        Instantiate(cargo_Supplies, dropSpot.position, this.transform.rotation);
     }
 
     private void ForceOutPlayers()
@@ -148,13 +136,10 @@ public class PlaneManager : MonoBehaviour
             {
                 player.OnDropZoneEnter();
             }
-            //drop supplies
-            DropSupplies();
-        }
-    }
 
-    private void OnTriggerStay(Collider other)
-    {
+            //drop supplies
+            if(cargo_Supplies) DropSupplies();
+        }
     }
 
     private void OnTriggerExit(Collider otherCollider)
@@ -166,7 +151,6 @@ public class PlaneManager : MonoBehaviour
 
             //Force All Players out (if there are any)
             if (this.cargo_Players != null && cargo_Players.Length > 0) ForceOutPlayers();
-
             
         }
 
@@ -175,14 +159,18 @@ public class PlaneManager : MonoBehaviour
         {
             if (DEBUG)
             {
-                Debug.Log("Plane " + this.name + " leaving boundary. Destroying....");
+                System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+
+                stringBuilder.Append("Plane ");
+                stringBuilder.Append(this.name);
+                stringBuilder.Append(" leaving boundary. Destroying....");
+
+                Debug.Log(stringBuilder.ToString());
+
                 this.gameObject.SetActive(false);
             }
             else Destroy(this.gameObject);
         }
-
         
-
-
     }
 }

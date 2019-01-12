@@ -59,3 +59,4 @@ MonoBehaviour:
   initialDelayInSeconds: 30
   minSpawnTime: 30
   maxSpawnTime: 60
+  

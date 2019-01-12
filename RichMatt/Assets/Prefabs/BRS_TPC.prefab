@@ -1421,6 +1421,7 @@ GameObject:
   - component: {fileID: 114623461945884066}
   - component: {fileID: 114072262533309348}
   - component: {fileID: 114150605340197970}
+  - component: {fileID: 114782782397744966}
   m_Layer: 0
   m_Name: BRS_TPC
   m_TagString: Player
@@ -1716,7 +1717,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941973348895546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 99.4, y: 26.9, z: -96.1}
+  m_LocalPosition: {x: 83.84, y: 26.9, z: -46.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4943463622790514}
@@ -2844,7 +2845,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 823
+    m_Bits: 791
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -3176,6 +3177,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca118e5ad500d4448db45ad6e41bb52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114782782397744966
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1941973348895546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ed8a34a37002b14a80962e74ff6fb68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionRaycastLimit: 5
+  DEBUG: 0
 --- !u!136 &136522419180399366
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -3365,3 +3379,4 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.081615, y: -0.040415905, z: 0.00029075146}
     m_Extent: {x: 0.037738636, y: 0.060759716, z: 0.07119451}
   m_DirtyAABB: 0
+  
