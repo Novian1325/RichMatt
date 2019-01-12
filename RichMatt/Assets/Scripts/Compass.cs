@@ -1,5 +1,6 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum degreeIncrement
 {
@@ -11,29 +12,76 @@ public enum degreeIncrement
 public class Compass : MonoBehaviour
 {
 	public RawImage CompassImage;
-	public Transform mainCamera;
+	public Transform mainCameraXform;
 	public Text CompassDirectionText;
 
     [Header("Readout Options")]
     [SerializeField] private bool ordinalLetters = true;//show N instead of 0 or S instead of 180
-    [SerializeField] private degreeIncrement degreeInc = degreeIncrement.Five;// round to this number
+    [SerializeField] private degreeIncrement degreeIncrement = degreeIncrement.Five;// round to this number
+
+    [Header("Icons")]
+    [SerializeField] private GameObject compassMarkerPrefab;// prefab used  //icons UV rect x value is between -.5 and .5
+    private List<Transform> trackableTransforms = new List<Transform>(); //transforms of all the trackable locations
+    private List<BRS_CompassMarker> compassMarkerList = new List<BRS_CompassMarker>();
 
     private void Start()
     {
         //find it 
-        if (mainCamera == null) mainCamera = Camera.main.transform;
+        if (mainCameraXform == null) mainCameraXform = Camera.main.transform;
         //if STILL null
-        if (mainCamera == null) Debug.LogError("ERROR! No GameObject tagged \"MainCamera\" in scene.");
+        if (mainCameraXform == null) Debug.LogError("ERROR! No GameObject tagged \"MainCamera\" in scene.");
+    }
+
+    private static void UpdateCompassMarker(BRS_CompassMarker compassMarker, Vector3 trackablePosition, Transform playerXform)
+    {
+        //get the distance to player
+        float distanceFromPlayer = Vector3.Distance(playerXform.position, trackablePosition);
+
+        if (distanceFromPlayer <= compassMarker.GetRevealDistance())
+        {
+            if (!compassMarker.gameObject.activeSelf)
+            {
+                compassMarker.gameObject.SetActive(true);
+            }
+
+            //float angle = Mathf.Atan2 (Vector3.Magnitude (Vector3.Cross (go1.transform.forward, go2.transform.forward)), Vector3.Dot (go1.transform.forward, go2.transform.forward));
+            float angle = Vector3.SignedAngle(playerXform.forward, Vector3.Normalize(trackablePosition - playerXform.position), Vector3.up); // this one works best, but has reduced accuracy when angle is nearing 0
+            //float angle = Vector3.Angle(playerXform.forward, trackablePosition - playerXform.position);
+            //float angle = Mathf.Atan2(Vector3.Magnitude(Vector3.Cross(playerXform.forward, trackablePosition - playerXform.position)), 
+                //Vector3.Dot(playerXform.forward, trackablePosition - playerXform.position));
+            //angle *= Mathf.Deg2Rad;
+            
+            //float angle = Vector3.Dot(playerXform.forward, Vector3.Normalize(trackablePosition - playerXform.position));
+            //angle = Mathf.Acos(angle);
+
+
+            compassMarker.GetCompassMarkerImage().uvRect = new Rect(-angle / 180, 0, 1, 1);
+            Debug.Log("Trackable Angle: " + angle.ToString());
+        }
+        else
+        {
+            compassMarker.gameObject.SetActive(false);
+        }
+        //get the angle from player to trackable transform
+
+        //if distance to player < revealDistance
+        //show icon
+        //update position on compass
+
+        //else hide icon
+
+
+
     }
 
     public void Update()
 	{
-        float headingAngle = mainCamera.eulerAngles.y;
+        float headingAngle = mainCameraXform.eulerAngles.y;
 
         //Get a handle on the Image's uvRect
         CompassImage.uvRect = new Rect(headingAngle / 360, 0, 1, 1);
         
-		headingAngle = (int)degreeInc * Mathf.RoundToInt(headingAngle / (int)degreeInc  );
+		headingAngle = (int)degreeIncrement * Mathf.RoundToInt(headingAngle / (int)degreeIncrement  );
 
         //convert the numbers to letters if pointing towards a direction (N/E/S/W)
         if (ordinalLetters)
@@ -44,8 +92,27 @@ public class Compass : MonoBehaviour
         {
             CompassDirectionText.text = headingAngle.ToString();
         }
-		
+        
+		for(int i = 0; i < compassMarkerList.Count; ++i)
+        {
+            UpdateCompassMarker(compassMarkerList[i], trackableTransforms[i].position, mainCameraXform);
+        }
+
 	}
+
+    public void RegisterTrackable(BRS_Trackable newTrackable)
+    {
+        //create new marker
+        BRS_CompassMarker compassMarker = Instantiate(compassMarkerPrefab, CompassImage.transform).GetComponent<BRS_CompassMarker>() as BRS_CompassMarker;
+
+        //initialize marker with image, color, and distance
+        compassMarker.InitCompassMarker(newTrackable);
+
+        //add trackables to list
+        trackableTransforms.Add(newTrackable.transform);//add transform
+        compassMarkerList.Add(compassMarker);
+        
+    }
 
     private void ConvertAngleToLetter(int angle)
     {//Set the text of Compass Degree Text to the clamped value, but change it to the letter if it is a True direction

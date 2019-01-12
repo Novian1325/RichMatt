@@ -11,6 +11,9 @@ TagManager:
   - MiniMap Camera
   - PlanePathManager
   - Interactable
+  - ZoneWall
+  - PlaneManager
+  - Compass
   layers:
   - Default
   - TransparentFX
