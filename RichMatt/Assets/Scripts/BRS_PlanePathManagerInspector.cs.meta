@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - splashTexture: {fileID: 2800000, guid: 5d7f9cb53d70f1342a62fd5f819067d7, type: 3}
+  - splashTexture: {fileID: 2800000, guid: 74e57d92ee11c6a4db3ad17542d4a01f, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
