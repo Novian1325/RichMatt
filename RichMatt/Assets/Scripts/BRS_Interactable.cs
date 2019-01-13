@@ -5,14 +5,15 @@ public class BRS_Interactable : MonoBehaviour
 {
     [Header("Interactable")]
     [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
-    [SerializeField] protected GameObject tooltipObject;
-
+    [SerializeField] protected GameObject tooltipObject; //protected means derived classes can use it like private
+    
+    private BRS_Trackable trackable;
     protected bool playerIsLookingAtObject = false;
 
     // Use this for initialization
     void Start ()
     {
-		
+        trackable = gameObject.GetComponent<BRS_Trackable>() as BRS_Trackable; //may or may not exist
 	}
 
     protected virtual void HandleTooltip()
@@ -34,6 +35,14 @@ public class BRS_Interactable : MonoBehaviour
 
         //Handle Tooltips
         HandleTooltip();
+    }
+
+    protected void RemoveTrackableFromCompass()
+    {
+        if (trackable)
+        {
+            trackable.RemoveTrackable();
+        }
     }
 
     public virtual void Interact(InteractionManager interactingObject)

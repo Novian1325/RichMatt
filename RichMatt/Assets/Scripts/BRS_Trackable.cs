@@ -7,6 +7,7 @@ public class BRS_Trackable : MonoBehaviour {
     [SerializeField] private Texture minimapImage;
     [SerializeField] private float revealDistance;
     [SerializeField] private Color iconColor;
+    private Transform cachedTransform;
 
     private static Compass compassInstance;
 
@@ -19,8 +20,7 @@ public class BRS_Trackable : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        compassInstance.RegisterTrackable(this);
-        //register with minimap
+        cachedTransform = this.transform;
         
 	}
 	
@@ -32,7 +32,7 @@ public class BRS_Trackable : MonoBehaviour {
 
     public void RemoveTrackable()
     {
-
+        compassInstance.RemoveTrackable(this);
     }
 
     private static void InitStaticCompassInstance()
@@ -46,6 +46,18 @@ public class BRS_Trackable : MonoBehaviour {
                 Debug.LogError("ERROR! No BRS_Compass in scene! nothing to register trackable to.");
             }
         }
+    }
+
+    private void OnEnable()
+    {
+        compassInstance.RegisterTrackable(this);
+        //minimap
+    }
+
+    private void OnDisable()
+    {
+        compassInstance.RemoveTrackable(this);
+        //minimap
     }
 
     public Texture GetCompassImage()
@@ -66,5 +78,10 @@ public class BRS_Trackable : MonoBehaviour {
     public Color GetIconColor()
     {
         return this.iconColor;
+    }
+
+    public Transform GetTrackableTransform()
+    {
+        return this.cachedTransform;
     }
 }
