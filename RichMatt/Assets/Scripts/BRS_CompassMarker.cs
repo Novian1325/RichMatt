@@ -40,7 +40,7 @@ public class BRS_CompassMarker : MonoBehaviour {
 
     private IEnumerator UpdateDistanceText()
     {
-        yield return new WaitForSeconds(1 / textUpdatesPerSecond);
+        yield return new WaitForSecondsRealtime(1 / textUpdatesPerSecond);
         TMP_distanceText.text = distanceFromPlayer.ToString();
 
     }
