@@ -114,7 +114,7 @@ public class Compass : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1 / sortsPerSecond);
+            yield return new WaitForSecondsRealtime(1 / sortsPerSecond);
 
             if (compassMarkerList.Count > 1)
             {
