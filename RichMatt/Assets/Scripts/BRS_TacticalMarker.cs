@@ -7,7 +7,7 @@ public class BRS_TacticalMarker : MonoBehaviour
     [Tooltip("The prefab of the UI element that will be shown when activated.")]
 	[SerializeField] private GameObject TacticalMarkerPrefab;
     private GameObject tacticalMarkerInstance;//the marker object that is currently existing in the world
-    //[SerializeField] private Color playerColor; //player's color to match marker
+    [SerializeField] private Color playerColor; //player's color to match marker
     [SerializeField] private Text distanceText;
 
     private Transform playerCameraXform; // transform of player's camera
@@ -41,7 +41,6 @@ public class BRS_TacticalMarker : MonoBehaviour
         {
             Debug.Log("Distance: " + Vector3.Distance(this.transform.position, tacticalMarkerInstance.transform.position) + ". Destroying TacticalMarker.");
             if(tacticalMarkerInstance) Destroy(tacticalMarkerInstance);//if it exists, destroy it
-            distancePollingTimer = 0;
         }
     }
 
@@ -66,27 +65,29 @@ public class BRS_TacticalMarker : MonoBehaviour
 
     private void UpdateDistanceText()
     {
-        if (distanceText) distanceText.text = distanceToMarker.ToString() + "m";
+        if (distanceText)
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(distanceToMarker.ToString());
+            stringBuilder.Append("m");
+            distanceText.text =  stringBuilder.ToString();
+        }
+
     }
 
     private void UpdateDistanceToMarker()
     {
         //limit polling rate to be more performant
-        if (distancePollingTimer >= (1 / distanceToMarkerPollsPerSecond)) //if it's time to poll again...
+        if (Time.time >= distancePollingTimer) //if it's time to poll again...
         {
             //Calculate the distance from the player to the marker
-            distanceToMarker = (int)Vector3.Distance(this.transform.position, tacticalMarkerInstance.transform.position);
+            distanceToMarker = (int)Vector3.Distance(playerCameraXform.position, tacticalMarkerInstance.transform.position);
 
             //display this distance on the HUD
             UpdateDistanceText();
 
-            //reset timer
-            distancePollingTimer = 0;
-        }
-        else
-        {
-            //increase the timer
-            distancePollingTimer += Time.deltaTime;
+            //reset next update time
+            distancePollingTimer = Time.time + (1 / distanceToMarkerPollsPerSecond);
         }
     }
     
