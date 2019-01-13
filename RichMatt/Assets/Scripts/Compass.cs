@@ -43,34 +43,15 @@ public class Compass : MonoBehaviour
             {
                 compassMarker.gameObject.SetActive(true);
             }
+            Vector3 relative = playerXform.InverseTransformPoint(trackablePosition);
+            float angle = Mathf.Atan2(relative.x, relative.z) * Mathf.Rad2Deg;
 
-            //float angle = Mathf.Atan2 (Vector3.Magnitude (Vector3.Cross (go1.transform.forward, go2.transform.forward)), Vector3.Dot (go1.transform.forward, go2.transform.forward));
-            float angle = Vector3.SignedAngle(playerXform.forward, Vector3.Normalize(trackablePosition - playerXform.position), Vector3.up); // this one works best, but has reduced accuracy when angle is nearing 0
-            //float angle = Vector3.Angle(playerXform.forward, trackablePosition - playerXform.position);
-            //float angle = Mathf.Atan2(Vector3.Magnitude(Vector3.Cross(playerXform.forward, trackablePosition - playerXform.position)), 
-                //Vector3.Dot(playerXform.forward, trackablePosition - playerXform.position));
-            //angle *= Mathf.Deg2Rad;
-            
-            //float angle = Vector3.Dot(playerXform.forward, Vector3.Normalize(trackablePosition - playerXform.position));
-            //angle = Mathf.Acos(angle);
-
-
-            compassMarker.GetCompassMarkerImage().uvRect = new Rect(-angle / 180, 0, 1, 1);
-            Debug.Log("Trackable Angle: " + angle.ToString());
+            compassMarker.GetCompassMarkerImage().uvRect = new Rect(-angle / 360, 0, 1, 1); //need a value between -.5 an .5 for uvRect
         }
         else
         {
             compassMarker.gameObject.SetActive(false);
         }
-        //get the angle from player to trackable transform
-
-        //if distance to player < revealDistance
-        //show icon
-        //update position on compass
-
-        //else hide icon
-
-
 
     }
 
