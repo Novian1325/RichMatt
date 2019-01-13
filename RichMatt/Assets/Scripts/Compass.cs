@@ -27,6 +27,7 @@ public class Compass : MonoBehaviour
 
     //courtine references
     private Coroutine coroutine_CompassMarkerSort;
+    private static readonly float sortsPerSecond = .5f;// every other second
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class Compass : MonoBehaviour
         //if STILL null
         if (mainCameraXform == null) Debug.LogError("ERROR! No GameObject tagged \"MainCamera\" in scene.");
 
-        coroutine_CompassMarkerSort = StartCoroutine(SortCompassMarker(2));
+        coroutine_CompassMarkerSort = StartCoroutine(SortCompassMarker(sortsPerSecond));
     }
 
     /// <summary>
@@ -109,11 +110,11 @@ public class Compass : MonoBehaviour
     /// <param name="sortsPerSecond"></param>
     /// <param name="compassMarkerList"></param>
     /// <returns></returns>
-    private IEnumerator SortCompassMarker(int sortsPerSecond)
+    private IEnumerator SortCompassMarker(float sortsPerSecond)
     {
         while (true)
         {
-            yield return new WaitForSeconds(sortsPerSecond / 1);
+            yield return new WaitForSeconds(1 / sortsPerSecond);
 
             if (compassMarkerList.Count > 1)
             {
