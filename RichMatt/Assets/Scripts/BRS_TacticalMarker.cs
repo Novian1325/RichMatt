@@ -6,22 +6,22 @@ public class BRS_TacticalMarker : MonoBehaviour
     //tactical marker stuff
     [Tooltip("The prefab of the UI element that will be shown when activated.")]
 	[SerializeField] private GameObject TacticalMarkerPrefab;
-    private GameObject tacticalMarkerInstance;//the marker object that is currently existing in the world
     [SerializeField] private Color playerColor; //player's color to match marker
     [SerializeField] private Text distanceText;
 
     private Transform playerCameraXform; // transform of player's camera
-    
-    private readonly string TMBUTTONNAME = "TacticalMarker";//name of the button in Input Manager that will trigger tactical marker placement
-    private readonly int tacticalMarkerPlaceDistanceLimit = 300;
+    private GameObject tacticalMarkerInstance;//the marker object that is currently existing in the world
+
+    private static readonly string TMBUTTONNAME = "TacticalMarker";//name of the button in Input Manager that will trigger tactical marker placement
+    private static readonly int tacticalMarkerPlaceDistanceLimit = 300;
 
     //distance polling stuff
     private int distanceToMarker;//how close is the player to the marker they placed?
     private float distancePollingTimer = 0f; //used to keep track of time and limit distance polling rate
-    private readonly int distanceToMarkerPollsPerSecond = 2;// this affects perfomance. How often should the distance between the player and marker be checked?
+    private static readonly int distanceToMarkerPollsPerSecond = 2;// this affects perfomance. How often should the distance between the player and marker be checked?
 
     private Transform minimapCameraXform;
-    private readonly int iconHeightOffset = 1000;
+    private static readonly int iconHeightOffset = 1000;
 
     //TODO
     //hold 't' for 3 seconds to remove marker from map
@@ -117,6 +117,7 @@ public class BRS_TacticalMarker : MonoBehaviour
             foreach(Transform child in tacticalMarkerInstance.transform)
             {
                 child.Translate(0, minimapCameraXform.position.y - iconHeightOffset, 0);
+                child.GetComponent<MeshRenderer>().material.color = playerColor;
             }
 
 		}
