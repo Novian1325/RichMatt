@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class Interactable : MonoBehaviour
+public class BRS_Interactable : MonoBehaviour
 {
     [Header("Interactable")]
     [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]

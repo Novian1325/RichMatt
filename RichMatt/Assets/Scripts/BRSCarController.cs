@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Vehicles;
 
-public class BRSCarController : Interactable
+public class BRSCarController : BRS_Interactable
 {
     [Header("BRSCarController")]
     [Tooltip("Point in space where Player appears when exiting vehicle.")]

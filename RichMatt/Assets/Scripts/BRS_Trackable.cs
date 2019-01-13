@@ -21,7 +21,7 @@ public class BRS_Trackable : MonoBehaviour {
     void Start () {
         compassInstance.RegisterTrackable(this);
         //register with minimap
-        //Destroy(this); //no longer needed after registering
+        
 	}
 	
 	// Update is called once per frame
@@ -29,6 +29,11 @@ public class BRS_Trackable : MonoBehaviour {
 		
         //hide from map if distance to player too great
 	}
+
+    public void RemoveTrackable()
+    {
+
+    }
 
     private static void InitStaticCompassInstance()
     {

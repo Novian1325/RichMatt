@@ -9,7 +9,7 @@ public class InteractionManager : MonoBehaviour
     
     private Transform playerCameraXform;
     
-    private Interactable interactablePlayerIsLookingAt;
+    private BRS_Interactable interactablePlayerIsLookingAt;
 
     [SerializeField] private bool DEBUG = false;
     // Use this for initialization
@@ -66,9 +66,9 @@ public class InteractionManager : MonoBehaviour
     }
     
 
-    private Interactable WhatIsPlayerLookingAt()
+    private BRS_Interactable WhatIsPlayerLookingAt()
     {
-        Interactable targetInteractable = null;
+        BRS_Interactable targetInteractable = null;
 
         //check to see if player is looking at interactable object's model
         RaycastHit hitInfo;
@@ -80,7 +80,7 @@ public class InteractionManager : MonoBehaviour
             //is the player looking at the item model?
             if (hitInfo.collider.CompareTag("Interactable"))
             {
-                targetInteractable = hitInfo.collider.GetComponent<Interactable>();
+                targetInteractable = hitInfo.collider.GetComponent<BRS_Interactable>();
             }
             else
             {

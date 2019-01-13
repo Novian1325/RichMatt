@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorHandler : Interactable {
+public class DoorHandler : BRS_Interactable {
     [Header("Door Handler")]
 
     [Tooltip("Current state the door is in.")]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
  [RequireComponent(typeof(Rigidbody))]
-public class SupplyDrop : Interactable
+public class SupplyDrop : BRS_Interactable
 {
     [Header("SupplyDrop")]
     private static int supplyDropCount = 0;
