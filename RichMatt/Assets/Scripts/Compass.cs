@@ -114,20 +114,12 @@ public class Compass : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(sortsPerSecond / 1);
-            Debug.Log("markers in list: " + compassMarkerList.Count);
 
             if (compassMarkerList.Count > 1)
             {
-                Debug.Log("Sorting begin!");
                 //order icons so closest object to player is on top of all other icons
                 compassMarkerList = compassMarkerList.OrderBy(o => o.GetDistanceFromPlayer()).ToList();
-
-
-                foreach(BRS_CompassMarker m in compassMarkerList)
-                {
-                    Debug.Log("Distance: " + m.GetDistanceFromPlayer());
-                }
-
+                
                 for (int i = 0; i < compassMarkerList.Count; ++i)
                 {
                     compassMarkerList[i].transform.SetSiblingIndex(compassMarkerList.Count - 1 - i);
@@ -166,7 +158,7 @@ public class Compass : MonoBehaviour
             {
                 compassMarkerList.Remove(compassMarkerList[i]);//remove marker icon reference
 
-                if(marker.gameObject) Destroy(marker.gameObject);//destroy UI element
+                if(marker) Destroy(marker.gameObject);//destroy UI element
                 break;
             }
         }
