@@ -278,7 +278,6 @@ public class BRS_PlanePathManager : MonoBehaviour
             if(endpointHit && flightPathThroughLZ)
             {
                 //SUCCESS!!!!!!! reset for next path
-                ToggleDropZones(true);//turn LZ on
                 planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
                 unsuccessfulPasses = 0;//reset failures
                 DestroyMarkerObjects();//clear excess markers
@@ -337,9 +336,6 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     private bool TestRaycastThroughDropZone(Vector3 startPoint, Vector3 targetObject, GameObject[] acceptableDropZones)
     {
-
-        //turn drop zone colliders on
-        ToggleDropZones(true);//turn LZ on
         //did the raycast go through a drop zone?
         bool raycastThroughDropZone = false;
         //RaycastHit will store information about anything hit by the raycast
@@ -369,15 +365,12 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     private bool TestRaycastHitEndPoint(Vector3 startPoint, GameObject targetObject)
     {
-        //turn all drop zones off so they don't interfere with raycast
-        ToggleDropZones(false);//turn LZ off
-
         //did the raycast hit the endpoint unobstructed by terrain or obstacles?
         bool raycastHitEndpoint = false;
         //RaycastHit holds info about raycast
         RaycastHit raycastHitInfo;
         //if something was hit...
-        if (Physics.Raycast(startPoint, targetObject.transform.position - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2))
+        if (Physics.Raycast(startPoint, targetObject.transform.position - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             if (DEBUG) Debug.Log("Testing Raycast against Endpoint. Hit: " + raycastHitInfo.collider.gameObject.name);
             if (raycastHitInfo.collider.gameObject == targetObject)//were we trying to hit this thing?
@@ -390,24 +383,6 @@ public class BRS_PlanePathManager : MonoBehaviour
             //Debug.LogError("ERROR! Raycast missed it's target: " + targetObject);
         }
         return raycastHitEndpoint;
-    }
-
-    //toggle drop zones on and off
-    public void ToggleDropZones(bool active)
-    {
-        ToggleDropZones(playerDropZones, active);
-        ToggleDropZones(supplyDropZones, active);
-    }
-
-    public void ToggleDropZones(GameObject[] acceptableDropZones, bool active)
-    {
-        //look at each dropZone in our list
-        foreach (GameObject dropZone in acceptableDropZones)
-        {
-            //set it active or inactive
-            dropZone.GetComponent<CapsuleCollider>().enabled = active;
-        }
-       
     }
 }
 
