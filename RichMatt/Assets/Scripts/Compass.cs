@@ -78,6 +78,7 @@ public class Compass : MonoBehaviour
         for (int i = 0; i < compassMarkerList.Count; ++i)
         {
             compassMarker = compassMarkerList[i];
+            if (!compassMarker.GetTrackableTransform()) Debug.Log("ERROR! NO MARKER HERE");
             trackablePosition = compassMarker.GetTrackableTransform().position;
 
             //get and save the distance to player
@@ -135,6 +136,12 @@ public class Compass : MonoBehaviour
     /// <param name="newTrackable">Trackable whose texture and color will be used on the icon.</param>
     public void RegisterTrackable(BRS_Trackable newTrackable)
     {
+        //check if already exists
+        foreach (var marker in compassMarkerList)
+        {
+            if (marker.CompareTrackable(newTrackable)) return;
+        }
+
         //create new marker
         BRS_CompassMarker compassMarker = Instantiate(compassMarkerPrefab, CompassImage.transform).GetComponent<BRS_CompassMarker>() as BRS_CompassMarker;
 

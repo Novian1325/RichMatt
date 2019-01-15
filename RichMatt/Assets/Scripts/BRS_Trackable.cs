@@ -15,8 +15,8 @@ public class BRS_Trackable : MonoBehaviour {
     {
         //only the first trackable has to do the hard work
         InitStaticCompassInstance();
-
-
+        
+        cachedTransform = this.transform;
     }
 
     // Use this for initialization
