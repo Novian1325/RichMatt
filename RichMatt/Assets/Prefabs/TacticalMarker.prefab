@@ -218,5 +218,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   compassImage: {fileID: 0}
   minimapImage: {fileID: 0}
-  revealDistance: 0
+  revealDistance: 300
   iconColor: {r: 1, g: 1, b: 1, a: 1}
