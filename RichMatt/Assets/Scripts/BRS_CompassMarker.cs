@@ -5,6 +5,7 @@ using System.Collections;
 
 public class BRS_CompassMarker : MonoBehaviour {
 
+    [Tooltip("Integrated. Optional.")]
     [SerializeField] private TextMeshProUGUI TMP_distanceText;
     private RawImage compassMarkerImage;
     private BRS_Trackable trackable;
