@@ -13,6 +13,7 @@ public class BRS_Trackable : MonoBehaviour {
 
     private void Awake()
     {
+        //only the first trackable has to do the hard work
         InitStaticCompassInstance();
 
 

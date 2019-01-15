@@ -29,7 +29,7 @@ public class BRS_TacticalMarker : MonoBehaviour
     void Start ()
 	{
         if (TacticalMarkerPrefab == null) Debug.LogError("ERROR! No Tactical Marker Prefab set!");
-		playerCameraXform = Camera.main.transform;//get the player's camera
+		playerCameraXform = GameObject.FindGameObjectWithTag("MainCamera").transform;//get the player's camera
         minimapCameraXform = GameObject.FindGameObjectWithTag("MiniMap Camera").transform;
 
     }
