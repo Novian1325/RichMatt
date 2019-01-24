@@ -164,9 +164,10 @@ public class Compass : MonoBehaviour
 
             if (marker.CompareTrackable(trackable))
             {
-                compassMarkerList.Remove(compassMarkerList[i]);//remove marker icon reference
-
-                if(marker) Destroy(marker.gameObject);//destroy UI element
+                //remove marker icon reference
+                compassMarkerList.Remove(compassMarkerList[i]);//this is safe as long as there is a 'break' at the end
+                //destroy UI element
+                if (marker) Destroy(marker.gameObject);
                 break;
             }
         }
