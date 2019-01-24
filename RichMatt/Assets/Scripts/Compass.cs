@@ -178,9 +178,6 @@ public class Compass : MonoBehaviour
         switch (angle)
         {
             case 0:
-                //Do this
-                CompassDirectionText.text = "N";
-                break;
             case 360:
                 //Do this
                 CompassDirectionText.text = "N";
