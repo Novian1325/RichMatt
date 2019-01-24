@@ -60,7 +60,7 @@ public class Compass : MonoBehaviour
         //Get a handle on the Image's uvRect
         CompassImage.uvRect = new Rect(headingAngle / 360, 0, 1, 1);
         
-		headingAngle = (int)degreeIncrement * Mathf.RoundToInt(headingAngle / (int)degreeIncrement  );
+		headingAngle = (int)degreeIncrement * headingAngle / (int)degreeIncrement;
 
         //convert the numbers to letters if pointing towards a direction (N/E/S/W)
         if (ordinalLetters)
