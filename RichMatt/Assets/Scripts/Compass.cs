@@ -78,7 +78,7 @@ public class Compass : MonoBehaviour
         for (int i = 0; i < compassMarkerList.Count; ++i)
         {
             compassMarker = compassMarkerList[i];
-            if (!compassMarker.GetTrackableTransform()) Debug.Log("ERROR! NO MARKER HERE");
+            if (!compassMarker.GetTrackableTransform()) Debug.LogError("ERROR! NO MARKER HERE");
             trackablePosition = compassMarker.GetTrackableTransform().position;
 
             //get and save the distance to player
