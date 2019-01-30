@@ -436,10 +436,8 @@ public class BRS_PlanePathManager : MonoBehaviour
         if (Physics.Raycast(startPoint, targetObject.transform.position - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             if (DEBUG) Debug.Log("Testing Raycast against Endpoint. Hit: " + raycastHitInfo.collider.gameObject.name);
-            if (raycastHitInfo.collider.gameObject == targetObject)//were we trying to hit this thing?
-            {
-                raycastHitEndpoint = true;//booyah!
-            }
+            //set bool to whether the object ray hit is same as target
+            raycastHitEndpoint = raycastHitInfo.collider.gameObject == targetObject;
         }
         else
         {
