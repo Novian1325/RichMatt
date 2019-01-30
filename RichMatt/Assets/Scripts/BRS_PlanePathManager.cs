@@ -374,7 +374,7 @@ public class BRS_PlanePathManager : MonoBehaviour
         PlaneManager planeManager = plane.GetComponent<PlaneManager>() as PlaneManager;
         if(planeManager == null)
         {
-            plane.AddComponent<PlaneManager>();//create it if it doesn't exist
+            planeManager = plane.AddComponent<PlaneManager>();//create it if it doesn't exist
         }
 
         //init plane
