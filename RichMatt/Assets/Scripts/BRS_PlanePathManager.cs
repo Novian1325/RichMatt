@@ -4,12 +4,14 @@ using System.Collections.Generic;
 public class BRS_PlanePathManager : MonoBehaviour
 
 {
-    //public GameObject EndPointBall;
+    //visible to Inspector
     [Header("Map Settings")]
     [Tooltip("This is the spawn boundary for the airplane. Airplane will spawn at the very edge of this cylinder/sphere")]
     [SerializeField] private Transform planeSpawnBounds;//where can the plane start and stop?
+
     [Tooltip("This is the list of volumes where the players are allowed to jump from the plane.")]
     [SerializeField] private GameObject[] playerDropZones;//how big should the zone be that the plane flies through
+
     [Tooltip("These are the volumes for supply drops. Supplies drop as soon as plane enters this volume.")]
     [SerializeField] private GameObject[] supplyDropZones;//list containing all areas the player can drop into
 
@@ -55,12 +57,16 @@ public class BRS_PlanePathManager : MonoBehaviour
     private GameObject cargo_Supplies;//can only carry one supply drop per sortie
     private int planeFlightSpeed = 200;
 
+    /// <summary>
+    /// Verify all references exist and complain to Console if any are null.
+    /// </summary>
+    /// <returns></returns>
     private bool VerifyReferences()
     {
         bool allReferencesOkay = true;
         if (planeSpawnBounds == null)
         {
-            Debug.LogError("ERROR: plane spanw bounds not set!");
+            Debug.LogError("ERROR: plane spawn bounds not set!");
             allReferencesOkay = false;
         }
 
@@ -77,45 +83,6 @@ public class BRS_PlanePathManager : MonoBehaviour
         }
         
         return allReferencesOkay;
-    }
-
-    private void ConfigureDropZones()
-    {
-        Transform zoneXform;
-
-        //MAKE SURE Y SCALE IS LARGE ENOUGH!
-        foreach(GameObject zone in playerDropZones)
-        {
-            zoneXform = zone.transform;//cache
-            if (zoneXform.localScale.y < minimumDropZoneSize)
-                zoneXform.localScale = new Vector3(zoneXform.localScale.x, minimumDropZoneSize, zoneXform.localScale.z);
-        }
-
-        foreach (GameObject zone in supplyDropZones)
-        {
-            zoneXform = zone.transform;//cache
-            if (zone.transform.localScale.y < minimumDropZoneSize)
-                zoneXform.localScale = new Vector3(zoneXform.localScale.x, minimumDropZoneSize, zoneXform.localScale.z);//increase y scale
-        }
-
-
-    }
-
-    private void ConfigureFlightType()
-    {
-        acceptableDropZones = planeContainsPlayers ? playerDropZones : playerDropZones;
-        planeFlightSpeed = planeContainsPlayers ? planeSpeed_PlayerDrop : planeSpeed_SupplyDrop;
-        
-    }
-
-    private void DestroyMarkerObjects()
-    {
-        //destorys each marker that was used.
-        foreach (GameObject marker in endpointMarkerList)
-        {
-            if(!DEBUG) Destroy(marker);
-        }
-        endpointMarkerList.Clear();//clear list so it doesn't balloon infinitely
     }
 
     void Start()
@@ -138,9 +105,56 @@ public class BRS_PlanePathManager : MonoBehaviour
             Debug.Log("Failed to set up references.");
         }
 
-        ConfigureDropZones();//make sure drop zones are proper size
+        //make sure drop zones are the proper height
+        ConfigureDropZones(playerDropZones, minimumDropZoneSize);
+        ConfigureDropZones(supplyDropZones, minimumDropZoneSize);
     }
 
+    /// <summary>
+    /// Enforces minimum drop zone height.
+    /// </summary>
+    /// <param name="dropZones"></param>
+    /// <param name="minimumHeight"></param>
+    private static void ConfigureDropZones(GameObject[] dropZones, int minimumHeight = 1000)
+    {
+        Transform zoneXform;
+
+        //MAKE SURE Y SCALE IS LARGE ENOUGH!
+        foreach (var zone in dropZones)
+        {
+            zoneXform = zone.transform;//cache
+            if (zoneXform.localScale.y < minimumHeight)
+                zoneXform.localScale = new Vector3(zoneXform.localScale.x, minimumHeight, zoneXform.localScale.z);
+        }
+    }
+
+    /// <summary>
+    /// Sets which drop zones and flight speed to use.
+    /// </summary>
+    private void ConfigureFlightType()
+    {
+        acceptableDropZones = planeContainsPlayers ? playerDropZones : playerDropZones;
+        planeFlightSpeed = planeContainsPlayers ? planeSpeed_PlayerDrop : planeSpeed_SupplyDrop;
+        
+    }
+
+    /// <summary>
+    /// Destroys endpoint markers.
+    /// </summary>
+    private void DestroyMarkerObjects()
+    {
+        //destorys each marker that was used.
+        foreach (GameObject marker in endpointMarkerList)
+        {
+            if(!DEBUG) Destroy(marker);
+        }
+        endpointMarkerList.Clear();//clear list so it doesn't balloon infinitely
+    }
+
+    /// <summary>
+    /// Get a random point on the edge of the plane spawn bounds.
+    /// </summary>
+    /// <returns></returns>
     private Vector3 GetRandomPointOnCircle()
     {
         //get terminal point on unit circle, then multiply by radius
@@ -154,6 +168,10 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Add cargo to list and flag flight if Player is on board.
+    /// </summary>
+    /// <param name="cargo"></param>
     private void LoadCargo(GameObject cargo)
     {
         
@@ -170,6 +188,10 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Configure flight, get a flight path, and then spawn the plane.
+    /// </summary>
+    /// <returns>Whether or not a plane was spawned.</returns>
     public bool InitPlaneDrop()
     {
         ConfigureFlightType();
@@ -182,6 +204,11 @@ public class BRS_PlanePathManager : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Configure a flight path after adding Cargo.
+    /// </summary>
+    /// <param name="cargo">Supply Drop Prefab or Player Game Object to be dropped upon arriving at drop zone.</param>
+    /// <returns></returns>
     public bool InitPlaneDrop(GameObject cargo)
     {
         LoadCargo(cargo);
@@ -189,6 +216,11 @@ public class BRS_PlanePathManager : MonoBehaviour
         return InitPlaneDrop();
     }
 
+    /// <summary>
+    /// If multiple cargo are added, load each and Init the plane drop.
+    /// </summary>
+    /// <param name="incomingCargo">Supply Drop Prefab or Player Game Object to be dropped upon arriving at drop zone.</param>
+    /// <returns></returns>
     public bool InitPlaneDrop(GameObject[] incomingCargo)
     {
         foreach (GameObject cargo in incomingCargo)
@@ -199,6 +231,11 @@ public class BRS_PlanePathManager : MonoBehaviour
         return InitPlaneDrop();
     }
 
+    /// <summary>
+    /// Create a new endpoint to test against. If DEBUGing, make visible and track. Adds new endpoint to list.
+    /// </summary>
+    /// <param name="targetPosition">Point in space where this Endpoint should be.</param>
+    /// <returns>Endpoint object created.</returns>
     private GameObject ConfigureEndpoint(Vector3 targetPosition)
     {
         GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -216,8 +253,13 @@ public class BRS_PlanePathManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Decides where the plane starts and stops
+    /// </summary>
+    /// <returns></returns>
     private bool SetupFlightPath()
     {
+        //flags to inform developer why flight path failed.
         bool endpointHit = false;
         bool flightPathThroughLZ = false;
 
@@ -277,7 +319,8 @@ public class BRS_PlanePathManager : MonoBehaviour
             //is the flight unobstructed and through a drop zone
             if(endpointHit && flightPathThroughLZ)
             {
-                //SUCCESS!!!!!!! reset for next path
+                //SUCCESS!!!!!!! 
+                //reset variables for next path
                 planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
                 unsuccessfulPasses = 0;//reset failures
                 DestroyMarkerObjects();//clear excess markers
@@ -317,23 +360,37 @@ public class BRS_PlanePathManager : MonoBehaviour
         
     }//end func
 
+    /// <summary>
+    /// Instantiate a plane GO from prefab.
+    /// </summary>
+    /// <returns>Plane GameObject created.</returns>
     public PlaneManager SpawnPlane()
     {
         //create this plane in the world at this position, with no rotation
         GameObject plane = Instantiate(BRS_PlaneSpawn, planeStartPoint, Quaternion.identity);//do not set plane to be child of this object!
         plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
+
         //get plane manager
-        PlaneManager planeManager = plane.GetComponent<PlaneManager>();
+        PlaneManager planeManager = plane.GetComponent<PlaneManager>() as PlaneManager;
         if(planeManager == null)
         {
             plane.AddComponent<PlaneManager>();//create it if it doesn't exist
         }
+
+        //init plane
         planeManager.InitPlane(targetDropZone, cargo_Players.ToArray(), cargo_Supplies, planeFlightSpeed);
         cargo_Players.Clear();
         return planeManager;
 
     }
 
+    /// <summary>
+    /// Test whether a ray can be cast from startPoint to targetObject and hit a dropZone in list
+    /// </summary>
+    /// <param name="startPoint"></param>
+    /// <param name="targetObject"></param>
+    /// <param name="acceptableDropZones"></param>
+    /// <returns></returns>
     private bool TestRaycastThroughDropZone(Vector3 startPoint, Vector3 targetObject, GameObject[] acceptableDropZones)
     {
         //did the raycast go through a drop zone?
@@ -363,6 +420,12 @@ public class BRS_PlanePathManager : MonoBehaviour
         return raycastThroughDropZone;
     }
 
+    /// <summary>
+    /// Test whether or not a ray can be cast from startPoint towards targetObject without being obstructed by a physical object (ignoring trigger colliders).
+    /// </summary>
+    /// <param name="startPoint"></param>
+    /// <param name="targetObject"></param>
+    /// <returns></returns>
     private bool TestRaycastHitEndPoint(Vector3 startPoint, GameObject targetObject)
     {
         //did the raycast hit the endpoint unobstructed by terrain or obstacles?
