@@ -66,7 +66,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
     private float distanceToMoveCenter;
     private float shrinkRadius;
     private Vector3 centerPoint;//
-    private GameObject nextZoneWallCircle;
+    private GameObject leadingCircle;
 	private LineRenderer lineRenderer;
 	private Transform ZoneWallXform;
     private CapsuleCollider capsuleCollider;
@@ -143,13 +143,16 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Configure a new centerpoint for the next shrink phase.
+    /// </summary>
     private void ConfigureNewCenterPoint()
     {
         centerPoint = NewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor);
         distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
 
         //show on minimap where zone will shrink to
-        nextZoneWallCircle = CreateLeadingCircle(centerPoint, ZoneWallXform.rotation, lineRendererSegments, zoneWallRadius / (100 / radiusShrinkFactor), zoneWallNativeSize);
+        leadingCircle = CreateLeadingCircle(centerPoint, zoneWallRadius / (100 / radiusShrinkFactor), zoneWallNativeSize, lineRendererSegments);
 
         if (DEBUG)
         {
@@ -164,6 +167,9 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Move/Shrink all components.
+    /// </summary>
     private void ShrinkEverything()
     {
         // shrink the zone diameter, over time
@@ -180,6 +186,9 @@ public class BRS_ZoneWallManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Control when the circle should stop shrinking.
+    /// </summary>
     private void HandleStopShrinking()
     {
         // MoveTowards will continue ad infinitum, so we must test that we have gotten close enough to be DONE
@@ -203,12 +212,21 @@ public class BRS_ZoneWallManager : MonoBehaviour
                 Debug.Log("Zone Wall has finished shrinking.");
             }
 
-            Destroy(nextZoneWallCircle);
+            Destroy(leadingCircle);
 
         }
 
     }
 
+    /// <summary>
+    /// Randonly generates a new centerpoint in space.
+    /// </summary>
+    /// <param name="currentCenter"></param>
+    /// <param name="currentRadius">New point will be within this radius</param>
+    /// <param name="newRadius">Size of new radius</param>
+    /// <param name="shrinkFactor"></param>
+    /// <param name="debug"></param>
+    /// <returns></returns>
 	private static Vector3 NewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, float shrinkFactor, bool debug = false)
 	{
 		Vector3 newCenterPoint = Vector3.zero;
@@ -252,14 +270,21 @@ public class BRS_ZoneWallManager : MonoBehaviour
 		return newCenterPoint;
     }
 
-    private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, Quaternion rotation, int segments, float radius, float drawHeight)
+    /// <summary>
+    /// Create and configure a Leading Circle from scratch.
+    /// </summary>
+    /// <param name="circleCenterPoint">World Space coordinates of centerpoint.</param>
+    /// <param name="rotation"></param>
+    /// <param name="segments"></param>
+    /// <param name="radius"></param>
+    /// <param name="drawHeight">How high in space the points should be drawn</param>
+    /// <returns></returns>
+    private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, float radius, float drawHeight, int segments = 64)
     {
         //new empty game object
         GameObject leadingCircle = new GameObject();
         //set position
         leadingCircle.transform.position = circleCenterPoint;
-        //set rotation
-        leadingCircle.transform.rotation = rotation;
         //set layer to make sure is on top of other objects
         leadingCircle.layer = 10;// Minimap Icon layer
         //name it so developer can identify it
@@ -281,6 +306,14 @@ public class BRS_ZoneWallManager : MonoBehaviour
         return leadingCircle;
     }
 
+    /// <summary>
+    /// Configure given line renderer's points to make a circle in space.
+    /// </summary>
+    /// <param name="renderer">which line renderer to use</param>
+    /// <param name="radius">the radius of the circle</param>
+    /// <param name="height">height of the circle</param>
+    /// <param name="segments">how many segments should the circle be divided into?</param>
+    /// <param name="renderInWorldSpace">Use local or world space?</param>
     static void ConfigureWorldCircle(LineRenderer renderer, float radius, float height, int segments = 64, bool renderInWorldSpace = false)
     {
         float x = 0;
