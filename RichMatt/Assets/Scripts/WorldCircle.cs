@@ -8,19 +8,20 @@ class WorldCircle
 		float x = 0;
 		float y = height;
 		float z = 0;
-		float angle = 0;
+		float terminalPoint = 0;
+        float spaceBetweenPoints = 360f / segments;
 
         renderer.positionCount = segments;
         renderer.useWorldSpace = false;
 
 		for (int i = 0; i < segments; i++)
 		{
-			x = Mathf.Sin (Mathf.Deg2Rad * angle) * radius;
-			z = Mathf.Cos (Mathf.Deg2Rad * angle) * radius;
+			x = Mathf.Sin (Mathf.Deg2Rad * terminalPoint) * radius;
+			z = Mathf.Cos (Mathf.Deg2Rad * terminalPoint) * radius;
 
 			renderer.SetPosition (i, new Vector3(x,y,z) );
 
-			angle += (360f / segments);
+			terminalPoint += spaceBetweenPoints;
 		}
 	}
 }
