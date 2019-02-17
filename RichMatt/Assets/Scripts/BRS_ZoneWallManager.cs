@@ -32,15 +32,42 @@ public class BRS_ZoneWallManager : MonoBehaviour
     [SerializeField] private int[] secondsToShrink;
 
     #region Private Members
-    private float timeToShrink = 1;//how long this phase will take to shrink
-    private bool Shrinking = false;  // this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector
-    private int shrinkPhaseIndex = 0;//iterates through delays between each phase and speed at which each phase shrinks
-    private float nextShrinkTime;//holds the next time in seconds that the next shrink phase will start
-    private bool newCenterObtained = false;// has a new center been obtained?
-    private int zoneWallNativeSize;//this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider
+    /// <summary>
+    /// how long this phase will take to shrink
+    /// </summary>
+    private float timeToShrink = 1;//
+
+    /// <summary>
+    /// this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector
+    /// </summary>
+    private bool Shrinking = false;  // 
+
+    /// <summary>
+    /// iterates through delays between each phase and speed at which each phase shrinks
+    /// </summary>
+    private int shrinkPhaseIndex = 0;//
+
+    /// <summary>
+    /// holds the next time in seconds that the next shrink phase will start
+    /// </summary>
+    private float nextShrinkTime;//
+
+    /// <summary>
+    /// has a new center been obtained?
+    /// </summary>
+    private bool newCenterObtained = false;// 
+
+    /// <summary>
+    /// this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider
+    /// </summary>
+    private int zoneWallNativeSize;//
+
+    /// <summary>
+    /// Distance to center
+    /// </summary>
     private float distanceToMoveCenter;
     private float shrinkRadius;
-    private Vector3 centerPoint;//the
+    private Vector3 centerPoint;//
     private WorldCircle currentZoneWallCircle;
     private GameObject nextZoneWallCircle;
 	private LineRenderer lineRenderer;
@@ -80,7 +107,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
             // we need a new center point (that is within the bounds of the current zone)
             if (!newCenterObtained)
 			{
-                GetNewCenterPoint();
+                ConfigureNewCenterPoint();
                 newCenterObtained = true;
 
             }
@@ -118,7 +145,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
     }
 
-    private void GetNewCenterPoint()
+    private void ConfigureNewCenterPoint()
     {
         centerPoint = NewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor);
         distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
