@@ -68,7 +68,6 @@ public class BRS_ZoneWallManager : MonoBehaviour
     private float distanceToMoveCenter;
     private float shrinkRadius;
     private Vector3 centerPoint;//
-    private WorldCircle currentZoneWallCircle;
     private GameObject nextZoneWallCircle;
 	private LineRenderer lineRenderer;
 	private Transform ZoneWallXform;
@@ -87,12 +86,13 @@ public class BRS_ZoneWallManager : MonoBehaviour
         zoneWallNativeSize = (int)capsuleCollider.radius;
 
         //draw minimap zone cirlce
-        currentZoneWallCircle = new WorldCircle(ref lineRenderer, lineRendererSegments, zoneWallNativeSize, zoneWallNativeSize, zoneWallNativeSize);
+        WorldCircle.ConfigureWorldCircle(lineRenderer, zoneWallNativeSize, zoneWallNativeSize, lineRendererSegments, false); 
+        //move projector with circle
         safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
         //init next shrink time
-        nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];
-        timeToShrink = secondsToShrink[shrinkPhaseIndex];
+        nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];//when will the next circle start to shrink?
+        timeToShrink = secondsToShrink[shrinkPhaseIndex];//how long will the next circle take to shrink?
 
         //apply Inspector values
         ShrinkEverything();
@@ -211,10 +211,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
     }
 
-	// ***********************************
-	// PRIVATE static (helper) FUNCTIONS
-	// ***********************************
-	private static Vector3 NewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, float shrinkFactor)
+	private static Vector3 NewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, float shrinkFactor, bool debug = false)
 	{
 		Vector3 newCenterPoint = Vector3.zero;
 
@@ -228,12 +225,17 @@ public class BRS_ZoneWallManager : MonoBehaviour
 			newCenterPoint = currentCenter + new Vector3(randPoint.x, currentCenter.y, randPoint.y);
 			foundSuitable = (Vector3.Distance(currentCenter, newCenterPoint) < currentRadius);
 
+
             //DEBUGS
-            //Debug.Log("RandomPoint: " + randPoint);
-            //Debug.Log("NewCenterPoint: " + newCenterPoint);
-            //Debug.Log("Distance: " + Vector3.Distance(currentCenter, newCenterPoint) + " Current Radius: " + currentRadius);
-            
-			if (++attemptCounter > attemptsUntilFailure)
+            if (debug)
+            {
+                Debug.Log("RandomPoint: " + randPoint);
+                Debug.Log("NewCenterPoint: " + newCenterPoint);
+                Debug.Log("Distance: " + Vector3.Distance(currentCenter, newCenterPoint) + " Current Radius: " + currentRadius);
+
+            }
+
+            if (++attemptCounter > attemptsUntilFailure)
             {
                 //build error message
                 System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
@@ -254,18 +256,29 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
     private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, Quaternion rotation, int segments, float radius, float drawHeight)
     {
+        //new empty game object
         GameObject leadingCircle = new GameObject();
+        //set position
         leadingCircle.transform.position = circleCenterPoint;
+        //set rotation
         leadingCircle.transform.rotation = rotation;
+        //set layer to make sure is on top of other objects
         leadingCircle.layer = 10;// Minimap Icon layer
+        //name it so developer can identify it
         leadingCircle.name = "Next Zone Wall Boundary Marker";
 
+        //configure line renderer
+        //create new
         LineRenderer lr = leadingCircle.AddComponent<LineRenderer>() as LineRenderer;
+        //do not cast shadows
         lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        //do not receive shadows
         lr.receiveShadows = false;
+        //do this because I said so... I had a reason once. what was it? The lesson here is: comment as you go
         lr.allowOcclusionWhenDynamic = false;
 
-        new WorldCircle(ref lr, segments, radius, radius, drawHeight);
+        //create a new array
+        WorldCircle.ConfigureWorldCircle(lr, radius, drawHeight, segments, false);
 
         return leadingCircle;
     }
