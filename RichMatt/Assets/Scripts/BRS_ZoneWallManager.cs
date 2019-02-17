@@ -84,7 +84,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         zoneWallNativeSize = (int)capsuleCollider.radius;
 
         //draw minimap zone cirlce
-        WorldCircle.ConfigureWorldCircle(lineRenderer, zoneWallNativeSize, zoneWallNativeSize, lineRendererSegments, false); 
+        ConfigureWorldCircle(lineRenderer, zoneWallNativeSize, zoneWallNativeSize, lineRendererSegments, false); 
         //move projector with circle
         safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
@@ -276,9 +276,31 @@ public class BRS_ZoneWallManager : MonoBehaviour
         lr.allowOcclusionWhenDynamic = false;
 
         //create a new array
-        WorldCircle.ConfigureWorldCircle(lr, radius, drawHeight, segments, false);
+        ConfigureWorldCircle(lr, radius, drawHeight, segments, false);
 
         return leadingCircle;
+    }
+
+    static void ConfigureWorldCircle(LineRenderer renderer, float radius, float height, int segments = 64, bool renderInWorldSpace = false)
+    {
+        float x = 0;
+        float y = height;
+        float z = 0;
+        float terminalPoint = 0;
+        float spaceBetweenPoints = 360f / segments;
+
+        renderer.positionCount = segments;
+        renderer.useWorldSpace = false;
+
+        for (int i = 0; i < segments; i++)
+        {
+            x = Mathf.Sin(Mathf.Deg2Rad * terminalPoint) * radius;
+            z = Mathf.Cos(Mathf.Deg2Rad * terminalPoint) * radius;
+
+            renderer.SetPosition(i, new Vector3(x, y, z));
+
+            terminalPoint += spaceBetweenPoints;
+        }
     }
 
 }
