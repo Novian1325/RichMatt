@@ -4,7 +4,6 @@ class WorldCircle
 {
     // This one does all the work
     public static void ConfigureWorldCircle(LineRenderer renderer, float radius, float height, int segments = 64, bool renderInWorldSpace = false)
-
     {
 		float x = 0;
 		float y = height;
