@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BRS_InteractionManager : MonoBehaviour
 { 
@@ -34,6 +32,9 @@ public class BRS_InteractionManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Handle calling interaction on object, or not.
+    /// </summary>
     private void HandleInteraction()
     {
         if (interactablePlayerIsLookingAt)
@@ -47,12 +48,16 @@ public class BRS_InteractionManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Shows a tooltip if the player is looking at an Interactable object.
+    /// </summary>
     private void HandleToolTipRaycasting()
     {
         interactablePlayerIsLookingAt = WhatIsPlayerLookingAt(); 
 
         if (interactablePlayerIsLookingAt)
         {
+            //this frame, the player is looking at this object
             interactablePlayerIsLookingAt.PlayerIsLookingAtObject(true);
                 
         }
@@ -65,7 +70,10 @@ public class BRS_InteractionManager : MonoBehaviour
         
     }
     
-
+    /// <summary>
+    /// Returns a reference to an Interactable object if a raycast can be drawn between the two.
+    /// </summary>
+    /// <returns>Reference to the Interactable the player is looking at.</returns>
     private BRS_Interactable WhatIsPlayerLookingAt()
     {
         BRS_Interactable targetInteractable = null;
