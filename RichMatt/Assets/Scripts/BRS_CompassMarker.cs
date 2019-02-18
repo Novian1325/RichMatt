@@ -12,7 +12,7 @@ public class BRS_CompassMarker : MonoBehaviour {
     private float distanceFromPlayer;
 
     //coroutine trackers
-    private Coroutine coroutine_updateDistanceText;
+    private Coroutine coroutine_updateDistanceText;//is tracked so can be accessed at a later time. 
     private static readonly int textUpdatesPerSecond = 2;
 
     private void Awake()

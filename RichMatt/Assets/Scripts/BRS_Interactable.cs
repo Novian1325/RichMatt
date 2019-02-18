@@ -18,14 +18,8 @@ public class BRS_Interactable : MonoBehaviour
 
     protected virtual void HandleTooltip()
     {
-        ToggleTooltip(playerIsLookingAtObject);
-
-        if (playerIsLookingAtObject)
-        {
-            playerIsLookingAtObject = false;
-
-        }
-
+        //toggle tooltip
+        if(tooltipObject) ToggleTooltip(playerIsLookingAtObject);
     }
 	
 	// Update is called once per frame
@@ -35,6 +29,8 @@ public class BRS_Interactable : MonoBehaviour
 
         //Handle Tooltips
         HandleTooltip();
+        //set to false to verfiy next frame
+        playerIsLookingAtObject = false;
     }
 
     protected void RemoveTrackableFromCompass()
@@ -69,14 +65,7 @@ public class BRS_Interactable : MonoBehaviour
 
     public virtual void ToggleTooltip(bool active)
     {
-        if (tooltipObject)
-        {
-            tooltipObject.SetActive(active);
-        }
-        else
-        {
-            //Debug.Log("No tooltip on Interactable. Tooltips active: " + active);
-        }
+        tooltipObject.SetActive(active);
     }
     
 }

@@ -13,7 +13,8 @@ public enum degreeIncrement
 
 public class Compass : MonoBehaviour
 {
-	public RawImage CompassImage;
+    private static readonly float sortsPerSecond = .5f;// every other second
+    public RawImage CompassImage;
 	public Transform mainCameraXform;
 	public Text CompassDirectionText;
 
@@ -27,7 +28,6 @@ public class Compass : MonoBehaviour
 
     //courtine references
     private Coroutine coroutine_CompassMarkerSort;
-    private static readonly float sortsPerSecond = .5f;// every other second
 
     private void Start()
     {
@@ -214,7 +214,6 @@ public class Compass : MonoBehaviour
                 CompassDirectionText.text = angle.ToString();
                 break;
         }
-
 
     }
 }

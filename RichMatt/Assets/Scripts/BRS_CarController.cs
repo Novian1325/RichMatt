@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityStandardAssets.Vehicles;
+﻿using UnityEngine;
 
-public class BRSCarController : BRS_Interactable
+public class BRS_CarController : BRS_Interactable
 {
     [Header("BRSCarController")]
     [Tooltip("Point in space where Player appears when exiting vehicle.")]
@@ -62,14 +59,11 @@ public class BRSCarController : BRS_Interactable
 	// Update is called once per frame
 	new void Update ()
     {
+        base.Update();
         if (playerInVehicle && Input.GetButtonDown("Interact"))
         {
             Interact(playerIM);
         }
-
-        base.Update();
-        //or HandleTooltip();
-        
     }
 
     override public void Interact(InteractionManager im)
