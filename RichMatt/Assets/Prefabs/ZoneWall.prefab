@@ -385,7 +385,7 @@ LineRenderer:
     textureMode: 0
     generateLightingData: 0
   m_UseWorldSpace: 1
-  m_Loop: 0
+  m_Loop: 1
 --- !u!136 &136965606202830200
 CapsuleCollider:
   m_ObjectHideFlags: 1

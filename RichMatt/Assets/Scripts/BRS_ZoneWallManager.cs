@@ -304,6 +304,10 @@ public class BRS_ZoneWallManager : MonoBehaviour
         lr.receiveShadows = false;
         //do this because I said so... I had a reason once. what was it? The lesson here is: comment as you go
         lr.allowOcclusionWhenDynamic = false;
+        //coordinates are given in World Space, not Local Space (relative to the world, not this object)
+        lr.useWorldSpace = false;
+        //make first and last point connect to form a loop
+        lr.loop = true;
 
         //create a new array
         ConfigureWorldCircle(lr, radius, drawHeight, segments, false);
@@ -339,5 +343,4 @@ public class BRS_ZoneWallManager : MonoBehaviour
             terminalPoint += spaceBetweenPoints;
         }
     }
-
 }

@@ -2148,6 +2148,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 2034220229}
     m_Modifications:
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: secondsToShrink.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4040280970808236, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2179,6 +2184,26 @@ Prefab:
     - target: {fileID: 4040280970808236, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: secondsToShrink.Array.data[1]
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: secondsToShrink.Array.data[2]
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: secondsToShrink.Array.data[0]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 120132300918642498, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: m_Loop
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
