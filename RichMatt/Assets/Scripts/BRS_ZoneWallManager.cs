@@ -129,6 +129,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
             //when all shrinking is done, behavior runs this ad infinitum.  this update() could be slightly restructured to avoid unnecessary operations
             shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
             Shrinking = true;
+            if(DEBUG) Debug.Log("Shrinking....");
         }
             
         else
@@ -153,7 +154,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
     /// </summary>
     private void ConfigureNewCenterPoint()
     {
-        centerPoint = NewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor);
+        centerPoint = FindNewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor, DEBUG);
         distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
 
         //show on minimap where zone will shrink to
@@ -201,6 +202,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         {
             Shrinking = false;
             newCenterObtained = false;
+            if (DEBUG) Debug.Log("Zone Wall finished shrinking.");
 
             //is there more shrinking to do?
             if (++shrinkPhaseIndex < timeBetweenEachShrinkPhase.Length) 
@@ -214,7 +216,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Zone Wall has finished shrinking.");
+                if(DEBUG) Debug.Log("Zone Wall will no longer shrink.");
             }
 
             Destroy(leadingCircle);
@@ -232,13 +234,15 @@ public class BRS_ZoneWallManager : MonoBehaviour
     /// <param name="shrinkFactor"></param>
     /// <param name="debug"></param>
     /// <returns></returns>
-	private static Vector3 NewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, float shrinkFactor, bool debug = false)
+	private static Vector3 FindNewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, float shrinkFactor, bool debug = false)
 	{
 		Vector3 newCenterPoint = Vector3.zero;
 
 		int attemptsUntilFailure = 500; //prevent endless loop which will kill Unity
         int attemptCounter = 0;
 		bool foundSuitable = false;
+
+        if (debug) Debug.Log("Finding a new center point....");
         
 		while (!foundSuitable)
 		{
@@ -246,16 +250,15 @@ public class BRS_ZoneWallManager : MonoBehaviour
 			newCenterPoint = currentCenter + new Vector3(randPoint.x, currentCenter.y, randPoint.y);
 			foundSuitable = (Vector3.Distance(currentCenter, newCenterPoint) < currentRadius);
 
-
             //DEBUGS
             if (debug)
             {
-                Debug.Log("RandomPoint: " + randPoint);
-                Debug.Log("NewCenterPoint: " + newCenterPoint);
-                Debug.Log("Distance: " + Vector3.Distance(currentCenter, newCenterPoint) + " Current Radius: " + currentRadius);
-
+                Debug.LogFormat("RandomPoint: {0}", randPoint);
+                Debug.LogFormat("NewCenterPoint: {0}", newCenterPoint);
+                Debug.LogFormat("Distance: {0}; Current Radius: {1}", Vector3.Distance(currentCenter, newCenterPoint), currentRadius);
             }
 
+            //to prevent infinite loop
             if (++attemptCounter > attemptsUntilFailure)
             {
                 //build error message
@@ -333,6 +336,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
         renderer.positionCount = segments;//positions are vertices of circle
 
+        //place each point an equal distance apart on the unit circle, scaled by radius
         for (int i = 0; i < segments; i++)
         {
             x = Mathf.Sin(Mathf.Deg2Rad * arcLength) * radius;
