@@ -17,29 +17,32 @@ public class ToolTipManager : MonoBehaviour {
 
     }
 
-	// Use this for initialization
-	void Start () {
+    private void Awake()
+    {
         //singleton pattern
-        SingletonPattern(); //ensures only one exists, if any
+        SingletonPattern(this); //ensures only one exists, if any
 
         //verify and init tooltips
         InitToolTips();
 
         //all tooltips should start disabled
         DisableAllToolTips();
+    }
 
+    // Use this for initialization
+    void Start () {
 
     }
 
-    private void SingletonPattern()
+    private static void SingletonPattern(ToolTipManager TTM_instance)
     {
         if (!toolTipManagerInstance)
         {
-            toolTipManagerInstance = this;
+            toolTipManagerInstance = TTM_instance;
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(TTM_instance.gameObject);
         }
 
     }

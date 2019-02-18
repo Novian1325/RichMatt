@@ -24,7 +24,7 @@ public class BRS_CarController : BRS_Interactable
     private Vector3 originalPosition;
 
     private bool playerInVehicle;
-    private InteractionManager playerIM;
+    private BRS_InteractionManager playerIM;
 
 	// Use this for initialization
 	void Start ()
@@ -66,7 +66,7 @@ public class BRS_CarController : BRS_Interactable
         }
     }
 
-    override public void Interact(InteractionManager im)
+    override public void Interact(BRS_InteractionManager im)
     {
         playerIM = im;
         if (playerInVehicle)

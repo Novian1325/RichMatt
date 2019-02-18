@@ -40,7 +40,7 @@ public class DoorHandler : BRS_Interactable {
 
     }
 
-    public override void Interact(InteractionManager interactingObject)
+    public override void Interact(BRS_InteractionManager interactingObject)
     {
         //actual interaction stuff here
         doorOpen = !doorOpen;

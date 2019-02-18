@@ -196,7 +196,7 @@ public class SupplyDrop : BRS_Interactable
 
     }
 
-    override public void Interact(InteractionManager im)
+    override public void Interact(BRS_InteractionManager im)
     {
         //throw loot all over the ground like a maniac
         //remove icons and effects

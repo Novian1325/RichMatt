@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractionManager : MonoBehaviour
+public class BRS_InteractionManager : MonoBehaviour
 { 
     [Tooltip("The player's 'reach'. The minimum distance one must be in order to interact with anything.")]
     [SerializeField] private int interactionRaycastLimit = 5;

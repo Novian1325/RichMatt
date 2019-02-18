@@ -85,7 +85,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         //cache transform
         ZoneWallXform = this.transform;
 
-        //
+        //get original radius
         originalZoneWallRadius = (int)capsuleCollider.radius;
 
         //draw minimap zone cirlce
@@ -104,12 +104,16 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
     void Update ()
 	{
-        //is the zone currently in a shrinking state
+            HandleShrinkingUpdate();   
+    }
+
+    private void HandleShrinkingUpdate()
+    {//is the zone currently in a shrinking state
         if (Shrinking && shrinkPhaseIndex < timeBetweenEachShrinkPhase.Length)
-		{
+        {
             // we need a new center point (that is within the bounds of the current zone)
             if (!newCenterObtained)
-			{
+            {
                 ConfigureNewCenterPoint();
                 newCenterObtained = true;
 
@@ -117,26 +121,26 @@ public class BRS_ZoneWallManager : MonoBehaviour
 
             //shrink all the things
             ShrinkEverything();
-            
+
             //know when to stop shrinking
             HandleStopShrinking();
-			
-		}
+
+        }
 
         else if (shrinkPhaseIndex >= timeBetweenEachShrinkPhase.Length)
         {
             //do nothing if zone has run out of shrink phases
             return;
         }
-        
+
         //is it time to start shrinking?
         else if (Time.time > nextShrinkTime)
         {
             shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
             Shrinking = true;
-            if(DEBUG) Debug.Log("Shrinking....");
+            if (DEBUG) Debug.Log("Shrinking....");
         }
-            
+
         else
         {
             if (DEBUG)
@@ -150,6 +154,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
                 Debug.Log(stringBuilder.ToString());
             }
         }
+
     }
 
     /// <summary>
