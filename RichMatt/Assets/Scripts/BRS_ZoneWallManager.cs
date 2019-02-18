@@ -6,16 +6,16 @@ public class BRS_ZoneWallManager : MonoBehaviour
 {
     [Header("Zone Wall Manager")]
 
-	[Range(0, 359)]
+	[Range(16, 360)]
     [Tooltip("How many segments should the circle that appears on the mimimap be? More segments means it looks crisper, but at cost of performance.")]
-    [SerializeField] private int lineRendererSegments = 63;
+    [SerializeField] private int lineRendererSegments = 64;
 
 	[Range(10, 10000)]
     [Tooltip("Set the starting Radius here. Can track size during runtime.")]
     [SerializeField] private float zoneWallRadius = 1000;
     
     [Range(10, 100)]
-    [Tooltip("Every shrink phase, zone radius will be reduced by this percent.")]
+    [Tooltip("Every shrink phase, zone radius will be reduced by this percent. ie, if value is 50, zone wall will shrink by 50%.")]
     [SerializeField] private int radiusShrinkFactor = 50; //default to 50%
 
     [Header("Shrinking Zones")]

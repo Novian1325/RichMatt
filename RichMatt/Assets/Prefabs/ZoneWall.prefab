@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51bdf48d37f3fb74384d3fa60573bd85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRendererSegments: 63
+  lineRendererSegments: 64
   zoneWallRadius: 500
   radiusShrinkFactor: 50
   safeZone_Circle_Projector: {fileID: 119075886879666166}
