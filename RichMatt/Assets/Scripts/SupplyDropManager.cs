@@ -36,7 +36,7 @@ public class SupplyDropManager : MonoBehaviour
     
     // Use this for initialization
     void Start () {
-        InitSingletonPattern();
+        InitSingletonPattern(this);
 
         nextSupplyDropSpawnTime = Time.time + initialDelayInSeconds;
 
@@ -47,16 +47,16 @@ public class SupplyDropManager : MonoBehaviour
         }
 	}
 
-    private void InitSingletonPattern()
+    private static void InitSingletonPattern(SupplyDropManager SDM_instance)
     {
         //this pattern enforces only one of these things ever exists
         if (!supplyDropManagerInstance)
         {
-            supplyDropManagerInstance = this;
+            supplyDropManagerInstance = SDM_instance;
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(SDM_instance.gameObject);
         }
     }
 
@@ -83,9 +83,7 @@ public class SupplyDropManager : MonoBehaviour
     [ContextMenu("DeploySupplyDrop()")]//can call this function from the ComponentMenu (gear icon in the top-right corner of a Component)
     public void DeploySupplyDrop()
     {
-        if (!supplyDropPrefab) Debug.LogError("Prefab is null!");
         planePathManager.InitPlaneDrop(supplyDropPrefab); //can catch plane manager and track it
-
     }
 
     /// <summary>
