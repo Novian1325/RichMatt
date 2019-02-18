@@ -46,12 +46,18 @@ public class SupplyDrop : BRS_Interactable
         //TODO
     }
 
+    /// <summary>
+    /// behavior at the moment the free fall began
+    /// </summary>
     private void StartFreeFalling()
     {
         initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
         freefallingState = SkyDivingStateENUM.freeFalling;
     }
 
+    /// <summary>
+    /// behavior when supply drop is falling
+    /// </summary>
     private void FreeFalling()
     {
         //check distance to ground
@@ -63,6 +69,9 @@ public class SupplyDrop : BRS_Interactable
 
     }
 
+    /// <summary>
+    /// Behavior the moment the supply drop touches the ground.
+    /// </summary>
     private void StartLanded()
     {
         if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
@@ -71,7 +80,9 @@ public class SupplyDrop : BRS_Interactable
         Destroy(this.gameObject, destroySupplyDropAfterTime);
     }
 
-
+    /// <summary>
+    /// Handles physics and other things when parachute is deployed
+    /// </summary>
     private void DeployParachute()
     {
         //do it!
@@ -110,8 +121,8 @@ public class SupplyDrop : BRS_Interactable
 	}
 	
 	// Update is called once per frame
-	new void Update () {
-
+	new void Update ()
+    { 
         switch (freefallingState)
         {
             case SkyDivingStateENUM.startFreeFalling:
@@ -141,7 +152,6 @@ public class SupplyDrop : BRS_Interactable
             default:
                 break;
         }
-
     }
 
     private void FixedUpdate()
@@ -185,6 +195,24 @@ public class SupplyDrop : BRS_Interactable
         }
     }
 
+    private void OnDestroy()
+    {
+        SupplyDropManager.supplyDropManagerInstance.RemoveSupplyDrop(this);
+
+        //TODO Other things that happen when thing is destroyed
+
+        //do animations
+        if(anim) anim.SetTrigger("Destroy");
+
+        //play sounds
+
+        //remove icons from minimap
+    }
+
+    /// <summary>
+    /// Sets the name of the supply drop so the developer can find it in hierarchy.
+    /// </summary>
+    /// <param name="go"></param>
     private static void SetName(GameObject go)
     {
         System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
@@ -196,26 +224,16 @@ public class SupplyDrop : BRS_Interactable
 
     }
 
+    /// <summary>
+    /// Do the behavior. Cue interaction.
+    /// </summary>
+    /// <param name="im"></param>
     override public void Interact(BRS_InteractionManager im)
     {
         //throw loot all over the ground like a maniac
         //remove icons and effects
         //play an effect
         Destroy(this.gameObject); //Destroy(this.gameObject, 3);
-        
-    }
 
-    private void OnDestroy()
-    {
-        SupplyDropManager.supplyDropManagerInstance.RemoveSupplyDrop(this);
-
-        //TODO Other things that happen when thing is destroyed
-
-        //do animations
-        if(anim) anim.SetTrigger("Destroy");
-        
-        //play sounds
-
-        //remove icons from minimap
     }
 }
