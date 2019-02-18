@@ -325,22 +325,22 @@ public class BRS_ZoneWallManager : MonoBehaviour
     /// <param name="renderInWorldSpace">Use local or world space?</param>
     static void ConfigureWorldCircle(LineRenderer renderer, float radius, float height, int segments = 64, bool renderInWorldSpace = false)
     {
-        float x = 0;
-        float y = height;
-        float z = 0;
-        float terminalPoint = 0;
-        float spaceBetweenPoints = 360f / segments;
+        float x = 0;//x coordinate of terminal point on unit circle
+        float y = height;//height circle is drawn
+        float z = 0;//y coordinate of terminal point on unit circle
+        float arcLength = 0;//used for trig to determine terminal point on unit circle
+        float spaceBetweenPoints = 360f / segments;//if a circle has x points, this is the distance between each of those points
 
-        renderer.positionCount = segments;
+        renderer.positionCount = segments;//positions are vertices of circle
 
         for (int i = 0; i < segments; i++)
         {
-            x = Mathf.Sin(Mathf.Deg2Rad * terminalPoint) * radius;
-            z = Mathf.Cos(Mathf.Deg2Rad * terminalPoint) * radius;
+            x = Mathf.Sin(Mathf.Deg2Rad * arcLength) * radius;
+            z = Mathf.Cos(Mathf.Deg2Rad * arcLength) * radius;
 
             renderer.SetPosition(i, new Vector3(x, y, z));
 
-            terminalPoint += spaceBetweenPoints;
+            arcLength += spaceBetweenPoints;
         }
     }
 }
