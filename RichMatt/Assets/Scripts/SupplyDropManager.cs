@@ -47,6 +47,10 @@ public class SupplyDropManager : MonoBehaviour
         }
 	}
 
+    /// <summary>
+    /// Initializes a singleton pattern with this obeject. Destroys this object if singleton already exists.
+    /// </summary>
+    /// <param name="SDM_instance"></param>
     private static void InitSingletonPattern(SupplyDropManager SDM_instance)
     {
         //this pattern enforces only one of these things ever exists

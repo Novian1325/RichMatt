@@ -32,6 +32,10 @@ public class BRS_CompassMarker : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Initialize a new compass marker
+    /// </summary>
+    /// <param name="trackable">Associated trackable object this is paired with.</param>
     public void InitCompassMarker(BRS_Trackable trackable)
     {
         this.trackable = trackable;
@@ -39,11 +43,14 @@ public class BRS_CompassMarker : MonoBehaviour {
         compassMarkerImage.color = trackable.GetIconColor();
     }
 
+    /// <summary>
+    /// Controls how often updates to the UI text are made.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator UpdateDistanceText()
     {
         yield return new WaitForSecondsRealtime(1 / textUpdatesPerSecond);
         TMP_distanceText.text = distanceFromPlayer.ToString();
-
     }
 
 

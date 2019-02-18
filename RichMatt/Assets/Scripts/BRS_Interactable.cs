@@ -41,12 +41,16 @@ public class BRS_Interactable : MonoBehaviour
         }
     }
 
-    public virtual void Interact(InteractionManager interactingObject)
+    /// <summary>
+    /// Base interact method. Sends log to Console if not overridden by derived class.
+    /// </summary>
+    /// <param name="actor">Object, probably player or AI, that is the actor.</param>
+    public virtual void Interact(InteractionManager actor)
     {
         //this method should probably be overridden by derived class, ie a vehicle should do something that an item does not
         System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
-        stringBuilder.Append(interactingObject.gameObject.name);
+        stringBuilder.Append(actor.gameObject.name);
         stringBuilder.Append(" is interacting with ");
         stringBuilder.Append(this.gameObject.name);
 

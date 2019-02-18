@@ -16,13 +16,13 @@ public class BRS_Trackable : MonoBehaviour {
         //only the first trackable has to do the hard work
         InitStaticCompassInstance();
         
+        //cache transform
         cachedTransform = this.transform;
     }
 
     // Use this for initialization
     void Start () {
         cachedTransform = this.transform;
-        
 	}
 	
 	// Update is called once per frame
@@ -36,6 +36,9 @@ public class BRS_Trackable : MonoBehaviour {
         compassInstance.RemoveTrackable(this);
     }
 
+    /// <summary>
+    /// Attempts to find the compass instance
+    /// </summary>
     private static void InitStaticCompassInstance()
     {
         if (!compassInstance)
@@ -79,6 +82,18 @@ public class BRS_Trackable : MonoBehaviour {
     public Color GetIconColor()
     {
         return this.iconColor;
+    }
+
+    /// <summary>
+    /// Changes color on Trackable, and also updates the compass trackable icon color
+    /// </summary>
+    /// <param name="newColor"></param>
+    public void SetPlayerColor(Color newColor)
+    {
+        this.iconColor = newColor;
+        //update color of trackable
+        compassInstance.RemoveTrackable(this);
+        compassInstance.RegisterTrackable(this);
     }
 
     public Transform GetTrackableTransform()

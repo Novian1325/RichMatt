@@ -96,9 +96,9 @@ public class BRS_TacticalMarker : MonoBehaviour
         //TODO 
         //react to item being tagged (eg the whole building gets tagged, an enemy gets a dot over its head, the player speaks aloud different quips, etc)
         RaycastHit hitInfo;
-        // Are we pointing at something in the world?
-        
-        if (Physics.Raycast(playerCameraXform.position, playerCameraXform.forward, out hitInfo, tacticalMarkerPlaceDistanceLimit))
+
+        // Are we pointing at something in the world? IGNORES TRIGGER COLLIDERS
+        if (Physics.Raycast(playerCameraXform.position, playerCameraXform.forward, out hitInfo, tacticalMarkerPlaceDistanceLimit, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
 		{
             if (tacticalMarkerInstance)//if an TM already exists
             {
@@ -109,6 +109,8 @@ public class BRS_TacticalMarker : MonoBehaviour
             distancePollingTimer = (1 / distanceToMarkerPollsPerSecond);
 
             tacticalMarkerInstance = Instantiate(TacticalMarkerPrefab, hitInfo.point, Quaternion.identity);//create a new marker in the world
+            tacticalMarkerInstance.GetComponent<BRS_Trackable>().SetPlayerColor(playerColor);
+
             //make it a child of the hit object so if it moves, the marker moves with it. assigning childhood after instantiation preserves native scale
             tacticalMarkerInstance.transform.SetParent(hitInfo.collider.gameObject.transform);
             //TODO change the color of this marker to match the player's color for identification purposes
@@ -122,7 +124,4 @@ public class BRS_TacticalMarker : MonoBehaviour
 
 		}
 	}
-    
-
-    
 }
