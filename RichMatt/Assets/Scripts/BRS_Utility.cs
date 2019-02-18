@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 
-public enum Axis
-{
-    X, Y, Z
-}
-
-public static class PPBRS_Utility {
+/// <summary>
+/// Contains a number of functions that multiple classes reference. During development, any time two systems needed to perform the same func, it would get added here instead.
+/// </summary>
+public static class BRS_Utility {
     
+    /// <summary>
+    /// Clamps rotation around the X axis to the given constraints.
+    /// </summary>
+    /// <param name="q"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
     public static Quaternion ClampRotationAroundXAxis(Quaternion q, float min, float max)
     {
         q.x /= q.w;
@@ -21,6 +26,13 @@ public static class PPBRS_Utility {
         return q;
     }
 
+    /// <summary>
+    /// Clamps rotation around the Z axis to the given constraints.
+    /// </summary>
+    /// <param name="q"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
     public static Quaternion ClampRotationAroundZAxis(Quaternion q, float min, float max)
     {
         q.x /= q.w;
@@ -35,9 +47,14 @@ public static class PPBRS_Utility {
         return q;
     }
 
+    /// <summary>
+    /// Gets a non-precise distance from an object straight down
+    /// </summary>
+    /// <param name="flyingBody">WorldSpace coordinates of object to test.</param>
+    /// <returns></returns>
     static public int GetDistanceToTerrain(Vector3 flyingBody)
     {
-        int distanceToLanding = 999999;//just a really long distance
+        int distanceToLanding = int.MaxValue;//just a really long distance
         RaycastHit hit;
 
         if (Physics.Raycast(flyingBody, Vector3.down, out hit, distanceToLanding))
@@ -54,6 +71,11 @@ public static class PPBRS_Utility {
         return distanceToLanding;
     }
 
+    /// <summary>
+    /// Get pitch of object compared to horizon line
+    /// </summary>
+    /// <param name="q"></param>
+    /// <returns></returns>
     static public float GetPitch(Quaternion q)
     {
         //Quaternion q = characterSwoopTransform.localRotation;

@@ -48,14 +48,14 @@ public class SupplyDrop : BRS_Interactable
 
     private void StartFreeFalling()
     {
-        initialDistanceToGround = PPBRS_Utility.GetDistanceToTerrain(this.transform.position);
+        initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
         freefallingState = SkyDivingStateENUM.freeFalling;
     }
 
     private void FreeFalling()
     {
         //check distance to ground
-        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) < deployParachuteDistancePercent * initialDistanceToGround)
+        if (BRS_Utility.GetDistanceToTerrain(this.transform.position) < deployParachuteDistancePercent * initialDistanceToGround)
         {
             DeployParachute();
 

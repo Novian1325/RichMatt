@@ -150,7 +150,7 @@ public class SkyDiveHandler: MonoBehaviour
         CheckForRipCord();
         SetTargetRotations();//get input and do calculations
         HandlePlayerMovement();
-        if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)//pull parachute if too close to ground
+        if (BRS_Utility.GetDistanceToTerrain(this.transform.position) <= forceParachuteHeight)//pull parachute if too close to ground
             skyDivingState = SkyDivingStateENUM.startparachute;//put in state to pull parachute
     }
 
@@ -197,7 +197,7 @@ public class SkyDiveHandler: MonoBehaviour
             if (verticalInput > 0)
             {
                 //if freefalling, camera pitch affects forward move
-                float swoopEffect = (skyDivingState == SkyDivingStateENUM.freeFalling) ? (1 - (PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)) : 1;
+                float swoopEffect = (skyDivingState == SkyDivingStateENUM.freeFalling) ? (1 - (BRS_Utility.GetPitch(cameraPivotTransform.localRotation) / maxSwoopAngle)) : 1;
                 targetFM = Mathf.Lerp(targetForwardMomentum, maxFM * swoopEffect, Time.deltaTime * returnToNeutralSpeed); //if swooping
             }
 
@@ -222,8 +222,8 @@ public class SkyDiveHandler: MonoBehaviour
     private void SetTargetRotations()
     {
         //cache rotations for comparisions
-        float camPitch = PPBRS_Utility.GetPitch(cameraPivotTransform.localRotation);
-        float charPitch = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
+        float camPitch = BRS_Utility.GetPitch(cameraPivotTransform.localRotation);
+        float charPitch = BRS_Utility.GetPitch(characterSwoopTransform.localRotation);
         float charRoll = characterRollAxis.localRotation.z;//cache
 
         float cameraRotationX = Input.GetAxis("Mouse Y") * MouseYSensitivity;//get camera pitch input
@@ -275,10 +275,10 @@ public class SkyDiveHandler: MonoBehaviour
         //CLAMP 'EM ALL!
         if (clampVerticalRotation)
         {
-            m_CameraTargetRot = PPBRS_Utility.ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
+            m_CameraTargetRot = BRS_Utility.ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
         }
-        m_CharacterSwoopTargetRot = PPBRS_Utility.ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, 0, maxSwoopAngle);
-        m_CharacterRollTargetRot = PPBRS_Utility.ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
+        m_CharacterSwoopTargetRot = BRS_Utility.ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, 0, maxSwoopAngle);
+        m_CharacterRollTargetRot = BRS_Utility.ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
 
     }
 
@@ -347,7 +347,7 @@ public class SkyDiveHandler: MonoBehaviour
     {
         //convert rotation to angle!
 
-        float currentSwoopAngle = PPBRS_Utility.GetPitch(characterSwoopTransform.localRotation);
+        float currentSwoopAngle = BRS_Utility.GetPitch(characterSwoopTransform.localRotation);
 
         //are we swooping forward or backward (slowing, reeling)? what's the max distance we can go in that direction?
         float localMaxAngle = currentSwoopAngle > 0 ? maxSwoopAngle : -minSwoopAngle;
@@ -395,7 +395,7 @@ public class SkyDiveHandler: MonoBehaviour
         //should only be called in Update()
         if (Input.GetButtonDown("Jump") || Input.GetButtonDown("Interact"))
         {
-            if (PPBRS_Utility.GetDistanceToTerrain(this.transform.position) <= deployParachuteLimit)
+            if (BRS_Utility.GetDistanceToTerrain(this.transform.position) <= deployParachuteLimit)
             {
                 skyDivingState = SkyDivingStateENUM.startparachute;
             }
