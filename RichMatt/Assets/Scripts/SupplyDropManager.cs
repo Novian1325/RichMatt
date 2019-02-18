@@ -16,8 +16,6 @@ public class SupplyDropManager : MonoBehaviour
     [SerializeField] private BRS_PlanePathManager planePathManager;
 
     [Header("Spawn Settings")]
-    [Tooltip("Developer can use this to immediately cause a Supply Drop to occur.")]
-    [SerializeField] private bool queSupplyDrop = false;
 
     [Tooltip("Should Supply Drops be Deployed on a random timeline? If false, relies on outside code.")]
     [SerializeField] private bool randomTimedDrops = true;
@@ -65,20 +63,11 @@ public class SupplyDropManager : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        
         if(randomTimedDrops && Time.time > nextSupplyDropSpawnTime)
         {
             DeploySupplyDrop();
             nextSupplyDropSpawnTime += Random.Range(minSpawnTime, maxSpawnTime);
         }
-        
-        else if (queSupplyDrop)
-        {
-            queSupplyDrop = false;//immediately set flag to false
-            DeploySupplyDrop();
-        }
-    
-
     }
 
     public void AddSupplyDrop(SupplyDrop newSupplyDrop)
@@ -91,6 +80,7 @@ public class SupplyDropManager : MonoBehaviour
         supplyDropList.Remove(supplyDrop);
     }
 
+    [ContextMenu("DeploySupplyDrop()")]//can call this function from the ComponentMenu (gear icon in the top-right corner of a Component)
     public void DeploySupplyDrop()
     {
         if (!supplyDropPrefab) Debug.LogError("Prefab is null!");
@@ -98,6 +88,9 @@ public class SupplyDropManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// NOT YET COMPLETE
+    /// </summary>
     private void DestroySupplyDropsIfOutsidePlayArea()
     {
         //use this to destroy supply drops that are too far away from players
