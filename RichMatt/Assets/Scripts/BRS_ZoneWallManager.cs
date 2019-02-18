@@ -150,8 +150,6 @@ public class BRS_ZoneWallManager : MonoBehaviour
                 Debug.Log(stringBuilder.ToString());
             }
         }
-
-
     }
 
     /// <summary>
