@@ -58,10 +58,10 @@ public class BRS_ZoneWallManager : MonoBehaviour
     /// <summary>
     /// this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider
     /// </summary>
-    private int zoneWallNativeSize;//
+    private int originalZoneWallRadius;//
 
     /// <summary>
-    /// Distance to center
+    /// Distance to centerpoint
     /// </summary>
     private float distanceToMoveCenter;
     private float shrinkRadius;
@@ -79,12 +79,17 @@ public class BRS_ZoneWallManager : MonoBehaviour
 	{
         capsuleCollider = GetComponent<CapsuleCollider>();
 		lineRenderer = gameObject.GetComponent<LineRenderer>();
+        //display linerenderer in space local to center of zone wall, not world
+        lineRenderer.useWorldSpace = false;
+
+        //cache transform
         ZoneWallXform = this.transform;
 
-        zoneWallNativeSize = (int)capsuleCollider.radius;
+        //
+        originalZoneWallRadius = (int)capsuleCollider.radius;
 
         //draw minimap zone cirlce
-        ConfigureWorldCircle(lineRenderer, zoneWallNativeSize, zoneWallNativeSize, lineRendererSegments, false); 
+        ConfigureWorldCircle(lineRenderer, originalZoneWallRadius, originalZoneWallRadius, lineRendererSegments, false); 
         //move projector with circle
         safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
@@ -152,7 +157,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
 
         //show on minimap where zone will shrink to
-        leadingCircle = CreateLeadingCircle(centerPoint, zoneWallRadius / (100 / radiusShrinkFactor), zoneWallNativeSize, lineRendererSegments);
+        leadingCircle = CreateLeadingCircle(centerPoint, zoneWallRadius / (100 / radiusShrinkFactor), originalZoneWallRadius, lineRendererSegments);
 
         if (DEBUG)
         {
@@ -176,7 +181,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
         zoneWallRadius = Mathf.MoveTowards(zoneWallRadius, shrinkRadius, (shrinkRadius / timeToShrink) * Time.deltaTime);
 
         //shrink the zoneWall object and all of its children
-        ZoneWallXform.localScale = new Vector3((zoneWallRadius / zoneWallNativeSize), 1, (zoneWallRadius / zoneWallNativeSize)); //set local scale of zone wall
+        ZoneWallXform.localScale = new Vector3((zoneWallRadius / originalZoneWallRadius), 1, (zoneWallRadius / originalZoneWallRadius)); //set local scale of zone wall
 
         //move ZoneWall towards new centerpoint
         ZoneWallXform.position = Vector3.MoveTowards(ZoneWallXform.position, new Vector3(centerPoint.x, ZoneWallXform.position.y, centerPoint.z), (distanceToMoveCenter / timeToShrink) * Time.deltaTime);
@@ -271,7 +276,7 @@ public class BRS_ZoneWallManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Create and configure a Leading Circle from scratch.
+    /// Create and configure a Leading Circle from scratch. One could set up a prefab with this configuration as well.
     /// </summary>
     /// <param name="circleCenterPoint">World Space coordinates of centerpoint.</param>
     /// <param name="rotation"></param>
@@ -323,7 +328,6 @@ public class BRS_ZoneWallManager : MonoBehaviour
         float spaceBetweenPoints = 360f / segments;
 
         renderer.positionCount = segments;
-        renderer.useWorldSpace = false;
 
         for (int i = 0; i < segments; i++)
         {
