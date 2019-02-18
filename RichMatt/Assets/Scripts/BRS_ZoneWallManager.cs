@@ -41,6 +41,11 @@ public class BRS_ZoneWallManager : MonoBehaviour
     private bool Shrinking = false;  // 
 
     /// <summary>
+    /// has a new center been obtained?
+    /// </summary>
+    private bool newCenterObtained = false;// 
+
+    /// <summary>
     /// iterates through delays between each phase and speed at which each phase shrinks
     /// </summary>
     private int shrinkPhaseIndex = 0;//
@@ -49,11 +54,6 @@ public class BRS_ZoneWallManager : MonoBehaviour
     /// holds the next time in seconds that the next shrink phase will start
     /// </summary>
     private float nextShrinkTime;//
-
-    /// <summary>
-    /// has a new center been obtained?
-    /// </summary>
-    private bool newCenterObtained = false;// 
 
     /// <summary>
     /// this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider
@@ -122,11 +122,16 @@ public class BRS_ZoneWallManager : MonoBehaviour
             HandleStopShrinking();
 			
 		}
+
+        else if (shrinkPhaseIndex >= timeBetweenEachShrinkPhase.Length)
+        {
+            //do nothing if zone has run out of shrink phases
+            return;
+        }
         
         //is it time to start shrinking?
         else if (Time.time > nextShrinkTime)
         {
-            //when all shrinking is done, behavior runs this ad infinitum.  this update() could be slightly restructured to avoid unnecessary operations
             shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
             Shrinking = true;
             if(DEBUG) Debug.Log("Shrinking....");
