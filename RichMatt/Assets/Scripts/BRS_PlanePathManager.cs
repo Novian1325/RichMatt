@@ -64,6 +64,7 @@ public class BRS_PlanePathManager : MonoBehaviour
     private bool VerifyReferences()
     {
         bool allReferencesOkay = true;
+
         if (planeSpawnBounds == null)
         {
             Debug.LogError("ERROR: plane spawn bounds not set!");
