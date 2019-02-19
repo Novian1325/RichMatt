@@ -7,15 +7,29 @@ public class BRS_ItemManager : BRS_Interactable
     public static readonly char interactButtonPrompt = 'f';//make sure this matches the button in the Interaction Manager!
     
 	[Header("---Scriptable Object---")]
+    [Tooltip("This is the slot for the Scriptable Object that holds the item data.")]
     public Item scriptableObject_Item;
+
+    [Tooltip("Quantity of this item in stack.")]
     public int itemQuantity;
 
     [Header("--Setup UI References---")]
+    [Tooltip("The background image that changes color based on item rarity.")]
     [SerializeField] private RawImage coloredBackground;
+
+    [Tooltip("Text that displays the item's rarity.")]
+    [SerializeField] private TextMeshProUGUI TMP_ItemRarity;
+
+    [Tooltip("The single-letter prompt that tells the Player which button to press. Should be same as Interact in Input Manager.")]
     [SerializeField] private TextMeshProUGUI TMP_PickUpButton;
+
+    [Tooltip("This text displays the Item Type, same as Class Type.")]
 	[SerializeField] private TextMeshProUGUI TMP_ItemType;
+
+    [Tooltip("Text that displays the name of the item.")]
 	[SerializeField] private TextMeshProUGUI TMP_ItemName;
-	[SerializeField] private TextMeshProUGUI TMP_ItemRarity;
+
+    [Tooltip("Text that displays quantity of item in this stack. Can be greater than stack amount.")]
     [SerializeField] private TextMeshProUGUI TMP_ItemAmount;
 
     [Header("---Model Parent---")]
@@ -40,6 +54,12 @@ public class BRS_ItemManager : BRS_Interactable
     {
         //create the model
         Instantiate(scriptableObject_Item.itemModel, itemModelHolder);
+
+        //quantity cannot be less than 1
+        if(itemQuantity < 1)
+        {
+            itemQuantity = 1;
+        }
 
         //fill UI elements
         TMP_ItemName.text = scriptableObject_Item.itemName;//name
