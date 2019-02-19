@@ -3,25 +3,29 @@ using UnityEngine.UI;
 
 public class BRS_TacticalMarker : MonoBehaviour
 {
+    #region Static Variables
+    private static readonly string TMBUTTONNAME = "TacticalMarker";//name of the button in Input Manager that will trigger tactical marker placement
+    private static readonly int tacticalMarkerPlaceDistanceLimit = 300;
+    private static readonly int iconHeightOffset = 1000;
+    private static readonly int distanceToMarkerPollsPerSecond = 2;// this affects perfomance. How often should the distance between the player and marker be checked?
+
+    #endregion
     //tactical marker stuff
     [Tooltip("The prefab of the UI element that will be shown when activated.")]
 	[SerializeField] private GameObject TacticalMarkerPrefab;
+    [Tooltip("The Player's color. Used to identify icons that belong to each Player.")]
     [SerializeField] private Color playerColor; //player's color to match marker
+    [Tooltip("Text that tracks the distance between the Player and the Tactical Marker.")]
     [SerializeField] private Text distanceText;
 
     private Transform playerCameraXform; // transform of player's camera
     private GameObject tacticalMarkerInstance;//the marker object that is currently existing in the world
 
-    private static readonly string TMBUTTONNAME = "TacticalMarker";//name of the button in Input Manager that will trigger tactical marker placement
-    private static readonly int tacticalMarkerPlaceDistanceLimit = 300;
-
     //distance polling stuff
     private int distanceToMarker;//how close is the player to the marker they placed?
     private float distancePollingTimer = 0f; //used to keep track of time and limit distance polling rate
-    private static readonly int distanceToMarkerPollsPerSecond = 2;// this affects perfomance. How often should the distance between the player and marker be checked?
 
     private Transform minimapCameraXform;
-    private static readonly int iconHeightOffset = 1000;
 
     //TODO
     //hold 't' for 3 seconds to remove marker from map
@@ -31,7 +35,6 @@ public class BRS_TacticalMarker : MonoBehaviour
         if (TacticalMarkerPrefab == null) Debug.LogError("ERROR! No Tactical Marker Prefab set!");
 		playerCameraXform = GameObject.FindGameObjectWithTag("MainCamera").transform;//get the player's camera
         minimapCameraXform = GameObject.FindGameObjectWithTag("MiniMap Camera").transform;
-
     }
 
     private void DestroyExistingTacticalMarkerAtDistanceLimit()
@@ -59,8 +62,6 @@ public class BRS_TacticalMarker : MonoBehaviour
 
             DestroyExistingTacticalMarkerAtDistanceLimit();
         }
-
-        
     }
 
     private void UpdateDistanceText()
@@ -72,7 +73,6 @@ public class BRS_TacticalMarker : MonoBehaviour
             stringBuilder.Append("m");
             distanceText.text =  stringBuilder.ToString();
         }
-
     }
 
     private void UpdateDistanceToMarker()
@@ -107,13 +107,12 @@ public class BRS_TacticalMarker : MonoBehaviour
 
             //this will cause the UI to update right away
             distancePollingTimer = (1 / distanceToMarkerPollsPerSecond);
-
-            tacticalMarkerInstance = Instantiate(TacticalMarkerPrefab, hitInfo.point, Quaternion.identity);//create a new marker in the world
+            //create a new marker in the world
+            tacticalMarkerInstance = Instantiate(TacticalMarkerPrefab, hitInfo.point, Quaternion.identity);
+            //set icon color to match player's color
             tacticalMarkerInstance.GetComponent<BRS_Trackable>().SetPlayerColor(playerColor);
-
             //make it a child of the hit object so if it moves, the marker moves with it. assigning childhood after instantiation preserves native scale
             tacticalMarkerInstance.transform.SetParent(hitInfo.collider.gameObject.transform);
-            //TODO change the color of this marker to match the player's color for identification purposes
             
             //raise children icons above everything else in scene
             foreach(Transform child in tacticalMarkerInstance.transform)
