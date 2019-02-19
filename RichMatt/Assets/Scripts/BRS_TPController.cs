@@ -62,7 +62,7 @@ public class BRS_TPController : MonoBehaviour
         //TODO Integrate strafing!
         float strafe = CrossPlatformInputManager.GetAxis("Horizontal");//keyboard L/R
         float hor = CrossPlatformInputManager.GetAxis("Mouse X");//mouse L/R
-        float vert = CrossPlatformInputManager.GetAxis("Vertical");
+        float vert = CrossPlatformInputManager.GetAxis("Vertical");//keyboard F/B
         bool crouch = Input.GetKey(KeyCode.C);
 
         // calculate move direction to pass to character
@@ -70,7 +70,7 @@ public class BRS_TPController : MonoBehaviour
         {
             // calculate camera relative direction to move:
             m_CamForward = Vector3.Scale(m_Cam.forward, new Vector3(1, 0, 1)).normalized;
-            m_Move = vert*m_CamForward + hor*m_Cam.right;
+            m_Move = vert*m_CamForward + hor*m_Cam.right + strafe*m_Cam.right;
         }
         else
         {
@@ -132,4 +132,3 @@ public class BRS_TPController : MonoBehaviour
     }
 
 }//end class
-
