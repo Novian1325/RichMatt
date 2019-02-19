@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114388273523487108}
   - component: {fileID: 114675053897580222}
   m_Layer: 0
-  m_Name: Canvas_ToolTip Door
+  m_Name: Canvas_ToolTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

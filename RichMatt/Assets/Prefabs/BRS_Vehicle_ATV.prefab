@@ -1383,7 +1383,7 @@ GameObject:
   - component: {fileID: 114875251128170628}
   - component: {fileID: 114606236604175468}
   m_Layer: 0
-  m_Name: Canvas_ToolTip Doo
+  m_Name: Canvas_ToolTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
