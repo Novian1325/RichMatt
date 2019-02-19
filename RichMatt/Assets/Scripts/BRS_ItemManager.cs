@@ -8,6 +8,7 @@ public class BRS_ItemManager : BRS_Interactable
     
 	[Header("---Scriptable Object---")]
     public Item scriptableObject_Item;
+    public int itemQuantity;
 
     [Header("--Setup UI References---")]
     [SerializeField] private RawImage coloredBackground;
@@ -27,7 +28,7 @@ public class BRS_ItemManager : BRS_Interactable
         else Debug.LogError("Error! No Scriptable Object Loaded. What am I???");
     }
 
-    private void Update()
+    private new void Update()
     {
         base.Update();
     }
@@ -45,7 +46,7 @@ public class BRS_ItemManager : BRS_Interactable
         TMP_PickUpButton.text = interactButtonPrompt.ToString();//button prompt
         TMP_ItemType.text = scriptableObject_Item.GetType().ToString();
         TMP_ItemRarity.text = scriptableObject_Item.itemRarity.ToString();
-        TMP_ItemAmount.text = scriptableObject_Item.quantity.ToString();
+        TMP_ItemAmount.text = itemQuantity.ToString();
         coloredBackground.color = Color_Rarity.GetRarityColor(scriptableObject_Item.itemRarity);
     }
 

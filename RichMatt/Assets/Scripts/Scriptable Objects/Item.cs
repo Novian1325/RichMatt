@@ -5,7 +5,6 @@ public class Item : ScriptableObject {
     [Header("Item")]
     public string itemName;
     public ItemRarityENUM itemRarity;
-    public int quantity = 1;
     public int stackQuantity; // <= 1 means cannot stack
     public Sprite itemIcon;
     public GameObject itemModel;
