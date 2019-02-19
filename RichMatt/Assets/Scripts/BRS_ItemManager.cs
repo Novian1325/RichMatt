@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 
-public class FN_ItemManager : BRS_Interactable
+public class BRS_ItemManager : BRS_Interactable
 {
     public static readonly char interactButtonPrompt = 'f';//make sure this matches the button in the Interaction Manager!
     
