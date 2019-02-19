@@ -70,7 +70,7 @@ public class BRS_TPController : MonoBehaviour
         {
             // calculate camera relative direction to move:
             m_CamForward = Vector3.Scale(m_Cam.forward, new Vector3(1, 0, 1)).normalized;
-            m_Move = vert*m_CamForward + hor*m_Cam.right + strafe*m_Cam.right;
+            m_Move = vert*m_CamForward + hor*m_Cam.right*m_MouseOrbitSensitivityX + strafe*m_Cam.right;
         }
         else
         {
@@ -110,7 +110,7 @@ public class BRS_TPController : MonoBehaviour
 
     private void SetCameraPitch()
     {
-        float cameraPitch = Input.GetAxis("Mouse Y") * m_MousePitchSensitivityY;//get camera yaw
+        float cameraPitch = Input.GetAxis("Mouse Y") * m_MousePitchSensitivityY;//get camera pitch
         m_CameraPitchTargetQuat *= Quaternion.Euler(-cameraPitch, 0f, 0f);//pitch
 
         //clamp pitch
