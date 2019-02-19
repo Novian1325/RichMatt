@@ -4,7 +4,7 @@ using TMPro;
 
 public class BRS_ItemManager : BRS_Interactable
 {
-    public static readonly char interactButtonPrompt = 'f';//make sure this matches the button in the Interaction Manager!
+    public static readonly char interactButtonPrompt = 'F';//make sure this matches the button in the Interaction Manager!
     
 	[Header("---Scriptable Object---")]
     [Tooltip("This is the slot for the Scriptable Object that holds the item data.")]
