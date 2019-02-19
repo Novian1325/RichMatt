@@ -3,9 +3,9 @@
 [RequireComponent(typeof(Collider))]
 public class BRS_Interactable : MonoBehaviour
 {
-    [Header("Interactable")]
+    [Header("---Interactable---")]
     [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
-    [SerializeField] protected GameObject tooltipObject; //protected means derived classes can use it like private
+    [SerializeField] protected GameObject toolTipObject; //protected means derived classes can use it like private
     
     private BRS_Trackable trackable;
     protected bool playerIsLookingAtObject = false;
@@ -19,7 +19,7 @@ public class BRS_Interactable : MonoBehaviour
     protected virtual void HandleTooltip()
     {
         //toggle tooltip
-        if(tooltipObject) ToggleTooltip(playerIsLookingAtObject);
+        if(toolTipObject) ToggleTooltip(playerIsLookingAtObject);
     }
 	
 	// Update is called once per frame
@@ -69,7 +69,7 @@ public class BRS_Interactable : MonoBehaviour
 
     public virtual void ToggleTooltip(bool active)
     {
-        tooltipObject.SetActive(active);
+        if(toolTipObject) toolTipObject.SetActive(active);
     }
     
 }
