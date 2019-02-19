@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93829167b3358940aa35a11349fdb9d, type: 3}
+  m_Name: Item_Rocks
+  m_EditorClassIdentifier: 
+  itemName: Rocks
+  itemRarity: 0
+  quantity: 1
+  stackQuantity: 0
+  itemIcon: {fileID: 0}
+  itemModel: {fileID: 1683019269660042, guid: 7cbf02b884a267246be08e488875ccbc, type: 2}
+  itemCondition: 1
