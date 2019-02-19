@@ -13,7 +13,7 @@ public class BRS_ItemManager : BRS_Interactable
     [Tooltip("Quantity of this item in stack.")]
     public int itemQuantity;
 
-    [Header("--Setup UI References---")]
+    [Header("---Setup UI References---")]
     [Tooltip("The background image that changes color based on item rarity.")]
     [SerializeField] private RawImage coloredBackground;
 
