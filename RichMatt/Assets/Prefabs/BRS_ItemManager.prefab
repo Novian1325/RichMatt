@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 114816784990797632}
   - component: {fileID: 65358312623453338}
   m_Layer: 0
-  m_Name: ItemManager
+  m_Name: BRS_ItemManager
   m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
