@@ -10,7 +10,7 @@ public class DoorHandler : BRS_Interactable {
 
     [Tooltip("Can the door open in either direction?")]
     [SerializeField] bool doorOpensBackward = false;
-        
+
     private Animator animator;//animator attached to this object
     private Transform xform;//cached for performance
     private Vector3 actorDirection;//direction the actor is facing
@@ -25,8 +25,7 @@ public class DoorHandler : BRS_Interactable {
 
     new private void Update()
     {
-        //handleTooltips
-        HandleTooltip();
+        base.Update();
 
         if (doorOpen)
         {
@@ -49,23 +48,24 @@ public class DoorHandler : BRS_Interactable {
         {
             actorDirection = interactingObject.transform.forward;
         }
-        
     }
-
+    
     private void CloseDoor()
     {
         animator.SetBool("DoorOpen", false);
-
     }
-
+    
     private void OpenDoor()
     {
         //doors always open forwards unless they can be opened from the back, and the player is behind the doors
         animator.SetBool("DoorOpen", true);
         animator.SetBool("OpenBackward", DetermineDoorOpenDirection());
-
     }
 
+    /// <summary>
+    /// Which direction shall the door open?
+    /// </summary>
+    /// <returns>Whether or not the door is opening backwards.</returns>
     private bool DetermineDoorOpenDirection()
     {
         if (!doorOpensBackward) return false;
@@ -84,7 +84,6 @@ public class DoorHandler : BRS_Interactable {
         }
 
         return openDoorBackwards;
-        
     }
 
 }
