@@ -21,13 +21,15 @@ public class RLS_Foundation : MonoBehaviour
 
     }
 
-    private void ClampMinToMax()
+    /// <summary>
+    /// Makes sure Min and Max spawn values are legitimate.
+    /// </summary>
+    private void ClampLimits()
     {
-      if (MinSpawnPoints >= MaxSpawnPoints)
-      {
-        MaxSpawnPoints = MaxSpawnPoints < 2 ? 2 : MaxSpawnPoints;
-        MinSpawnPoints = MaxSpawnPoints - 1;
-      }
+        //max cannot be more than total number of loot spots
+        MaxSpawnPoints = Mathf.Clamp(MaxSpawnPoints, 0, LootSpots.Length);
+        //min must be between 0 and max
+        MinSpawnPoints = Mathf.Clamp(MinSpawnPoints, 0, MaxSpawnPoints);
     }
 
     private static void NotifyLootSpots(GameObject[] selectedLootSpots)
@@ -41,7 +43,7 @@ public class RLS_Foundation : MonoBehaviour
     public void SelectLootSpots()
     {
         //verify input
-        ClampMinToMax();
+        ClampLimits();
         //select which indices will be used 
         var SelectedSpots = SelectRandomLoot(Random.Range(MinSpawnPoints, MaxSpawnPoints));  //temporarily the 'weight' is static
         //sort out which loot spots are hidden, and which get items spawned in them
