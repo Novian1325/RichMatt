@@ -2,27 +2,21 @@
 
 public class RLS_LootSpot : MonoBehaviour
 {
-	public GameObject[] variants;
-	//public int numVariants;
-
-	// Use this for initialization
-	void Start ()
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		
-	}
+	[SerializeField] private BRS_ItemManager[] variants;
 
 	public void SelectVariant()
 	{
 		var varChoice = variants[Random.Range(0, variants.Length)];
 
-        Debug.Log(selectedVariantID + " / " + variants.Length);
+        Debug.Log(varChoice + " / " + variants.Length);
 
-		varChoice.SetActive(true);
+		//DESTROY all objects not selected!
+        foreach(var variant in variants)
+        {
+            if(variant != varChoice)
+            {
+                Destroy(variant.gameObject);
+            }
+        }
 	}
 }
