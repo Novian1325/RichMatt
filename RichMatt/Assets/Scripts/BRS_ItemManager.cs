@@ -117,7 +117,5 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             return base.GetPlayerIsLookingAtObject();
         }
 
-    }
-
-
-}
+    }//end class
+}//end namespace
