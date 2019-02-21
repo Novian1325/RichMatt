@@ -1,17 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BRS_SetDeathPose : MonoBehaviour
+namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    private Animator anim;
-    public int DeathPose;
-
-
-	// Use this for initialization
-	void Start ()
+    public class BRS_SetDeathPose : MonoBehaviour
     {
-        anim = gameObject.GetComponent<Animator>();
-        anim.SetInteger("DeathPose", DeathPose);
-	}
+        private Animator anim;
+        public int DeathPose;
+
+
+        // Use this for initialization
+        void Start()
+        {
+            anim = gameObject.GetComponent<Animator>();
+            anim.SetInteger("DeathPose", DeathPose);
+        }
+    }
 }

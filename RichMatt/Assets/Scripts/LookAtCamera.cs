@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 
-public class LookAtCamera : MonoBehaviour
+namespace PolygonPilgrimage.BattleRoyaleKit
 {
-	private Transform target;
+    public class LookAtCamera : MonoBehaviour
+    {
+        private Transform target;
 
-	void Start()
-	{
-		target = GameObject.FindGameObjectWithTag ("MainCamera").transform;
-	}
+        void Start()
+        {
+            target = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        }
 
-	void Update()
-	{
-		this.transform.LookAt (new Vector3(target.position.x, target.position.y, target.position.z));
-	}
+        void Update()
+        {
+            this.transform.LookAt(new Vector3(target.position.x, target.position.y, target.position.z));
+        }
+    }
+
 }
