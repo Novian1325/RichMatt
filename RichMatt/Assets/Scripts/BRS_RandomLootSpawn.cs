@@ -60,12 +60,11 @@ public class BRS_RandomLootSpawn : MonoBehaviour
 
         //get a collection of indices of the loot spots to keep
         var selectedSpawnIndices = SelectSpawnIndices(numberOfSpawns, lootSpawnList.Length);  //temporarily the 'weight' is static
-        Debug.Log("Selected length: " + selectedSpawnIndices.Length);
 
         //make a new list to hold selected 
         var spawnsToKeep = new List<BRS_ItemManager>();
 
-        for(var i = 0; i < numberOfSpawns - 1; ++i)
+        for(var i = 0; i < numberOfSpawns; ++i)
         {
             spawnsToKeep.Add(lootSpawnList[selectedSpawnIndices[i]]);
         }
@@ -87,7 +86,6 @@ public class BRS_RandomLootSpawn : MonoBehaviour
         if (DEBUG)
         {
             Debug.LogFormat("Foundation #{0}: Will spawn {1} Loot", foundationID, numberOfSpawns);
-            Debug.LogFormat("Foundation #{0}: Will use spawns: {1}", foundationID, selectedSpawnIndices.ToString());
         }
     }
 
@@ -113,13 +111,6 @@ public class BRS_RandomLootSpawn : MonoBehaviour
             //get a new random number
             var randomIndex = Random.Range(0, usedIndicesArray.Count);
             usedIndicesArray.RemoveAt(randomIndex);
-        }
-
-
-        Debug.Log("Indices:");
-        foreach(var i in usedIndicesArray)
-        {
-            Debug.Log(i);
         }
 
         return usedIndicesArray.ToArray();
