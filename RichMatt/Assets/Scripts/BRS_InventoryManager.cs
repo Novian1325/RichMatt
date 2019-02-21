@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace PolygonPilgrimage.BattleRoyaleKit
 {
+    /// <summary>
+    /// Manages a List of Inventory Slots that track items
+    /// </summary>
     public class BRS_InventoryManager : MonoBehaviour
     {
         [SerializeField] private int maxInventorySlots = 4;

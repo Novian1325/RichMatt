@@ -4,6 +4,9 @@ using TMPro;
 
 namespace PolygonPilgrimage.BattleRoyaleKit
 {
+    /// <summary>
+    /// Item Managers exist in the world. They display a ToolTip when looked at and show information to the Player. Can also be Interacted with.
+    /// </summary>
     public class BRS_ItemManager : BRS_Interactable
     {
         public static readonly char interactButtonPrompt = 'F';//make sure this matches the button in the Interaction Manager!

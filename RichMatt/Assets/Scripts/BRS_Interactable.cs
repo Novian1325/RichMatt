@@ -9,7 +9,14 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
         [SerializeField] protected GameObject toolTipObject; //protected means derived classes can use it like private
 
+        /// <summary>
+        /// Trackable behavior that may be attached to this gameObject.
+        /// </summary>
         private BRS_Trackable trackable;
+
+        /// <summary>
+        /// Used to display ToolTip.
+        /// </summary>
         protected bool playerIsLookingAtObject = false;
 
         // Use this for initialization
@@ -19,7 +26,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         }
 
         /// <summary>
-        /// Turns Tooltip Object on 
+        /// Turns Tooltip Object on or off depending on it being looked at by the Player.
         /// </summary>
         protected virtual void HandleTooltip()
         {
@@ -38,6 +45,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             playerIsLookingAtObject = false;
         }
 
+        /// <summary>
+        /// Tells Compass to stop tracking this object
+        /// </summary>
         protected void RemoveTrackableFromCompass()
         {
             if (trackable)
@@ -62,17 +72,23 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             Debug.Log(stringBuilder.ToString());
         }
 
+        /// <summary>
+        /// Tells this object whether or not the Player is pointing at it.
+        /// </summary>
+        /// <param name="b"></param>
         public virtual void PlayerIsLookingAtObject(bool b)
         {
             playerIsLookingAtObject = b;
         }
 
+        /// <summary>
+        /// Whether or not the Player is looking at this Object.
+        /// </summary>
+        /// <returns></returns>
         public virtual bool GetPlayerIsLookingAtObject()
         {
             return playerIsLookingAtObject;
         }
         
-    }
-
-
-}
+    }//end class declaration
+}//end namespace
