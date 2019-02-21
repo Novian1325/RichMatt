@@ -23,6 +23,8 @@ public class BRS_RandomLootSpawn : MonoBehaviour
     //which foundation # is this one?
     private int foundationID;
 
+    //IS THIS CLASS NEEDED AFTER IT PERFORMS ITS WORK? OR CAN IT BE DESTROYED AFTERWARDS?
+
     // Use this for initialization
     void Start ()
     {
