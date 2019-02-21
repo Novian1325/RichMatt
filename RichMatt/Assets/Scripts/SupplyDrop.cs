@@ -7,6 +7,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     {
         //how many supply drops exist
         private static int supplyDropCount = 0;
+        //reference to supply drop manager class
+        private static SupplyDropManager supplyDropManager;
 
         [Header("---SupplyDrop---")]
         [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
@@ -40,71 +42,19 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// Distance from the ground to this object when it is created.
         /// </summary>
         private int initialDistanceToGround = 0;
-        private Animator anim;
         private Rigidbody rb;
 
         /// <summary>
         /// Holder variable for supplies. probably scriptable objects or itemManagers
         /// </summary>
-        [SerializeField] private GameObject[] supplies;//
-
-
-        private void AddIconToMiniMap()
-        {
-            //TODO
-        }
-
-        /// <summary>
-        /// behavior at the moment the free fall began
-        /// </summary>
-        private void StartFreeFalling()
-        {
-            initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
-            freefallingState = SkyDivingStateENUM.freeFalling;
-        }
-
-        /// <summary>
-        /// behavior when supply drop is falling
-        /// </summary>
-        private void FreeFalling()
-        {
-            //check distance to ground
-            if (BRS_Utility.GetDistanceToTerrain(this.transform.position) < deployParachuteDistancePercent * initialDistanceToGround)
-            {
-                DeployParachute();
-
-            }
-
-        }
-
-        /// <summary>
-        /// Behavior the moment the supply drop touches the ground.
-        /// </summary>
-        private void StartLanded()
-        {
-            if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
-            freefallingState = SkyDivingStateENUM.landed;
-            rb.freezeRotation = true;
-        }
-
-        /// <summary>
-        /// Handles physics and other things when parachute is deployed
-        /// </summary>
-        private void DeployParachute()
-        {
-            //do it!
-            parachute.DeployParachute();
-            terminalVelocity = parachuteTerminalVelocity;
-            terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
-            freefallingState = SkyDivingStateENUM.parachuting;
-        }
-
-
+        private GameObject[] supplies;//
+        
         // Use this for initialization
         void Start()
         {
             //
-            SupplyDropManager.supplyDropManagerInstance.AddSupplyDrop(this);
+            supplyDropManager = SupplyDropManager.supplyDropManagerInstance as SupplyDropManager;
+            if (supplyDropManager) supplyDropManager.AddSupplyDrop(this);
 
             //init state
             freefallingState = SkyDivingStateENUM.startFreeFalling;
@@ -115,21 +65,20 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             parachuteTerminalVelocity = -Mathf.Abs(parachuteTerminalVelocity); //get the absolutely negative value for downwards velocity
                                                                                //enforce parachuteTerminalVelocity being lower
             parachuteTerminalVelocity = parachuteTerminalVelocity > terminalVelocity ? parachuteTerminalVelocity : terminalVelocity + 1;
-
-
+            
             //snag references
             this.rb = this.GetComponent<Rigidbody>() as Rigidbody;
-            this.anim = this.GetComponent<Animator>() as Animator;
             if (this.parachute == null) this.parachute = this.GetComponentInChildren<Parachute>();
 
             //set name
             SetName(this.gameObject);
-
         }
 
         // Update is called once per frame
         new void Update()
         {
+            base.Update();//tooltip stuff
+
             switch (freefallingState)
             {
                 case SkyDivingStateENUM.startFreeFalling:
@@ -153,13 +102,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 case SkyDivingStateENUM.landed:
                     //do stuff. like wait to be opened
                     //release smoke and what not. 
-                    //add icon to minimap
                     break;
 
                 default:
                     break;
-            }
-        }
+            }//end switch
+        }//end Update()
 
         private void FixedUpdate()
         {
@@ -184,36 +132,74 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
                 default:
                     break;
-            }
+            }//end switch
 
             //cap downward velocity
             this.rb.velocity = this.rb.velocity.y < terminalVelocity ? terminalVelocityVector : this.rb.velocity;
 
             //Debug.Log("Velocity: " + this.rb.velocity + "/ terminal velocity: " + terminalVelocity);
-        }
+        }//end FixedUpdate()
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (this.freefallingState == SkyDivingStateENUM.landed) return;
+            if (freefallingState == SkyDivingStateENUM.landed) return;
             else if (collision.gameObject.CompareTag("Terrain"))
             {
                 freefallingState = SkyDivingStateENUM.startLanded;
 
             }
-        }
+        }//end OnCollisionEnter
 
         private void OnDestroy()
         {
-            SupplyDropManager.supplyDropManagerInstance.RemoveSupplyDrop(this);
+            if (supplyDropManager) supplyDropManager.RemoveSupplyDrop(this);
 
             //TODO Other things that happen when thing is destroyed
 
-            //do animations
-            if (anim) anim.SetTrigger("Destroy");
-
             //play sounds
+        }//end OnDestroy
 
-            //remove icons from minimap
+        /// <summary>
+        /// behavior at the moment the free fall began
+        /// </summary>
+        private void StartFreeFalling()
+        {
+            initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
+            freefallingState = SkyDivingStateENUM.freeFalling;
+        }
+
+        /// <summary>
+        /// behavior when supply drop is falling
+        /// </summary>
+        private void FreeFalling()
+        {
+            //check distance to ground
+            if (BRS_Utility.GetDistanceToTerrain(this.transform.position) < deployParachuteDistancePercent * initialDistanceToGround)
+            {
+                DeployParachute();
+            }
+        }
+
+        /// <summary>
+        /// Behavior the moment the supply drop touches the ground.
+        /// </summary>
+        private void StartLanded()
+        {
+            if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
+            freefallingState = SkyDivingStateENUM.landed;
+            rb.freezeRotation = true;
+        }
+
+        /// <summary>
+        /// Handles physics and other things when parachute is deployed
+        /// </summary>
+        private void DeployParachute()
+        {
+            //do it!
+            parachute.DeployParachute();
+            terminalVelocity = parachuteTerminalVelocity;
+            terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
+            freefallingState = SkyDivingStateENUM.parachuting;
         }
 
         /// <summary>
@@ -228,7 +214,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             stringBuilder.Append(++supplyDropCount);//track name
 
             go.name = stringBuilder.ToString();//faster than concatenation +
-
         }
 
         /// <summary>
@@ -237,11 +222,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <param name="im"></param>
         override public void Interact(BRS_InteractionManager im)
         {
-            //throw loot all over the ground like a maniac
-            //remove icons and effects
-            //play an effect
-            Destroy(this.gameObject); //Destroy(this.gameObject, 3);
+            base.Interact(im);//send output to Console
 
+            //throw loot all over the ground like a maniac
+            //play an effect
+            Debug.Log("Destroying Supply Drop.");
+            Destroy(this.gameObject); //Destroy(this.gameObject, 3);
         }
     }    
 }
