@@ -61,10 +61,18 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         // Update is called once per frame
         new void Update()
         {
-            base.Update();
-            if (playerInVehicle && Input.GetButtonDown("Interact"))
+            if (playerInVehicle)
             {
-                Interact(playerIM);
+                if (Input.GetButtonDown("Interact"))
+                {
+                    //get out of vehicle
+                    Interact(playerIM);
+                }
+            }
+            
+            else
+            {
+                base.Update();
             }
         }
 
@@ -86,7 +94,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         public void EnterVehicle()
         {
-            ToggleTooltip(false);
+            //turn tooltip off
+            if (toolTipObject) toolTipObject.SetActive(false);
 
             playerInVehicle = true;
             originalPosition = cameraXform.transform.localPosition;

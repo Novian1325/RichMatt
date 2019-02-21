@@ -18,10 +18,13 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             trackable = gameObject.GetComponent<BRS_Trackable>() as BRS_Trackable; //may or may not exist
         }
 
+        /// <summary>
+        /// Turns Tooltip Object on 
+        /// </summary>
         protected virtual void HandleTooltip()
         {
             //toggle tooltip
-            if (toolTipObject) ToggleTooltip(playerIsLookingAtObject);
+            if (toolTipObject) toolTipObject.SetActive(playerIsLookingAtObject);
         }
 
         // Update is called once per frame
@@ -68,12 +71,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             return playerIsLookingAtObject;
         }
-
-        public virtual void ToggleTooltip(bool active)
-        {
-            if (toolTipObject) toolTipObject.SetActive(active);
-        }
-
+        
     }
 
 
