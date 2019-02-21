@@ -6,7 +6,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     {
 
         [SerializeField] private Texture compassImage;
-        [SerializeField] private Texture minimapImage;
         [SerializeField] private float revealDistance;
         [SerializeField] private Color iconColor;
         private Transform cachedTransform;
@@ -17,31 +16,21 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             //only the first trackable has to do the hard work
             InitStaticCompassInstance();
-
+            
             //cache transform
             cachedTransform = this.transform;
         }
 
-        // Use this for initialization
-        void Start()
-        {
-            cachedTransform = this.transform;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-            //hide from map if distance to player too great
-        }
-
+        /// <summary>
+        /// Stop tracking and remove related objects from Compass Instance.
+        /// </summary>
         public void RemoveTrackable()
         {
             compassInstance.RemoveTrackable(this);
         }
 
         /// <summary>
-        /// Attempts to find the compass instance
+        /// Attempt to find the compass instance.
         /// </summary>
         private static void InitStaticCompassInstance()
         {
@@ -58,14 +47,15 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         private void OnEnable()
         {
-            compassInstance.RegisterTrackable(this);
-            //minimap
+            if (compassInstance && compassImage) {
+                compassInstance.RegisterTrackable(this);
+            }
+            
         }
 
         private void OnDisable()
         {
             compassInstance.RemoveTrackable(this);
-            //minimap
         }
 
         private void OnDestroy()
@@ -76,11 +66,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         public Texture GetCompassImage()
         {
             return this.compassImage;
-        }
-
-        public Texture GetMinimapImage()
-        {
-            return this.minimapImage;
         }
 
         public float GetRevealDistance()
@@ -110,6 +95,4 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             return this.cachedTransform;
         }
     }
-
-
 }
