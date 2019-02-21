@@ -1,6 +1,10 @@
-﻿public enum PerspectiveENUM
+﻿namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    First,
-    Second,//heh, why not?
-    Third
+    public enum PerspectiveENUM
+    {
+        First,
+        Second,//heh, why not?
+        Third
+    }
+
 }
