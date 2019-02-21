@@ -66,10 +66,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //fill UI elements
             TMP_ItemName.text = scriptableObject_Item.itemName;//name
             TMP_PickUpButton.text = interactButtonPrompt.ToString();//button prompt
-            TMP_ItemType.text = scriptableObject_Item.GetType().ToString();
-            TMP_ItemRarity.text = scriptableObject_Item.itemRarity.ToString();
-            TMP_ItemAmount.text = itemQuantity.ToString();
-            coloredBackground.color = Color_Rarity.GetRarityColor(scriptableObject_Item.itemRarity);
+            TMP_ItemType.text = scriptableObject_Item.GetType().ToString();//item type (literally, the typeof())
+            TMP_ItemRarity.text = scriptableObject_Item.itemRarity.ToString();//rarity
+            TMP_ItemAmount.text = itemQuantity.ToString();//quantity amount
+            coloredBackground.color = Color_Rarity.GetRarityColor(scriptableObject_Item.itemRarity);//background color
         }
 
         protected override void HandleTooltip()
@@ -79,7 +79,32 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         public override void Interact(BRS_InteractionManager actor)
         {
-            base.Interact(actor);
+            base.Interact(actor);//will output info to Console
+
+            //tell actor's inventory manager that they picked up an item
+            var inventoryMan = actor.GetComponent<BRS_InventoryManager>() as BRS_InventoryManager;
+
+            if (inventoryMan)//if the Component exists
+            {
+                if (inventoryMan.AddToInventory(this))
+                {
+                    //item was successfully added!
+                    Debug.Log("Item was successfully added to Inventory!");
+                    //seppuko!
+                    //Destroy(this.gameObject);
+                }
+                else
+                {
+                    Debug.Log("Item was not added properly -- left on ground.", gameObject);
+                }
+
+            }
+
+            else//complain that Component doesn't exist, as now there is nothing left to do.
+            {
+                Debug.LogError("ERROR! No Inventory Manager on Actor. What should this Interactable do when an ItemManager is interacted with?", gameObject);
+            }
+
         }
 
         public override void PlayerIsLookingAtObject(bool b)
@@ -92,10 +117,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             return base.GetPlayerIsLookingAtObject();
         }
 
-        public override void ToggleTooltip(bool active)
-        {
-            base.ToggleTooltip(active);
-        }
     }
 
 
