@@ -12,7 +12,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         public Sprite itemIcon;
         public GameObject itemModel;
         [Range(0, 1)]
-        public float itemCondition = 1.0f;
+        public float itemCondition;
+        public float value;
     }
 
 }
