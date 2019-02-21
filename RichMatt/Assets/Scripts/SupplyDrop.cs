@@ -78,6 +78,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         new void Update()
         {
             base.Update();//tooltip stuff
+            Debug.Log("Distance to ground: " + BRS_Utility.GetDistanceToTerrain(transform.position));
 
             switch (freefallingState)
             {
@@ -165,7 +166,16 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void StartFreeFalling()
         {
             initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
-            freefallingState = SkyDivingStateENUM.freeFalling;
+
+            //what state to start in?
+            if(initialDistanceToGround <= 5)
+            {
+                freefallingState = SkyDivingStateENUM.startLanded;
+            }
+            else
+            {
+                freefallingState = SkyDivingStateENUM.freeFalling;
+            }
         }
 
         /// <summary>
