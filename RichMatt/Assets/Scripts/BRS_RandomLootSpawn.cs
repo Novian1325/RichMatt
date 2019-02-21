@@ -46,7 +46,7 @@ public class BRS_RandomLootSpawn : MonoBehaviour
 
         if (DEBUG)
         {
-            Debug.LogFormat("Foundation #{0}: Min: {1} / Max: {2} Spawns", foundationID, MinSpawnPoints, MaxSpawnPoints);
+            Debug.LogFormat("Foundation #{0}: Inputs Clamped: Min: {1} / Max: {2}.", foundationID, MinSpawnPoints, MaxSpawnPoints);
         }
     }
 
@@ -58,17 +58,14 @@ public class BRS_RandomLootSpawn : MonoBehaviour
         //select how many loot spots will be spawned
         var numberOfSpawns = Random.Range(MinSpawnPoints, MaxSpawnPoints);
 
-        if (DEBUG)
-        {
-            Debug.LogFormat("Foundation #{0}: Will spawn {1} Loot", foundationID, numberOfSpawns);
-        }
-
         //get a collection of indices of the loot spots to keep
-        var selectedSpawnIndices = SelectSpawnIndices(numberOfSpawns);  //temporarily the 'weight' is static
+        var selectedSpawnIndices = SelectSpawnIndices(numberOfSpawns, lootSpawnList.Length);  //temporarily the 'weight' is static
+        Debug.Log("Selected length: " + selectedSpawnIndices.Length);
 
         //make a new list to hold selected 
         var spawnsToKeep = new List<BRS_ItemManager>();
-        for(var i = 0; i < numberOfSpawns; ++i)
+
+        for(var i = 0; i < numberOfSpawns - 1; ++i)
         {
             spawnsToKeep.Add(lootSpawnList[selectedSpawnIndices[i]]);
         }
@@ -85,6 +82,13 @@ public class BRS_RandomLootSpawn : MonoBehaviour
 
         //replace butchered list
         lootSpawnList = spawnsToKeep.ToArray();
+
+        //debug to Console
+        if (DEBUG)
+        {
+            Debug.LogFormat("Foundation #{0}: Will spawn {1} Loot", foundationID, numberOfSpawns);
+            Debug.LogFormat("Foundation #{0}: Will use spawns: {1}", foundationID, selectedSpawnIndices.ToString());
+        }
     }
 
     /// <summary>
@@ -92,26 +96,32 @@ public class BRS_RandomLootSpawn : MonoBehaviour
     /// </summary>
     /// <param name="numberOfLootSpawns"></param>
     /// <returns></returns>
-    private static int[] SelectSpawnIndices(int numberOfLootSpawns)
+    private static int[] SelectSpawnIndices(int numberOfLootSpawns, int totalSpawns)
     {
-        //create a new random number generator
-        var randomNumberGenerator = new System.Random();
         //create an empty list to hold the selected loot spots
-        var usedIndicesArray = new int[numberOfLootSpawns];
+        var usedIndicesArray = new List<int>();
 
-        for (var n = 0; n < numberOfLootSpawns; ++n)
+        //create a list of integers from 0 to number of selected spawns
+        for(var i = 0; i < totalSpawns; ++i)
         {
-            //get a new random number
-            var randomIndex = randomNumberGenerator.Next(numberOfLootSpawns);
-            //  make sure we do not duplicate items
-            while (System.Array.Exists(usedIndicesArray, element => element.Equals(randomIndex))) //if this index is already in the list of used indices
-            {
-                //get a new random number
-                randomIndex = randomNumberGenerator.Next(numberOfLootSpawns);
-            }
-            usedIndicesArray[n] = randomIndex;
+            usedIndicesArray.Add(i);
         }
 
-        return usedIndicesArray;
+        //randomly remove a number of these indices
+        for (var i = 0; i < totalSpawns - numberOfLootSpawns; ++i)
+        {
+            //get a new random number
+            var randomIndex = Random.Range(0, usedIndicesArray.Count);
+            usedIndicesArray.RemoveAt(randomIndex);
+        }
+
+
+        Debug.Log("Indices:");
+        foreach(var i in usedIndicesArray)
+        {
+            Debug.Log(i);
+        }
+
+        return usedIndicesArray.ToArray();
     }
 }
