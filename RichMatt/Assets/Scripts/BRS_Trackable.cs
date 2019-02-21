@@ -68,6 +68,11 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //minimap
         }
 
+        private void OnDestroy()
+        {
+            compassInstance.RemoveTrackable(this);
+        }
+
         public Texture GetCompassImage()
         {
             return this.compassImage;
