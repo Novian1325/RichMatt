@@ -14,6 +14,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [Tooltip("Prefab of the Supply Drop. Should have a SupplyDrop component attached.")]
         [SerializeField] private GameObject supplyDropPrefab;
 
+        [Tooltip("Used to create the Plane.")]
         [SerializeField] private BRS_PlanePathManager planePathManager;
 
         [Header("Spawn Settings")]
