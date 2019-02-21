@@ -1,239 +1,240 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
- [RequireComponent(typeof(Rigidbody))]
-public class SupplyDrop : BRS_Interactable
+namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    [Header("SupplyDrop")]
-    private static int supplyDropCount = 0;
-
-    [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
-
-    [Tooltip("Fastest downward speed of object. MUST BE NEGATIVE.")]
-    [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
-
-    [Tooltip("Fastest downward speed of object when in parachute state. MUST BE NEGATIVE.")]
-    [SerializeField] private int parachuteTerminalVelocity = -9;
-
-    [Tooltip("How much physics force is applied to the Supply Drop to drift forward")]
-    [SerializeField] private float forwardMomentum = .05f;
-    
-    [Tooltip("Prefab of Parachute")]
-    [SerializeField] private Parachute parachute;
-
-    [Tooltip("Particle effects with sounds that play when this object is destroyed.")]
-    [SerializeField] private GameObject destructionEffect;
-
-    [Range(.2f, 1)]//after the object is this percentage of the distance to the ground, pull the chute
-    [Tooltip("At what percent of initial height should the parachute deploy at? Lower number means lower altitude.")]
-    [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
-
-    [Tooltip("Destroys the supply drop after this many seconds have passed")]
-    [SerializeField] private int destroySupplyDropAfterTime = 300;//5 mins by default
-    
-    private Vector3 terminalVelocityVector;
-
-    private int initialDistanceToGround = 0;//distance from instantiated point to ground
-    private Animator anim;
-    private Rigidbody rb;
-
-    [SerializeField] private GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
-
-
-    private void AddIconToMiniMap()
+    [RequireComponent(typeof(Rigidbody))]
+    public class SupplyDrop : BRS_Interactable
     {
-        //TODO
-    }
+        [Header("SupplyDrop")]
+        private static int supplyDropCount = 0;
 
-    /// <summary>
-    /// behavior at the moment the free fall began
-    /// </summary>
-    private void StartFreeFalling()
-    {
-        initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
-        freefallingState = SkyDivingStateENUM.freeFalling;
-    }
+        [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
 
-    /// <summary>
-    /// behavior when supply drop is falling
-    /// </summary>
-    private void FreeFalling()
-    {
-        //check distance to ground
-        if (BRS_Utility.GetDistanceToTerrain(this.transform.position) < deployParachuteDistancePercent * initialDistanceToGround)
+        [Tooltip("Fastest downward speed of object. MUST BE NEGATIVE.")]
+        [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
+
+        [Tooltip("Fastest downward speed of object when in parachute state. MUST BE NEGATIVE.")]
+        [SerializeField] private int parachuteTerminalVelocity = -9;
+
+        [Tooltip("How much physics force is applied to the Supply Drop to drift forward")]
+        [SerializeField] private float forwardMomentum = .05f;
+
+        [Tooltip("Prefab of Parachute")]
+        [SerializeField] private Parachute parachute;
+
+        [Tooltip("Particle effects with sounds that play when this object is destroyed.")]
+        [SerializeField] private GameObject destructionEffect;
+
+        [Range(.2f, 1)]//after the object is this percentage of the distance to the ground, pull the chute
+        [Tooltip("At what percent of initial height should the parachute deploy at? Lower number means lower altitude.")]
+        [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
+
+        [Tooltip("Destroys the supply drop after this many seconds have passed")]
+        [SerializeField] private int destroySupplyDropAfterTime = 300;//5 mins by default
+
+        private Vector3 terminalVelocityVector;
+
+        private int initialDistanceToGround = 0;//distance from instantiated point to ground
+        private Animator anim;
+        private Rigidbody rb;
+
+        [SerializeField] private GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
+
+
+        private void AddIconToMiniMap()
         {
-            DeployParachute();
-
+            //TODO
         }
 
-    }
-
-    /// <summary>
-    /// Behavior the moment the supply drop touches the ground.
-    /// </summary>
-    private void StartLanded()
-    {
-        if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
-        freefallingState = SkyDivingStateENUM.landed;
-        rb.freezeRotation = true;
-        Destroy(this.gameObject, destroySupplyDropAfterTime);
-    }
-
-    /// <summary>
-    /// Handles physics and other things when parachute is deployed
-    /// </summary>
-    private void DeployParachute()
-    {
-        //do it!
-        parachute.DeployParachute();
-        terminalVelocity = parachuteTerminalVelocity;
-        terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
-        freefallingState = SkyDivingStateENUM.parachuting;
-    }
-
-
-	// Use this for initialization
-	void Start ()
-    {
-        //
-        SupplyDropManager.supplyDropManagerInstance.AddSupplyDrop(this);
-
-        //init state
-        freefallingState = SkyDivingStateENUM.startFreeFalling;
-        
-        //init variables
-        terminalVelocity = -Mathf.Abs(terminalVelocity); //get the absolutely negative value for downwards velocity
-        terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
-        parachuteTerminalVelocity = -Mathf.Abs(parachuteTerminalVelocity); //get the absolutely negative value for downwards velocity
-        //enforce parachuteTerminalVelocity being lower
-        parachuteTerminalVelocity = parachuteTerminalVelocity > terminalVelocity ? parachuteTerminalVelocity : terminalVelocity + 1;
-
-
-        //snag references
-        this.rb = this.GetComponent<Rigidbody>() as Rigidbody;
-        this.anim = this.GetComponent<Animator>() as Animator;
-        if (this.parachute == null) this.parachute = this.GetComponentInChildren<Parachute>();
-
-        //set name
-        SetName(this.gameObject);
-		
-	}
-	
-	// Update is called once per frame
-	new void Update ()
-    { 
-        switch (freefallingState)
+        /// <summary>
+        /// behavior at the moment the free fall began
+        /// </summary>
+        private void StartFreeFalling()
         {
-            case SkyDivingStateENUM.startFreeFalling:
-                StartFreeFalling();
-                break;
-            case SkyDivingStateENUM.freeFalling:
-                FreeFalling();
-                break;
+            initialDistanceToGround = BRS_Utility.GetDistanceToTerrain(this.transform.position);
+            freefallingState = SkyDivingStateENUM.freeFalling;
+        }
 
-            case SkyDivingStateENUM.startparachute:
+        /// <summary>
+        /// behavior when supply drop is falling
+        /// </summary>
+        private void FreeFalling()
+        {
+            //check distance to ground
+            if (BRS_Utility.GetDistanceToTerrain(this.transform.position) < deployParachuteDistancePercent * initialDistanceToGround)
+            {
                 DeployParachute();
-                break;
 
-            case SkyDivingStateENUM.parachuting:
-                break;
+            }
 
-            case SkyDivingStateENUM.startLanded:
-                StartLanded();
-                break;
-
-            case SkyDivingStateENUM.landed:
-                //do stuff. like wait to be opened
-                //release smoke and what not. 
-                //add icon to minimap
-                break;
-
-            default:
-                break;
         }
-    }
 
-    private void FixedUpdate()
-    {
-        //apply physics
-        switch (freefallingState)
+        /// <summary>
+        /// Behavior the moment the supply drop touches the ground.
+        /// </summary>
+        private void StartLanded()
         {
-            case SkyDivingStateENUM.freeFalling:
-                //fall
-            case SkyDivingStateENUM.startparachute:
-                //fall
-            case SkyDivingStateENUM.parachuting:
-                //force forward
-                this.rb.AddForce(this.transform.forward * forwardMomentum, ForceMode.Impulse);
-                break;
-
-            case SkyDivingStateENUM.startLanded:
-                break;
-
-            case SkyDivingStateENUM.landed:
-                //do stuff. like wait to be opened
-                break;
-
-            default:
-                break;
+            if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
+            freefallingState = SkyDivingStateENUM.landed;
+            rb.freezeRotation = true;
+            Destroy(this.gameObject, destroySupplyDropAfterTime);
         }
 
-        //cap downward velocity
-        this.rb.velocity = this.rb.velocity.y < terminalVelocity ? terminalVelocityVector : this.rb.velocity;
-
-        //Debug.Log("Velocity: " + this.rb.velocity + "/ terminal velocity: " + terminalVelocity);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (this.freefallingState == SkyDivingStateENUM.landed) return;
-        else if (collision.gameObject.CompareTag("Terrain"))
+        /// <summary>
+        /// Handles physics and other things when parachute is deployed
+        /// </summary>
+        private void DeployParachute()
         {
-            freefallingState = SkyDivingStateENUM.startLanded;
+            //do it!
+            parachute.DeployParachute();
+            terminalVelocity = parachuteTerminalVelocity;
+            terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
+            freefallingState = SkyDivingStateENUM.parachuting;
+        }
+
+
+        // Use this for initialization
+        void Start()
+        {
+            //
+            SupplyDropManager.supplyDropManagerInstance.AddSupplyDrop(this);
+
+            //init state
+            freefallingState = SkyDivingStateENUM.startFreeFalling;
+
+            //init variables
+            terminalVelocity = -Mathf.Abs(terminalVelocity); //get the absolutely negative value for downwards velocity
+            terminalVelocityVector = new Vector3(0, terminalVelocity, 0);//convert to vector3
+            parachuteTerminalVelocity = -Mathf.Abs(parachuteTerminalVelocity); //get the absolutely negative value for downwards velocity
+                                                                               //enforce parachuteTerminalVelocity being lower
+            parachuteTerminalVelocity = parachuteTerminalVelocity > terminalVelocity ? parachuteTerminalVelocity : terminalVelocity + 1;
+
+
+            //snag references
+            this.rb = this.GetComponent<Rigidbody>() as Rigidbody;
+            this.anim = this.GetComponent<Animator>() as Animator;
+            if (this.parachute == null) this.parachute = this.GetComponentInChildren<Parachute>();
+
+            //set name
+            SetName(this.gameObject);
 
         }
-    }
 
-    private void OnDestroy()
-    {
-        SupplyDropManager.supplyDropManagerInstance.RemoveSupplyDrop(this);
+        // Update is called once per frame
+        new void Update()
+        {
+            switch (freefallingState)
+            {
+                case SkyDivingStateENUM.startFreeFalling:
+                    StartFreeFalling();
+                    break;
+                case SkyDivingStateENUM.freeFalling:
+                    FreeFalling();
+                    break;
 
-        //TODO Other things that happen when thing is destroyed
+                case SkyDivingStateENUM.startparachute:
+                    DeployParachute();
+                    break;
 
-        //do animations
-        if(anim) anim.SetTrigger("Destroy");
+                case SkyDivingStateENUM.parachuting:
+                    break;
 
-        //play sounds
+                case SkyDivingStateENUM.startLanded:
+                    StartLanded();
+                    break;
 
-        //remove icons from minimap
-    }
+                case SkyDivingStateENUM.landed:
+                    //do stuff. like wait to be opened
+                    //release smoke and what not. 
+                    //add icon to minimap
+                    break;
 
-    /// <summary>
-    /// Sets the name of the supply drop so the developer can find it in hierarchy.
-    /// </summary>
-    /// <param name="go"></param>
-    private static void SetName(GameObject go)
-    {
-        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+                default:
+                    break;
+            }
+        }
 
-        stringBuilder.Append("Supply Drop # ");
-        stringBuilder.Append(++supplyDropCount);//track name
+        private void FixedUpdate()
+        {
+            //apply physics
+            switch (freefallingState)
+            {
+                case SkyDivingStateENUM.freeFalling:
+                //fall
+                case SkyDivingStateENUM.startparachute:
+                //fall
+                case SkyDivingStateENUM.parachuting:
+                    //force forward
+                    this.rb.AddForce(this.transform.forward * forwardMomentum, ForceMode.Impulse);
+                    break;
 
-        go.name = stringBuilder.ToString();//faster than concatenation +
+                case SkyDivingStateENUM.startLanded:
+                    break;
 
-    }
+                case SkyDivingStateENUM.landed:
+                    //do stuff. like wait to be opened
+                    break;
 
-    /// <summary>
-    /// Do the behavior. Cue interaction.
-    /// </summary>
-    /// <param name="im"></param>
-    override public void Interact(BRS_InteractionManager im)
-    {
-        //throw loot all over the ground like a maniac
-        //remove icons and effects
-        //play an effect
-        Destroy(this.gameObject); //Destroy(this.gameObject, 3);
+                default:
+                    break;
+            }
 
-    }
+            //cap downward velocity
+            this.rb.velocity = this.rb.velocity.y < terminalVelocity ? terminalVelocityVector : this.rb.velocity;
+
+            //Debug.Log("Velocity: " + this.rb.velocity + "/ terminal velocity: " + terminalVelocity);
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (this.freefallingState == SkyDivingStateENUM.landed) return;
+            else if (collision.gameObject.CompareTag("Terrain"))
+            {
+                freefallingState = SkyDivingStateENUM.startLanded;
+
+            }
+        }
+
+        private void OnDestroy()
+        {
+            SupplyDropManager.supplyDropManagerInstance.RemoveSupplyDrop(this);
+
+            //TODO Other things that happen when thing is destroyed
+
+            //do animations
+            if (anim) anim.SetTrigger("Destroy");
+
+            //play sounds
+
+            //remove icons from minimap
+        }
+
+        /// <summary>
+        /// Sets the name of the supply drop so the developer can find it in hierarchy.
+        /// </summary>
+        /// <param name="go"></param>
+        private static void SetName(GameObject go)
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+
+            stringBuilder.Append("Supply Drop # ");
+            stringBuilder.Append(++supplyDropCount);//track name
+
+            go.name = stringBuilder.ToString();//faster than concatenation +
+
+        }
+
+        /// <summary>
+        /// Do the behavior. Cue interaction.
+        /// </summary>
+        /// <param name="im"></param>
+        override public void Interact(BRS_InteractionManager im)
+        {
+            //throw loot all over the ground like a maniac
+            //remove icons and effects
+            //play an effect
+            Destroy(this.gameObject); //Destroy(this.gameObject, 3);
+
+        }
+    }    
 }

@@ -1,102 +1,105 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SupplyDropManager : MonoBehaviour
+namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    //only one supplydropmanager should exist
-    public static SupplyDropManager supplyDropManagerInstance;
-    private static readonly int DestroySupplyDropDistance = 1000;
+    public class SupplyDropManager : MonoBehaviour
+    {
+        //only one supplydropmanager should exist
+        public static SupplyDropManager supplyDropManagerInstance;
+        private static readonly int DestroySupplyDropDistance = 1000;
 
-    [Header("Supply Drop")]
+        [Header("Supply Drop")]
 
-    [Tooltip("Prefab of the Supply Drop. Should have a SupplyDrop component attached.")]
-    [SerializeField] private GameObject supplyDropPrefab;
-    
-    [SerializeField] private BRS_PlanePathManager planePathManager;
+        [Tooltip("Prefab of the Supply Drop. Should have a SupplyDrop component attached.")]
+        [SerializeField] private GameObject supplyDropPrefab;
 
-    [Header("Spawn Settings")]
+        [SerializeField] private BRS_PlanePathManager planePathManager;
 
-    [Tooltip("Should Supply Drops be Deployed on a random timeline? If false, relies on outside code.")]
-    [SerializeField] private bool randomTimedDrops = true;
+        [Header("Spawn Settings")]
 
-    [Tooltip("This many seconds will pass before the first supply drop is sent.")]
-    [SerializeField] private int initialDelayInSeconds = 60;
+        [Tooltip("Should Supply Drops be Deployed on a random timeline? If false, relies on outside code.")]
+        [SerializeField] private bool randomTimedDrops = true;
 
-    [Tooltip("Wait at least this long before queing next Supply Drop")]
-    [SerializeField] private int minSpawnTime = 30;
+        [Tooltip("This many seconds will pass before the first supply drop is sent.")]
+        [SerializeField] private int initialDelayInSeconds = 60;
 
-    [Tooltip("Max amount of time between Supply Drops")]
-    [SerializeField] private int maxSpawnTime = 60;
+        [Tooltip("Wait at least this long before queing next Supply Drop")]
+        [SerializeField] private int minSpawnTime = 30;
 
-    private float nextSupplyDropSpawnTime;//at what time will the next supply drop happen?
-    
-    //keep track of the amount of supply drops in the scene;
-    private List<SupplyDrop> supplyDropList = new List<SupplyDrop>();
-    
-    // Use this for initialization
-    void Start () {
-        InitSingletonPattern(this);
+        [Tooltip("Max amount of time between Supply Drops")]
+        [SerializeField] private int maxSpawnTime = 60;
 
-        nextSupplyDropSpawnTime = Time.time + initialDelayInSeconds;
+        private float nextSupplyDropSpawnTime;//at what time will the next supply drop happen?
 
-        //weird things happen if max spawn time is less than 2
-        if(maxSpawnTime < 2)
+        //keep track of the amount of supply drops in the scene;
+        private List<SupplyDrop> supplyDropList = new List<SupplyDrop>();
+
+        // Use this for initialization
+        void Start()
         {
-            maxSpawnTime = 2;
-        }
-	}
+            InitSingletonPattern(this);
 
-    /// <summary>
-    /// Initializes a singleton pattern with this obeject. Destroys this object if singleton already exists.
-    /// </summary>
-    /// <param name="SDM_instance"></param>
-    private static void InitSingletonPattern(SupplyDropManager SDM_instance)
-    {
-        //this pattern enforces only one of these things ever exists
-        if (!supplyDropManagerInstance)
+            nextSupplyDropSpawnTime = Time.time + initialDelayInSeconds;
+
+            //weird things happen if max spawn time is less than 2
+            if (maxSpawnTime < 2)
+            {
+                maxSpawnTime = 2;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a singleton pattern with this obeject. Destroys this object if singleton already exists.
+        /// </summary>
+        /// <param name="SDM_instance"></param>
+        private static void InitSingletonPattern(SupplyDropManager SDM_instance)
         {
-            supplyDropManagerInstance = SDM_instance;
+            //this pattern enforces only one of these things ever exists
+            if (!supplyDropManagerInstance)
+            {
+                supplyDropManagerInstance = SDM_instance;
+            }
+            else
+            {
+                Destroy(SDM_instance.gameObject);
+            }
         }
-        else
+
+        // Update is called once per frame
+        void Update()
         {
-            Destroy(SDM_instance.gameObject);
+            if (randomTimedDrops && Time.time > nextSupplyDropSpawnTime)
+            {
+                DeploySupplyDrop();
+                nextSupplyDropSpawnTime += Random.Range(minSpawnTime, maxSpawnTime);
+            }
         }
-    }
 
-    // Update is called once per frame
-    void Update ()
-    {
-        if(randomTimedDrops && Time.time > nextSupplyDropSpawnTime)
+        public void AddSupplyDrop(SupplyDrop newSupplyDrop)
         {
-            DeploySupplyDrop();
-            nextSupplyDropSpawnTime += Random.Range(minSpawnTime, maxSpawnTime);
+            supplyDropList.Add(newSupplyDrop);
         }
-    }
 
-    public void AddSupplyDrop(SupplyDrop newSupplyDrop)
-    {
-        supplyDropList.Add(newSupplyDrop);
-    }
+        public void RemoveSupplyDrop(SupplyDrop supplyDrop)
+        {
+            supplyDropList.Remove(supplyDrop);
+        }
 
-    public void RemoveSupplyDrop(SupplyDrop supplyDrop)
-    {
-        supplyDropList.Remove(supplyDrop);
-    }
+        [ContextMenu("DeploySupplyDrop()")]//can call this function from the ComponentMenu (gear icon in the top-right corner of a Component)
+        public void DeploySupplyDrop()
+        {
+            planePathManager.InitPlaneDrop(supplyDropPrefab); //can catch plane manager and track it
+        }
 
-    [ContextMenu("DeploySupplyDrop()")]//can call this function from the ComponentMenu (gear icon in the top-right corner of a Component)
-    public void DeploySupplyDrop()
-    {
-        planePathManager.InitPlaneDrop(supplyDropPrefab); //can catch plane manager and track it
-    }
+        /// <summary>
+        /// NOT YET COMPLETE
+        /// </summary>
+        private void DestroySupplyDropsIfOutsidePlayArea()
+        {
+            //use this to destroy supply drops that are too far away from players
 
-    /// <summary>
-    /// NOT YET COMPLETE
-    /// </summary>
-    private void DestroySupplyDropsIfOutsidePlayArea()
-    {
-        //use this to destroy supply drops that are too far away from players
-
+        }
     }
 
 }
