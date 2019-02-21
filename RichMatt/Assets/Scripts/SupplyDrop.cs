@@ -5,23 +5,25 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     [RequireComponent(typeof(Rigidbody))]
     public class SupplyDrop : BRS_Interactable
     {
-        [Header("SupplyDrop")]
         //how many supply drops exist
         private static int supplyDropCount = 0;
 
+        [Header("---SupplyDrop---")]
         [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
 
+        [Header("---Physics---")]
         [Tooltip("Fastest downward speed of object. MUST BE NEGATIVE.")]
-        [Range(-99999, 0)]
+        [Range(-900, 0)]
         [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
 
         [Tooltip("Fastest downward speed of object when in parachute state. MUST BE NEGATIVE.")]
-        [Range(-99999, 0)]
+        [Range(-900, 0)]
         [SerializeField] private int parachuteTerminalVelocity = -9;
 
         [Tooltip("How much physics force is applied to the Supply Drop to drift forward")]
         [SerializeField] private float forwardMomentum = .05f;
 
+        [Header("---Parachute---")]
         [Range(.2f, 1)]//after the object is this percentage of the distance to the ground, pull the chute
         [Tooltip("At what percent of initial height should the parachute deploy at? Lower number means lower altitude.")]
         [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
