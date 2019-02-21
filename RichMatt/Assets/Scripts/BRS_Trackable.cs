@@ -16,6 +16,14 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             //only the first trackable has to do the hard work
             InitStaticCompassInstance();
+
+            //if there's no compass, there's no work to do
+            if (!compassInstance)
+            {
+
+                Debug.LogError("ERROR! No BRS_Compass in scene! nothing to register trackable to.");
+                this.enabled = false;
+            }
             
             //cache transform
             cachedTransform = this.transform;
@@ -36,12 +44,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             if (!compassInstance)
             {
-                compassInstance = GameObject.FindGameObjectWithTag("Compass").GetComponent<Compass>() as Compass;
-
-                if (!compassInstance)
-                {
-                    Debug.LogError("ERROR! No BRS_Compass in scene! nothing to register trackable to.");
-                }
+                var compassObject = GameObject.FindGameObjectWithTag("Compass");
+                if(compassObject) compassInstance = compassObject.GetComponent<Compass>();
             }
         }
 
@@ -55,12 +59,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         private void OnDisable()
         {
-            compassInstance.RemoveTrackable(this);
+           if(compassInstance) compassInstance.RemoveTrackable(this);
         }
 
         private void OnDestroy()
         {
-            compassInstance.RemoveTrackable(this);
+            if (compassInstance) compassInstance.RemoveTrackable(this);
         }
 
         public Texture GetCompassImage()
