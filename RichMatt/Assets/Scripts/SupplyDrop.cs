@@ -6,39 +6,45 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     public class SupplyDrop : BRS_Interactable
     {
         [Header("SupplyDrop")]
+        //how many supply drops exist
         private static int supplyDropCount = 0;
 
         [SerializeField] private SkyDivingStateENUM freefallingState = SkyDivingStateENUM.freeFalling;
 
         [Tooltip("Fastest downward speed of object. MUST BE NEGATIVE.")]
+        [Range(-99999, 0)]
         [SerializeField] private int terminalVelocity = -18;//should be negative, but will be remedied
 
         [Tooltip("Fastest downward speed of object when in parachute state. MUST BE NEGATIVE.")]
+        [Range(-99999, 0)]
         [SerializeField] private int parachuteTerminalVelocity = -9;
 
         [Tooltip("How much physics force is applied to the Supply Drop to drift forward")]
         [SerializeField] private float forwardMomentum = .05f;
+
+        [Range(.2f, 1)]//after the object is this percentage of the distance to the ground, pull the chute
+        [Tooltip("At what percent of initial height should the parachute deploy at? Lower number means lower altitude.")]
+        [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
 
         [Tooltip("Prefab of Parachute")]
         [SerializeField] private Parachute parachute;
 
         [Tooltip("Particle effects with sounds that play when this object is destroyed.")]
         [SerializeField] private GameObject destructionEffect;
-
-        [Range(.2f, 1)]//after the object is this percentage of the distance to the ground, pull the chute
-        [Tooltip("At what percent of initial height should the parachute deploy at? Lower number means lower altitude.")]
-        [SerializeField] private float deployParachuteDistancePercent = .9f;//lower number means lower altitude
-
-        [Tooltip("Destroys the supply drop after this many seconds have passed")]
-        [SerializeField] private int destroySupplyDropAfterTime = 300;//5 mins by default
-
+        
         private Vector3 terminalVelocityVector;
 
-        private int initialDistanceToGround = 0;//distance from instantiated point to ground
+        /// <summary>
+        /// Distance from the ground to this object when it is created.
+        /// </summary>
+        private int initialDistanceToGround = 0;
         private Animator anim;
         private Rigidbody rb;
 
-        [SerializeField] private GameObject[] supplies;//holder variable for supplies. probably scriptable objects or itemManagers
+        /// <summary>
+        /// Holder variable for supplies. probably scriptable objects or itemManagers
+        /// </summary>
+        [SerializeField] private GameObject[] supplies;//
 
 
         private void AddIconToMiniMap()
@@ -77,7 +83,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
             freefallingState = SkyDivingStateENUM.landed;
             rb.freezeRotation = true;
-            Destroy(this.gameObject, destroySupplyDropAfterTime);
         }
 
         /// <summary>
