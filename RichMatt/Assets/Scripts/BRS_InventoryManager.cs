@@ -10,8 +10,15 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     {
         [SerializeField] private int maxInventorySlots = 4;
 
+        /// <summary>
+        /// List of Inventory Slots, which track the Item and Quantity
+        /// </summary>
         private List<BRS_InventorySlot> inventoryList = new List<BRS_InventorySlot>();//or whatever base type of item you use in your project
-        private int currentUsedSlots = 0;
+
+        /// <summary>
+        /// Of all the Slots available, this many Slots are being occupied by an element (Item).
+        /// </summary>
+        private int currentUsedSlots = 0;//slightly more performant than checking Count value of list
         
         // Use this for initialization
         void Start()
