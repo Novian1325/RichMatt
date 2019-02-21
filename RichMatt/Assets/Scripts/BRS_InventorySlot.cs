@@ -4,7 +4,5 @@
     {
         public Item scriptableObject_Item;
         public int quantity = 0;
-
     }
-
 }
