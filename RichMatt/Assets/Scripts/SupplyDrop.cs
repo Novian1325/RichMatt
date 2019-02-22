@@ -35,7 +35,13 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         [Tooltip("Particle effects with sounds that play when this object is destroyed.")]
         [SerializeField] private GameObject destructionEffect;
-        
+
+        [Header("---Destruction---")]
+        [Tooltip("Destroys Supply Drops after this many seconds. Time starts counting when Supply Drop touches ground. Value <= 0 disables this.")]
+        [SerializeField] private int destroyAfterSeconds_lifetime = -1; // value <= 0 means this will not take effect -- infinite lifespan
+        [Tooltip("Destroys Supply Drops if they are outside Zone Wall. Value <= 0 disables this.")]
+        [SerializeField] private int destroyAfterSeconds_outsideZoneWall = -1; //value <= 0 means this will not take effect -- infinite
+
         private Vector3 terminalVelocityVector;
 
         /// <summary>
@@ -159,6 +165,17 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //play sounds
         }//end OnDestroy
 
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.gameObject.CompareTag("ZoneWall"))
+            {
+                if(destroyAfterSeconds_outsideZoneWall > 0)
+                {
+                    Destroy(this.gameObject, destroyAfterSeconds_outsideZoneWall);
+                }
+            }
+        }
+
         /// <summary>
         /// behavior at the moment the free fall began
         /// </summary>
@@ -194,9 +211,15 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         private void StartLanded()
         {
-            if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
             freefallingState = SkyDivingStateENUM.landed;
+            if (parachute) parachute.DestroyParachute();//how the parachute is destroyed is up to the class implementation
             rb.freezeRotation = true;
+            
+            //handle destruction timer
+            if(destroyAfterSeconds_lifetime > 0)
+            {
+                Destroy(this.gameObject, destroyAfterSeconds_lifetime);
+            }
         }
 
         /// <summary>
