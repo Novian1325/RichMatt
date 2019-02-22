@@ -22,7 +22,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             if (!compassMarkerImage)
             {
-                compassMarkerImage = this.gameObject.GetComponent<RawImage>() as RawImage;
+                compassMarkerImage = gameObject.GetComponent<RawImage>() as RawImage;
             }
 
         }
@@ -33,6 +33,16 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 coroutine_updateDistanceText = StartCoroutine(UpdateDistanceText());
             }
+        }
+
+        private void OnEnable()
+        {
+            ResumeUpdatingDistance();
+        }
+
+        private void OnDisable()
+        {
+            StopUpdatingDistance();
         }
 
         /// <summary>
@@ -75,8 +85,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 coroutine_updateDistanceText = StartCoroutine(UpdateDistanceText());
             }
         }
-
-
+        
         public RawImage GetCompassMarkerImage()
         {
             return this.compassMarkerImage;
@@ -84,7 +93,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         public bool CompareTrackable(BRS_Trackable otherTrackable)
         {
-            return otherTrackable == this.trackable;
+            return otherTrackable == trackable;
         }
 
         public float GetRevealDistance()
@@ -117,6 +126,4 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             return trackable.GetTrackableTransform();
         }
     }
-
-
 }
