@@ -78,7 +78,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         new void Update()
         {
             base.Update();//tooltip stuff
-            Debug.Log("Distance to ground: " + BRS_Utility.GetDistanceToTerrain(transform.position));
 
             switch (freefallingState)
             {
