@@ -56,6 +56,26 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             TMP_distanceText.text = distanceFromPlayer.ToString();
         }
 
+        /// <summary>
+        /// Stops coroutine associated with distance polling. Useful if game is paused.
+        /// </summary>
+        public void StopUpdatingDistance()
+        {
+            if(coroutine_updateDistanceText != null) StopCoroutine(coroutine_updateDistanceText);
+        }
+
+        /// <summary>
+        /// Causes coroutines to resume.
+        /// </summary>
+        public void ResumeUpdatingDistance()
+        {
+            //
+            if (coroutine_updateDistanceText == null)
+            {
+                coroutine_updateDistanceText = StartCoroutine(UpdateDistanceText());
+            }
+        }
+
 
         public RawImage GetCompassMarkerImage()
         {
