@@ -7,7 +7,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     {
         //only one supplydropmanager should exist
         public static SupplyDropManager supplyDropManagerInstance;
-        private static readonly int DestroySupplyDropDistance = 1000;
 
         [Header("Supply Drop")]
 
@@ -92,15 +91,5 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             planePathManager.InitPlaneDrop(supplyDropPrefab); //can catch plane manager and track it
         }
-
-        /// <summary>
-        /// NOT YET COMPLETE
-        /// </summary>
-        private void DestroySupplyDropsIfOutsidePlayArea()
-        {
-            //use this to destroy supply drops that are too far away from players
-
-        }
     }
-
 }
