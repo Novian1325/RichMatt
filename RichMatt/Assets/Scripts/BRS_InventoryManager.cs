@@ -32,6 +32,11 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         }
 
+        /// <summary>
+        /// Adds given item quantity or entire item to Inventory if there is sufficient space.
+        /// </summary>
+        /// <param name="newItem"></param>
+        /// <returns>Returns true if the entire Item stack was successfully added to Inventory.</returns>
         public bool AddToInventory(BRS_ItemManager newItem)
         {
             var addSuccessful = false;
