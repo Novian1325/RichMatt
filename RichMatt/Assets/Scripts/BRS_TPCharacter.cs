@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PolygonPilgrimage.BattleRoyaleKit
 {
@@ -107,6 +105,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
         }
 
+
         void PreventStandingInLowHeadroom()
         {
 
@@ -161,7 +160,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 m_Animator.speed = 1;
             }
         }
-
+        
 
         void HandleAirborneMovement()
         {
@@ -169,7 +168,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
             m_Rigidbody.AddForce(extraGravityForce);
 
-            //m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f; //RSO should not change this in script
+            m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
         }
 
 
@@ -185,6 +184,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 m_GroundCheckDistance = 0.1f;
             }
         }
+
 
         void ApplyExtraTurnRotation()
         {
@@ -207,7 +207,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 m_Rigidbody.velocity = v;
             }
         }
-
+        
 
         void CheckGroundStatus()
         {
@@ -232,7 +232,5 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
         }
     }
-
-
 
 }
