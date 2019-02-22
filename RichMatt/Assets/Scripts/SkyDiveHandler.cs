@@ -8,53 +8,62 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         [SerializeField] private SkyDivingStateENUM skyDivingState = SkyDivingStateENUM.startFreeFalling;
 
-        [Header("SkyDiving Settings")]
+        [Header("---SkyDiving Settings---")]
         [Tooltip("Target drag when slowing.")]
         [SerializeField] private float slowDrag = 0.6f; //
         [Tooltip("Normal Drag when skydiving")]
         [SerializeField] private float fallDrag = 0.5f;
         [Tooltip("Drag when swooping(pitching)")]
         [SerializeField] private float swoopDrag = 0.01f;//
-        [Tooltip("Drag while chute is deployed")]
-        [SerializeField] private float chuteDrag = 1.2f;// 
         [Tooltip("How fast the character rolls")]
         [SerializeField] private float rollFactor = .25f;
-        [Tooltip("Height at which parachute auto deploys")]
-        [SerializeField] private int forceParachuteHeight = 100; //
-        [Tooltip("Character must be at least this distance to ground before being able to deploy 'chute")]
-        [SerializeField] private int deployParachuteLimit = 250; //
         [Tooltip("roll, yaw, pitch speed")]
         [SerializeField] private float attitudeChangeSpeed = 5f;//
         [Tooltip("Rate at which player can move forward or backwards while swooping/parachuting")]
         [SerializeField] private float forwardMomentum = 10f;//
-        [Tooltip("While parachuting, momentum is modified by this much.")]
-        [SerializeField] private float parachuteMomentumModifier = .8f;
         [Tooltip("Maximum velocity a body can achieve in a freefall state")]
         [SerializeField] private float terminalVelocity = -20f;//
+
+        [Header("--Parachute Settings---")]
+        [Tooltip("GameObject that has a parachute component")]
+        [SerializeField] private Parachute Parachute;
+        [Tooltip("Drag while chute is deployed")]
+        [SerializeField] private float parachuteDrag = 1.2f;// 
+        [Tooltip("Height at which parachute auto deploys")]
+        [SerializeField] private int forceParachuteHeight = 100; //
+        [Tooltip("Character must be at least this distance to ground before being able to deploy 'chute")]
+        [SerializeField] private int deployParachuteLimit = 250; //
+        [Tooltip("While parachuting, momentum is modified by this much.")]
+        [SerializeField] private float parachuteMomentumModifier = .8f;
         [Tooltip("Maximum velocity a body can achieve in a parachute state")]
         [SerializeField] private float parachuteTerminalVelocityModifier = 1.5f;//
         [Tooltip("How fast the player can move left to right when parachuting")]
         [SerializeField] private float parachuteStrafeSpeed = 7.5f;
 
+        [Header("---Axes---")]
         [Tooltip("Camera's parent transform")]
-        public Transform cameraPivotTransform; //camera look
+        [SerializeField] private Transform cameraPivotTransform; //camera look
         [Tooltip("Parent transform for handling pitch/swoop")]
-        public Transform characterSwoopTransform; //used for pitch
+        [SerializeField] private Transform characterSwoopTransform; //used for pitch
         [Tooltip("Parent transform for handling character roll")]
-        public Transform characterRollAxis;//used for rolling
+        [SerializeField] private Transform characterRollAxis;//used for rolling
         [Tooltip("Parent transform for handling twist/yaw")]
-        private Transform characterTransform;//this object used for yaw
+        [SerializeField] private Transform characterTransform;//this object used for yaw
 
-        [Header("Camera Controls")]
+        [Header("---Camera Controls---")]
         [Tooltip("Mouse sensitivity of camera")]
-        public float MouseXSensitivity = 4.0f;
+        [SerializeField] private float MouseXSensitivity = 4.0f;
         [Tooltip("Mouse sensitivity of camera")]
-        public float MouseYSensitivity = 4.0f;
+        [SerializeField] private float MouseYSensitivity = 4.0f;
         [Tooltip("Rate of smoothing")]
-        public float smoothTime = 5.0f;
-
-        //Camera settings
+        [SerializeField] private float smoothTime = 5.0f;
+        [Tooltip("Lerps if true.")]
         [SerializeField] private bool smoothCamera = true;
+        [Tooltip("Point in space where the camera should zoom to when zooming out when parachuting")]
+        [SerializeField] private Transform zoomPoint;
+        [Tooltip("How fast does the camera zoom in/out when parachuting")]
+        [SerializeField] private float zoomSpeed;
+
         private readonly bool clampVerticalRotation = true;
         private readonly float cameraMinPitch = -90;
         private readonly float cameraMaxPitch = 90;
@@ -63,8 +72,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private Rigidbody rb;
         private Animator anim;
         private BRS_TPController playerController;
-        [Tooltip("GameObject that has a parachute component")]
-        [SerializeField] private Parachute Parachute;
 
         //clamp limits
         private readonly float minSwoopAngle = -15f;
@@ -83,11 +90,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private float targetForwardMomentum = 0f;
 
         //camera zoom during parachute deploy and reset after landing
-        [Tooltip("Point in space where the camera should zoom to when zooming out when parachuting")]
-        [SerializeField] private Transform zoomPoint;
         private Vector3 cameraPositionBeforeZoom;
-        [Tooltip("How fast does the camera zoom in/out when parachuting")]
-        [SerializeField] private float zoomSpeed;
         private float zoomStartTime;
         private float zoomLength;
 
@@ -106,16 +109,20 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void Awake()
         {
             //gather references
-            if (playerController == null) playerController = this.gameObject.GetComponent<BRS_TPController>();
+            if (playerController == null) playerController = gameObject.GetComponent<BRS_TPController>() as BRS_TPController;
 
-            rb = gameObject.GetComponent<Rigidbody>();
-            anim = gameObject.GetComponent<Animator>();
+            rb = gameObject.GetComponent<Rigidbody>() as Rigidbody;
+            anim = gameObject.GetComponent<Animator>() as Animator;
             InitRotationTransforms();
         }
 
         void Start()
         {
-            this.enabled = false;//enable by calling BeginSkyDiving();
+            //disable if not in a begin skydiving state. Wait to be started externally
+            if(skyDivingState != SkyDivingStateENUM.startFreeFalling)
+            {
+                this.enabled = false;//enable by calling BeginSkyDiving();
+            }
 
             //verify developer input
             if (terminalVelocity > 0)
@@ -124,6 +131,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
         }
 
+        /// <summary>
+        /// Begins the Free Falling / Skydiving Behavior.
+        /// </summary>
         public void BeginSkyDive()
         {
             //Debug.Log("BEGIN SKYDIVE()!");
@@ -132,6 +142,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             skyDivingState = SkyDivingStateENUM.startFreeFalling;
         }
 
+        /// <summary>
+        /// Handles logic that happens the moment skydiving / freefalling begins.
+        /// </summary>
         private void StartFreeFalling()
         {
             //Debug.Log("StartFreeFalling()");
@@ -144,6 +157,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             skyDivingState = SkyDivingStateENUM.freeFalling;
         }
 
+        /// <summary>
+        /// Handles logic that occurs while in state of Freefall / Skydive
+        /// </summary>
         private void FreeFalling()
         {
             //Debug.Log("FreeFalling()");
@@ -154,6 +170,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 skyDivingState = SkyDivingStateENUM.startparachute;//put in state to pull parachute
         }
 
+        /// <summary>
+        /// Handles logic that occurs the moment this enters the Parachuting state.
+        /// </summary>
         private void StartParachute()
         {
             //Debug.Log("StartParachuting()");
@@ -162,6 +181,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             skyDivingState = SkyDivingStateENUM.parachuting;
         }
 
+        /// <summary>
+        /// Handles logic that occurs while in Parachute state.
+        /// </summary>
         private void Parachuting()
         {
             //Debug.Log("Parachuting()");
@@ -171,6 +193,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         }
 
+        /// <summary>
+        /// Handles logic that occurs the moment this comes in contact with the ground.
+        /// </summary>
         private void StartLanded()
         {
             //Debug.Log("StartLanded()");
@@ -186,10 +211,17 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             skyDivingState = SkyDivingStateENUM.landed;
         }
 
-        private float GetTargetForwardMomentum(float verticalInput)
+        /// <summary>
+        /// Calculates how much this object drifts forward while skydiving.
+        /// </summary>
+        /// <param name="verticalInput"></param>
+        /// <returns></returns>
+        private float CalculateTargetForwardMomentum(float verticalInput)
         {
             //calculate the distance the player will travel forward based on pitch
-            float targetFM = 0;
+            float targetFM = 0;//target forward momentum
+
+            //if there is more than a tiny bit of vertical input
             if (Mathf.Abs(verticalInput) > .01f)
             {
                 float maxFM = skyDivingState == SkyDivingStateENUM.parachuting ? forwardMomentum * parachuteMomentumModifier : forwardMomentum;
@@ -219,6 +251,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             return targetFM;
         }
 
+        /// <summary>
+        /// Sets target pitch, yaw, roll for camera and and character: 
+        /// </summary>
         private void SetTargetRotations()
         {
             //cache rotations for comparisions
@@ -238,7 +273,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             characterRotationZ = (skyDivingState == SkyDivingStateENUM.freeFalling) ? characterRotationZ : 0;//force to zero roll if not skydiving
 
             ////if the player is swooping, steadily increase forward speed based on how 'level' the player is. if the player is looking straight down, no forward speed; otherwise, steadily return to zero.
-            targetForwardMomentum = GetTargetForwardMomentum(verticalInput);
+            targetForwardMomentum = CalculateTargetForwardMomentum(verticalInput);
 
             #region unwind to center if no input
             //unwind swoop amount
@@ -277,24 +312,29 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 m_CameraTargetRot = BRS_Utility.ClampRotationAroundXAxis(m_CameraTargetRot, cameraMinPitch, cameraMaxPitch);
             }
+
             m_CharacterSwoopTargetRot = BRS_Utility.ClampRotationAroundXAxis(m_CharacterSwoopTargetRot, 0, maxSwoopAngle);
             m_CharacterRollTargetRot = BRS_Utility.ClampRotationAroundZAxis(m_CharacterRollTargetRot, minRollRotation, maxRollRotation);
-
         }
 
+        /// <summary>
+        /// Camera zooms out slightly when parachute pulled.
+        /// </summary>
         private void HandleCameraZoomOut()
         {
             Transform cameraXform = Camera.main.transform;
             float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
             if (journeyedPercent >= .95f) return; //stop after the camera gets close enough
             cameraXform.position = Vector3.Lerp(cameraXform.position, zoomPoint.position, journeyedPercent);
-
         }
 
+        /// <summary>
+        /// Camera zooms back in when landed.
+        /// </summary>
         private void HandleCameraZoomIn()
         {
             Transform cameraXform = Camera.main.transform;
-            float journeyedPercent = ((Time.time - zoomStartTime) * zoomSpeed) / zoomLength;
+            float journeyedPercent = (Time.time - zoomStartTime) * zoomSpeed / zoomLength;
             if (journeyedPercent >= .95f)
             {
                 this.enabled = false;//TURN OFF DISABLE THIS SCRIPT. CAMERA ZOOM IN IS FINAL THING.
@@ -304,11 +344,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 //Debug.Log(journeyedPercent);
                 cameraXform.localPosition = Vector3.Lerp(cameraXform.localPosition, cameraPositionBeforeZoom, journeyedPercent);
-
             }
-
         }
 
+        /// <summary>
+        /// Handle swoop, roll, and forward momentum.
+        /// </summary>
         private void HandlePlayerMovement()
         {
             //move character pitch
@@ -325,6 +366,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             characterTransform.Translate(Vector3.forward * targetForwardMomentum * Time.deltaTime);
         }
 
+        /// <summary>
+        /// Handle camera orbit.
+        /// </summary>
         private void HandleCameraMovement()
         {
             if (smoothCamera)
@@ -343,6 +387,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
         }
 
+        /// <summary>
+        /// Clamp terminal velocity, adjust drag.
+        /// </summary>
         private void HandleDrag()
         {
             //convert rotation to angle!
@@ -364,12 +411,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             targetDrag = Mathf.Clamp(targetDrag, swoopDrag, slowDrag);//clamp
 
             //modify drag if chute is deployed
-            targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? chuteDrag * targetDrag : targetDrag;
+            targetDrag = skyDivingState == SkyDivingStateENUM.parachuting ? parachuteDrag * targetDrag : targetDrag;
 
             //set drag; calcs complete
             rb.drag = targetDrag;
 
-            //sets velocity cap based on state
+            //determine terminal velocity cap based on state
             float velocityCap = skyDivingState == SkyDivingStateENUM.parachuting ? terminalVelocity * parachuteTerminalVelocityModifier : terminalVelocity;
 
             //clamp downward velocity to terminalVelocity
@@ -378,6 +425,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //Debug.Log("State: " + skyDivingState + " drag: " + rb.drag + ", pitch: " + currentSwoopAngle + ", velocity: " + rb.velocity);
         }
 
+        /// <summary>
+        /// Handle lateral movement while parachuting.
+        /// </summary>
         private void ParachuteStrafe()
         {
             //moves the character left and right based on user input
@@ -390,6 +440,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         }
 
+        /// <summary>
+        /// Check for input and handle opening parachute.
+        /// </summary>
         private void CheckForRipCord()
         {
             //should only be called in Update()
@@ -473,21 +526,23 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
                 case SkyDivingStateENUM.parachuting:
                     HandleCameraMovement();//move camera after all physics step have completed
-                    HandleCameraZoomOut();
-
+                    HandleCameraZoomOut();//zoom camera out 
                     break;
 
                 case SkyDivingStateENUM.startLanded:
                     break;
 
                 case SkyDivingStateENUM.landed:
-                    HandleCameraZoomIn();
+                    HandleCameraZoomIn();//zoom camera back in
                     break;
                 default:
                     break;
             }
         }
 
+        /// <summary>
+        /// Calls animator, initializes camera zoom in.
+        /// </summary>
         private void DeployParachute()
         {
             characterRollAxis.localRotation = Quaternion.identity;//stand straight up and down when 'chute deployed -- no roll
@@ -502,7 +557,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         private void OnCollisionEnter(Collision other)
         {
-
             if (other.gameObject.CompareTag("Terrain"))
             {
 
@@ -511,9 +565,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 rb.velocity = Vector3.zero;
                 rb.drag = 0;
                 if (skyDivingState != SkyDivingStateENUM.landed) skyDivingState = SkyDivingStateENUM.startLanded;
-            }
-        }
-
-    }
-
-}
+            }//end if
+        }//end OnCollisionEnter
+    }//end class
+}//end namespace
