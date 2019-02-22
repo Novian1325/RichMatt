@@ -41,20 +41,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             coroutine_CompassMarkerSort = StartCoroutine(SortCompassMarker(sortsPerSecond));
         }
 
-        /// <summary>
-        /// Update the icon on the compass to match angle from player to trackable object
-        /// </summary>
-        /// <param name="compassMarker">marker with image to manipulate</param>
-        /// <param name="trackablePosition">Position of trackable object in World Space</param>
-        /// <param name="playerXform">Reference transform (player)</param>
-        private static void UpdateCompassMarker(BRS_CompassMarker compassMarker, Vector3 trackablePosition, Transform playerXform)
-        {
-            Vector3 relative = playerXform.InverseTransformPoint(trackablePosition);
-            float angle = Mathf.Atan2(relative.x, relative.z) * Mathf.Rad2Deg;
-
-            compassMarker.GetCompassMarkerImage().uvRect = new Rect(-angle / 360, 0, 1, 1); //need a value between -.5 an .5 for uvRect
-        }
-
         public void Update()
         {
             float headingAngle = mainCameraXform.eulerAngles.y;
@@ -107,13 +93,56 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         }
 
+        private void OnEnable()
+        {
+            ResumeSorting();
+        }
+
+        private void OnDisable()
+        {
+            StopSorting();
+        }
+
+        /// <summary>
+        /// Stops coroutine associated with sorting. Useful if game is paused or if there aren't enough to warrant sorting.
+        /// </summary>
+        public void StopSorting()
+        {
+            if (coroutine_CompassMarkerSort != null) StopCoroutine(coroutine_CompassMarkerSort);
+        }
+
+        /// <summary>
+        /// Causes coroutines to resume.
+        /// </summary>
+        public void ResumeSorting()
+        {
+            //
+            if (coroutine_CompassMarkerSort == null)
+            {
+                coroutine_CompassMarkerSort = StartCoroutine(SortCompassMarker(sortsPerSecond));
+            }
+        }
+
+        /// <summary>
+        /// Update the icon on the compass to match angle from player to trackable object
+        /// </summary>
+        /// <param name="compassMarker">marker with image to manipulate</param>
+        /// <param name="trackablePosition">Position of trackable object in World Space</param>
+        /// <param name="playerXform">Reference transform (player)</param>
+        private static void UpdateCompassMarker(BRS_CompassMarker compassMarker, Vector3 trackablePosition, Transform playerXform)
+        {
+            Vector3 relative = playerXform.InverseTransformPoint(trackablePosition);
+            float angle = Mathf.Atan2(relative.x, relative.z) * Mathf.Rad2Deg;
+
+            compassMarker.GetCompassMarkerImage().uvRect = new Rect(-angle / 360, 0, 1, 1); //need a value between -.5 an .5 for uvRect
+        }
+
         /// <summary>
         /// Coroutine used to restrict frequency of list sorting. Helps with performance
         /// </summary>
         /// <param name="sortsPerSecond"></param>
-        /// <param name="compassMarkerList"></param>
         /// <returns></returns>
-        private IEnumerator SortCompassMarker(float sortsPerSecond)
+        private IEnumerator SortCompassMarker(float sortsPerSecond = 1)
         {
             while (true)
             {
