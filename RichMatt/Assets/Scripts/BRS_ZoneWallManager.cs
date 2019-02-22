@@ -43,11 +43,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private bool Shrinking = false;  // 
 
         /// <summary>
-        /// has a new center been obtained?
-        /// </summary>
-        private bool newCenterObtained = false;// 
-
-        /// <summary>
         /// iterates through delays between each phase and speed at which each phase shrinks
         /// </summary>
         private int shrinkPhaseIndex = 0;//
@@ -92,13 +87,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
             //draw minimap zone cirlce
             ConfigureWorldCircle(lineRenderer, originalZoneWallRadius, originalZoneWallRadius, lineRendererSegments, false);
+
             //move projector with circle
             safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
-            //init next shrink time
-            nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];//when will the next circle start to shrink?
-            timeToShrink = secondsToShrink[shrinkPhaseIndex];//how long will the next circle take to shrink?
-
+            InitNextShrink();
+            
             //apply Inspector values
             ShrinkEverything();
 
@@ -111,15 +105,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         private void HandleShrinkingUpdate()
         {//is the zone currently in a shrinking state
-            if (Shrinking && shrinkPhaseIndex < timeBetweenEachShrinkPhase.Length)
+            if (Shrinking)
             {
-                // we need a new center point (that is within the bounds of the current zone)
-                if (!newCenterObtained)
-                {
-                    ConfigureNewCenterPoint();
-                    newCenterObtained = true;
-
-                }
 
                 //shrink all the things
                 ShrinkEverything();
@@ -138,7 +125,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //is it time to start shrinking?
             else if (Time.time > nextShrinkTime)
             {
-                shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
                 Shrinking = true;
                 if (DEBUG) Debug.Log("Shrinking....");
             }
@@ -165,9 +151,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             centerPoint = FindNewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor, DEBUG);
             distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
-
-            //show on minimap where zone will shrink to
-            leadingCircle = CreateLeadingCircle(centerPoint, zoneWallRadius / (100 / radiusShrinkFactor), originalZoneWallRadius, lineRendererSegments);
 
             if (DEBUG)
             {
@@ -201,6 +184,27 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         }
 
         /// <summary>
+        /// Set timers, choose new shrink point, draw new leading circle.
+        /// </summary>
+        private void InitNextShrink()
+        {
+            //new shrink radius
+            shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
+
+            //set next shrink time
+            nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];
+
+            //repeat last index if there's more shrink phases
+            timeToShrink = secondsToShrink[(shrinkPhaseIndex >= secondsToShrink.Length ? secondsToShrink.Length - 1 : shrinkPhaseIndex)];
+            
+            //get a new centerpoint for the zone wall to shrink around
+            ConfigureNewCenterPoint();
+
+            //show on minimap where zone will shrink to
+            leadingCircle = CreateLeadingCircle(centerPoint, shrinkRadius, originalZoneWallRadius, lineRendererSegments);
+        }
+
+        /// <summary>
         /// Control when the circle should stop shrinking.
         /// </summary>
         private void HandleStopShrinking()
@@ -208,26 +212,21 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             // MoveTowards will continue ad infinitum, so we must test that we have gotten close enough to be DONE
             if (.5f > (zoneWallRadius - shrinkRadius))//shrinking complete
             {
+                Destroy(leadingCircle);
+
                 Shrinking = false;
-                newCenterObtained = false;
                 if (DEBUG) Debug.Log("Zone Wall finished shrinking.");
 
                 //is there more shrinking to do?
                 if (++shrinkPhaseIndex < timeBetweenEachShrinkPhase.Length)
                 {
-                    //set next shrink time
-                    nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];
-
-                    //repeat last index if there's more shrink phases
-                    timeToShrink = secondsToShrink[(shrinkPhaseIndex >= secondsToShrink.Length ? secondsToShrink.Length - 1 : shrinkPhaseIndex)];
-
+                    InitNextShrink();
                 }
                 else
                 {
                     if (DEBUG) Debug.Log("Zone Wall will no longer shrink.");
                 }
 
-                Destroy(leadingCircle);
 
             }
         }
@@ -297,7 +296,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, float radius, float drawHeight, int segments = 64)
         {
             //new empty game object
-            GameObject leadingCircle = new GameObject();
+            var leadingCircle = new GameObject();
             //set position
             leadingCircle.transform.position = circleCenterPoint;
             //set layer to make sure is on top of other objects
@@ -307,7 +306,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
             //configure line renderer
             //create new
-            LineRenderer lr = leadingCircle.AddComponent<LineRenderer>() as LineRenderer;
+            var lr = leadingCircle.AddComponent<LineRenderer>() as LineRenderer;
             //do not cast shadows
             lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             //do not receive shadows
@@ -335,16 +334,16 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <param name="renderInWorldSpace">Use local or world space?</param>
         static void ConfigureWorldCircle(LineRenderer renderer, float radius, float height, int segments = 64, bool renderInWorldSpace = false)
         {
-            float x = 0;//x coordinate of terminal point on unit circle
-            float y = height;//height circle is drawn
-            float z = 0;//y coordinate of terminal point on unit circle
-            float arcLength = 0;//used for trig to determine terminal point on unit circle
-            float spaceBetweenPoints = 360f / segments;//if a circle has x points, this is the distance between each of those points
+            var x = 0.0f;//x coordinate of terminal point on unit circle
+            var y = height;//height circle is drawn
+            var z = 0.0f;//y coordinate of terminal point on unit circle
+            var arcLength = 0.0f;//used for trig to determine terminal point on unit circle
+            var spaceBetweenPoints = 360f / segments;//if a circle has x points, this is the distance between each of those points
 
             renderer.positionCount = segments;//positions are vertices of circle
 
             //place each point an equal distance apart on the unit circle, scaled by radius
-            for (int i = 0; i < segments; i++)
+            for (var i = 0; i < segments; i++)
             {
                 x = Mathf.Sin(Mathf.Deg2Rad * arcLength) * radius;
                 z = Mathf.Cos(Mathf.Deg2Rad * arcLength) * radius;
