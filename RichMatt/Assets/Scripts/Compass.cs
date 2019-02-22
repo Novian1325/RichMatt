@@ -28,8 +28,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [SerializeField] private GameObject compassMarkerPrefab;// prefab used  //icons UV rect x value is between -.5 and .5
         private List<BRS_CompassMarker> compassMarkerList = new List<BRS_CompassMarker>();
 
-        //courtine references
-        private Coroutine coroutine_CompassMarkerSort;
+        //coroutine references
+        private Coroutine coroutine_CompassMarkerSort;//track coroutine so can stop/start (like when pausing game)
 
         private void Start()
         {

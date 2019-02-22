@@ -15,7 +15,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private float distanceFromPlayer;
 
         //coroutine trackers
-        private Coroutine coroutine_updateDistanceText;//is tracked so can be accessed at a later time. 
+        private Coroutine coroutine_updateDistanceText;//track to enable pausing game
         private static readonly int textUpdatesPerSecond = 2;
 
         private void Awake()
