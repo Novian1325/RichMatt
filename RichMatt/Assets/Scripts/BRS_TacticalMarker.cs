@@ -71,8 +71,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             if (distanceText)
             {
                 System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+
                 stringBuilder.Append(distanceToMarker.ToString());
                 stringBuilder.Append("m");
+
                 distanceText.text = stringBuilder.ToString();
             }
         }
