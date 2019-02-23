@@ -16,10 +16,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [Tooltip("Set the starting Radius here. Can track size during runtime.")]
         [SerializeField] private float otherZoneWallRadius = 1000;
 
-        [Range(10, 100)]
-        [Tooltip("Every shrink phase, zone radius will be reduced by this percent. ie, if value is 50, zone wall will shrink by 50%.")]
-        [SerializeField] private int radiusShrinkFactor = 50; //default to 50%
-
         [Header("Shrinking Zones")]
 
         [Tooltip("The projecte image on the rim of ZoneWall. Not needed")]
@@ -33,27 +29,27 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         #region Private Members
         /// <summary>
-        /// how long this phase will take to shrink
+        /// How long in seconds it will take for the Zone Wall to shrink its radius.
         /// </summary>
         private float timeToShrink = 1;//
 
         /// <summary>
-        /// this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector
+        /// this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector.
         /// </summary>
         private bool shrinking = false;  // 
 
         /// <summary>
-        /// iterates through delays between each phase and speed at which each phase shrinks
+        /// iterates through delays between each phase and speed at which each phase shrinks.
         /// </summary>
         private int shrinkPhaseIndex = 0;//
 
         /// <summary>
-        /// holds the next time in seconds that the next shrink phase will start
+        /// Holds the next Time that the next shrink phase will start.
         /// </summary>
         private float nextShrinkTime;//
 
         /// <summary>
-        /// this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider
+        /// this is the SIZE of the zone wall object (not scale). measure it with a primitive shape to be sure. or snag the radius of attached collider.
         /// </summary>
         private int originalZoneWallRadius;//
 
@@ -61,11 +57,35 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// Distance to centerpoint
         /// </summary>
         private float distanceToMoveCenter;
-        private float shrinkRadius;
+
+        /// <summary>
+        /// The Zone Wall will become smaller to match its radius with this target radius.
+        /// </summary>
+        private float targetShrunkenRadius;
+
+        /// <summary>
+        /// Point in space that the Zone Wall orbits around.
+        /// </summary>
         private Vector3 centerPoint;//
+
+        /// <summary>
+        /// Reference to the UI circle that shows the future bounds of the Zone Wall.
+        /// </summary>
         private GameObject leadingCircle;
+
+        /// <summary>
+        /// Line Renderer that draws the bounds of the Zone Wall.
+        /// </summary>
         private LineRenderer lineRenderer;
+
+        /// <summary>
+        /// Cached Transform of the parent Object.
+        /// </summary>
         private Transform ZoneWallXform;
+
+        /// <summary>
+        /// Capsule Collider attached to this GameObject. Used as a reference for Scale.
+        /// </summary>
         private CapsuleCollider capsuleCollider;
         #endregion
 
@@ -149,7 +169,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         private void ConfigureNewCenterPoint()
         {
-            centerPoint = FindNewCenterPoint(ZoneWallXform.position, otherZoneWallRadius, shrinkRadius, radiusShrinkFactor, DEBUG);
+            centerPoint = FindNewCenterPoint(ZoneWallXform.position, otherZoneWallRadius, targetShrunkenRadius, DEBUG);
             distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
 
             if (DEBUG)
@@ -170,7 +190,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void ShrinkEverything()
         {
             // shrink the zone diameter, over time
-            otherZoneWallRadius = Mathf.MoveTowards(otherZoneWallRadius, shrinkRadius, (shrinkRadius / timeToShrink) * Time.deltaTime);
+            otherZoneWallRadius = Mathf.MoveTowards(otherZoneWallRadius, targetShrunkenRadius, (targetShrunkenRadius / timeToShrink) * Time.deltaTime);
 
             //shrink the zoneWall object and all of its children
             ZoneWallXform.localScale = new Vector3((otherZoneWallRadius / originalZoneWallRadius), 1, (otherZoneWallRadius / originalZoneWallRadius)); //set local scale of zone wall
@@ -190,8 +210,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             //increment to next phase
             ++shrinkPhaseIndex;
-            //new shrink radius
-            shrinkRadius = otherZoneWallRadius - (otherZoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
+            //this shrink phase, shrink from current radius to this smaller radius. 
+            targetShrunkenRadius = shrinkPhases[shrinkPhaseIndex].shrinkToRadius;  //use the ZoneRadiusFactor as a percentage
 
             //set next shrink time
             nextShrinkTime = Time.time + shrinkPhases[shrinkPhaseIndex].secondsUntilShrinkBegins;
@@ -203,7 +223,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             ConfigureNewCenterPoint();
 
             //show on minimap where zone will shrink to
-            leadingCircle = CreateLeadingCircle(centerPoint, shrinkRadius, originalZoneWallRadius, lineRendererSegments);
+            leadingCircle = CreateLeadingCircle(centerPoint, targetShrunkenRadius, originalZoneWallRadius, lineRendererSegments);
         }
 
         /// <summary>
@@ -212,7 +232,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void HandleStopShrinking()
         {
             // MoveTowards will continue ad infinitum, so we must test that we have gotten close enough to be DONE
-            if (.5f > (otherZoneWallRadius - shrinkRadius))//shrinking complete
+            if (.5f > (otherZoneWallRadius - targetShrunkenRadius))//shrinking complete
             {
                 Destroy(leadingCircle);
 
@@ -240,9 +260,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <param name="currentRadius">New point will be within this radius</param>
         /// <param name="newRadius">Size of new radius</param>
         /// <param name="shrinkFactor"></param>
-        /// <param name="debug"></param>
+        /// <param name="DEBUG"></param>
         /// <returns></returns>
-        private static Vector3 FindNewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, float shrinkFactor, bool debug = false)
+        private static Vector3 FindNewCenterPoint(Vector3 currentCenter, float currentRadius, float newRadius, bool DEBUG = false)
         {
             Vector3 newCenterPoint = Vector3.zero;
 
@@ -250,16 +270,16 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             int attemptCounter = 0;
             bool foundSuitable = false;
 
-            if (debug) Debug.Log("Finding a new center point....");
+            if (DEBUG) Debug.Log("Finding a new center point....");
 
             while (!foundSuitable)
             {
-                Vector2 randPoint = Random.insideUnitCircle * (currentRadius / (100 / shrinkFactor));
+                Vector2 randPoint = Random.insideUnitCircle * newRadius;
                 newCenterPoint = currentCenter + new Vector3(randPoint.x, currentCenter.y, randPoint.y);
                 foundSuitable = (Vector3.Distance(currentCenter, newCenterPoint) < currentRadius);
 
                 //DEBUGS
-                if (debug)
+                if (DEBUG)
                 {
                     Debug.LogFormat("RandomPoint: {0}", randPoint);
                     Debug.LogFormat("NewCenterPoint: {0}", newCenterPoint);
@@ -303,7 +323,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             leadingCircle.transform.position = circleCenterPoint;
             //set layer to make sure is on top of other objects
             leadingCircle.layer = 10;// Minimap Icon layer
-                                     //name it so developer can identify it
+            //name it so developer can identify it
             leadingCircle.name = "Next Zone Wall Boundary Marker";
 
             //configure line renderer
