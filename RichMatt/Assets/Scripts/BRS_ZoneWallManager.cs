@@ -17,10 +17,13 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         [Header("---Shrinking Zones---")]
         
-        [Tooltip("Set the starting Radius here. Can track size during runtime.")]
+        [Tooltip("Set the starting Radius here so you don't have to mess with the Scale.")]
         [SerializeField] private float startingZoneWallRadius = 1000;
 
-        [Tooltip("How long the should delay be between shrinks.")]
+        /// <summary>
+        /// Hold shrink Delay, shrink Rate, and shrink Radius.
+        /// </summary>
+        [Tooltip("Hold shrink Delay, shrink Rate, and shrink Radius.")]
         [SerializeField] private ShrinkPhase[] shrinkPhases;
 
         #region Private Members
