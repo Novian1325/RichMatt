@@ -26,7 +26,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [SerializeField] private Projector safeZone_Circle_Projector;
 
         [Tooltip("How long the should delay be between shrinks.")]
-        [SerializeField] private int[] timeBetweenEachShrinkPhase;
+        [SerializeField] private ShrinkPhase[] shrinkPhases;
 
         [Tooltip("How many seconds it will take to shrink each phase. If more phases exist, will repeat last.")]
         [SerializeField] private int[] secondsToShrink;
@@ -116,7 +116,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
             }
 
-            else if (shrinkPhaseIndex >= timeBetweenEachShrinkPhase.Length)
+            else if (shrinkPhaseIndex >= shrinkPhases.Length)
             {
                 //do nothing if zone has run out of shrink phases
                 return;
@@ -192,7 +192,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
 
             //set next shrink time
-            nextShrinkTime = Time.time + timeBetweenEachShrinkPhase[shrinkPhaseIndex];
+            nextShrinkTime = Time.time + shrinkPhases[shrinkPhaseIndex].secondsUntilShrinkBegins;
 
             //repeat last index if there's more shrink phases
             timeToShrink = secondsToShrink[(shrinkPhaseIndex >= secondsToShrink.Length ? secondsToShrink.Length - 1 : shrinkPhaseIndex)];
@@ -218,7 +218,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 if (DEBUG) Debug.Log("Zone Wall finished shrinking.");
 
                 //is there more shrinking to do?
-                if (++shrinkPhaseIndex < timeBetweenEachShrinkPhase.Length)
+                if (++shrinkPhaseIndex < shrinkPhases.Length)
                 {
                     InitNextShrink();
                 }
