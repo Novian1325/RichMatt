@@ -126,6 +126,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     if(mr) mr.material.color = playerColor;
                 }
             }
+            else
+            {
+                //raycast hit nothing.
+            }
         }
     }
 }
