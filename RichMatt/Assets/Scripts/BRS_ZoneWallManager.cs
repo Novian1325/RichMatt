@@ -133,13 +133,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 HandleStopShrinking();
 
             }
-
-            else if (shrinkPhaseIndex >= shrinkPhases.Length)
-            {
-                //do nothing if zone has run out of shrink phases
-                return;
-            }
-
+            
             //is it time to start shrinking?
             else if (Time.time > nextShrinkTime)
             {
@@ -148,7 +142,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
 
             else
-            {
+            {//waiting for time to pass
                 if (DEBUG)
                 {
                     //use string builder because concatentation ( + ) is expensive
@@ -241,6 +235,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 else
                 {
                     if (DEBUG) Debug.Log("Zone Wall will no longer shrink.");
+                    //turn off this behavior
+                    this.enabled = false;
                 }
             }
         }
