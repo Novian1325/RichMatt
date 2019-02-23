@@ -123,10 +123,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     var mr = child.GetComponent<MeshRenderer>() as MeshRenderer;
                     if(mr) mr.material.color = playerColor;
                 }
-
             }
         }
     }
-
-
 }
