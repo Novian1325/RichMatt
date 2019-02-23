@@ -290,7 +290,13 @@ MonoBehaviour:
   - secondsUntilShrinkBegins: 10
     secondsToFullyShrink: 5
     shrinkToRadius: 16
-  DEBUG: 1
+  - secondsUntilShrinkBegins: 5
+    secondsToFullyShrink: 5
+    shrinkToRadius: 8
+  - secondsUntilShrinkBegins: 5
+    secondsToFullyShrink: 5
+    shrinkToRadius: 4
+  DEBUG: 0
 --- !u!119 &119075886879666166
 Projector:
   m_ObjectHideFlags: 1

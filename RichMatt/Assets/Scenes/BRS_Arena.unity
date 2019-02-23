@@ -1644,7 +1644,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compassImage: {fileID: 2800000, guid: 65daacca53b4c0a49a7933f46a9510ef, type: 3}
-  minimapImage: {fileID: 0}
   revealDistance: 100
   iconColor: {r: 1, g: 0, b: 0.82073116, a: 1}
 --- !u!114 &671753228
@@ -2060,7 +2059,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compassImage: {fileID: 2800000, guid: 65daacca53b4c0a49a7933f46a9510ef, type: 3}
-  minimapImage: {fileID: 0}
   revealDistance: 500
   iconColor: {r: 0.882353, g: 0.5803922, b: 0.1254902, a: 1}
 --- !u!114 &730161301
@@ -2150,8 +2148,23 @@ Prefab:
     m_Modifications:
     - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
         type: 2}
+      propertyPath: otherPhases.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
       propertyPath: secondsToShrink.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: timeBetweenEachShrinkPhase.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4040280970808236, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
       propertyPath: m_LocalPosition.x
@@ -2204,6 +2217,156 @@ Prefab:
         type: 2}
       propertyPath: m_Loop
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: radiusShrinkFactor
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[0].secondsUntilShrinkBegins
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[0].secondsToFullyShrink
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[0].shrinkToRadius
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[1].shrinkToRadius
+      value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[2].shrinkToRadius
+      value: 62
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[3].shrinkToRadius
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[4].shrinkToRadius
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[1].secondsUntilShrinkBegins
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[1].secondsToFullyShrink
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[2].secondsUntilShrinkBegins
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[3].secondsUntilShrinkBegins
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[4].secondsUntilShrinkBegins
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[2].secondsToFullyShrink
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[3].secondsToFullyShrink
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[4].secondsToFullyShrink
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: DEBUG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[5].secondsUntilShrinkBegins
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[5].secondsToFullyShrink
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[5].shrinkToRadius
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[6].secondsUntilShrinkBegins
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[6].secondsToFullyShrink
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[6].shrinkToRadius
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[7].secondsUntilShrinkBegins
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[7].secondsToFullyShrink
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: shrinkPhases.Array.data[7].shrinkToRadius
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: timeBetweenEachShrinkPhase.Array.data[0]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: timeBetweenEachShrinkPhase.Array.data[1]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: timeBetweenEachShrinkPhase.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: startingZoneWallRadius
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
@@ -2759,7 +2922,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compassImage: {fileID: 2800000, guid: 65daacca53b4c0a49a7933f46a9510ef, type: 3}
-  minimapImage: {fileID: 0}
   revealDistance: 100
   iconColor: {r: 0, g: 0.2535498, b: 1, a: 1}
 --- !u!1 &971727324
