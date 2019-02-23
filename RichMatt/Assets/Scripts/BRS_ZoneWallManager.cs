@@ -129,6 +129,15 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         }
 
         /// <summary>
+        /// Which shrink phase are we currently in?
+        /// </summary>
+        /// <returns>Shrink phase index.</returns>
+        public int GetShrinkPhase()
+        {
+            return shrinkPhaseIndex;
+        }
+
+        /// <summary>
         /// Alerts Developer of invalid input. Class is robust and will attempt to skip invalid phases.
         /// </summary>
         /// <returns></returns>
