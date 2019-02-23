@@ -40,7 +40,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector
         /// </summary>
-        private bool Shrinking = false;  // 
+        private bool shrinking = false;  // 
 
         /// <summary>
         /// iterates through delays between each phase and speed at which each phase shrinks
@@ -105,7 +105,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         private void HandleShrinkingUpdate()
         {//is the zone currently in a shrinking state
-            if (Shrinking)
+            if (shrinking)
             {
 
                 //shrink all the things
@@ -125,7 +125,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //is it time to start shrinking?
             else if (Time.time > nextShrinkTime)
             {
-                Shrinking = true;
+                shrinking = true;
                 if (DEBUG) Debug.Log("Shrinking....");
             }
 
@@ -214,7 +214,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 Destroy(leadingCircle);
 
-                Shrinking = false;
+                shrinking = false;
                 if (DEBUG) Debug.Log("Zone Wall finished shrinking.");
 
                 //is there more shrinking to do?
