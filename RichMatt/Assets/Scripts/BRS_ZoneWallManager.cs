@@ -14,7 +14,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         [Range(10, 10000)]
         [Tooltip("Set the starting Radius here. Can track size during runtime.")]
-        [SerializeField] private float zoneWallRadius = 1000;
+        [SerializeField] private float otherZoneWallRadius = 1000;
 
         [Range(10, 100)]
         [Tooltip("Every shrink phase, zone radius will be reduced by this percent. ie, if value is 50, zone wall will shrink by 50%.")]
@@ -149,7 +149,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         private void ConfigureNewCenterPoint()
         {
-            centerPoint = FindNewCenterPoint(ZoneWallXform.position, zoneWallRadius, shrinkRadius, radiusShrinkFactor, DEBUG);
+            centerPoint = FindNewCenterPoint(ZoneWallXform.position, otherZoneWallRadius, shrinkRadius, radiusShrinkFactor, DEBUG);
             distanceToMoveCenter = Vector3.Distance(ZoneWallXform.position, centerPoint); //this is used in the Lerp (below)
 
             if (DEBUG)
@@ -170,16 +170,16 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void ShrinkEverything()
         {
             // shrink the zone diameter, over time
-            zoneWallRadius = Mathf.MoveTowards(zoneWallRadius, shrinkRadius, (shrinkRadius / timeToShrink) * Time.deltaTime);
+            otherZoneWallRadius = Mathf.MoveTowards(otherZoneWallRadius, shrinkRadius, (shrinkRadius / timeToShrink) * Time.deltaTime);
 
             //shrink the zoneWall object and all of its children
-            ZoneWallXform.localScale = new Vector3((zoneWallRadius / originalZoneWallRadius), 1, (zoneWallRadius / originalZoneWallRadius)); //set local scale of zone wall
+            ZoneWallXform.localScale = new Vector3((otherZoneWallRadius / originalZoneWallRadius), 1, (otherZoneWallRadius / originalZoneWallRadius)); //set local scale of zone wall
 
             //move ZoneWall towards new centerpoint
             ZoneWallXform.position = Vector3.MoveTowards(ZoneWallXform.position, new Vector3(centerPoint.x, ZoneWallXform.position.y, centerPoint.z), (distanceToMoveCenter / timeToShrink) * Time.deltaTime);
 
             // shrink circle projector
-            if (safeZone_Circle_Projector) safeZone_Circle_Projector.orthographicSize = zoneWallRadius;
+            if (safeZone_Circle_Projector) safeZone_Circle_Projector.orthographicSize = otherZoneWallRadius;
 
         }
 
@@ -188,8 +188,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         private void InitNextShrink()
         {
+            //increment to next phase
+            ++shrinkPhaseIndex;
             //new shrink radius
-            shrinkRadius = zoneWallRadius - (zoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
+            shrinkRadius = otherZoneWallRadius - (otherZoneWallRadius / (100 / radiusShrinkFactor));  //use the ZoneRadiusFactor as a percentage
 
             //set next shrink time
             nextShrinkTime = Time.time + shrinkPhases[shrinkPhaseIndex].secondsUntilShrinkBegins;
@@ -210,7 +212,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void HandleStopShrinking()
         {
             // MoveTowards will continue ad infinitum, so we must test that we have gotten close enough to be DONE
-            if (.5f > (zoneWallRadius - shrinkRadius))//shrinking complete
+            if (.5f > (otherZoneWallRadius - shrinkRadius))//shrinking complete
             {
                 Destroy(leadingCircle);
 
@@ -218,7 +220,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 if (DEBUG) Debug.Log("Zone Wall finished shrinking.");
 
                 //is there more shrinking to do?
-                if (++shrinkPhaseIndex < shrinkPhases.Length)
+                if (shrinkPhaseIndex  + 1 < shrinkPhases.Length)
                 {
                     InitNextShrink();
                 }
