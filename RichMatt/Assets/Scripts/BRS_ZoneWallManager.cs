@@ -10,7 +10,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         [Range(16, 360)]
         [Tooltip("How many segments should the circle that appears on the mimimap be? More segments means it looks crisper, but at cost of performance.")]
-        [SerializeField] private int lineRendererSegments = 64;
+        [SerializeField] private int lineRendererSegments = 64;//64 seems perfect
 
         [Tooltip("The projecte image on the rim of ZoneWall. Not needed")]
         [SerializeField] private Projector safeZone_Circle_Projector;
@@ -48,7 +48,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// Current size in Meters of the Zone Wall Radius.
         /// </summary>
-        private float currentZoneWallRadius = 1000;
+        private float currentZoneWallRadius;
 
         /// <summary>
         /// Distance to centerpoint
