@@ -80,7 +80,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         public void ResumeUpdatingDistance()
         {
             //
-            if (coroutine_updateDistanceText == null)
+            if (coroutine_updateDistanceText == null && TMP_distanceText)
             {
                 coroutine_updateDistanceText = StartCoroutine(UpdateDistanceText());
             }
