@@ -115,12 +115,13 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 tacticalMarkerInstance.GetComponent<BRS_Trackable>().SetPlayerColor(playerColor);
                 //make it a child of the hit object so if it moves, the marker moves with it. assigning childhood after instantiation preserves native scale
                 tacticalMarkerInstance.transform.SetParent(hitInfo.collider.gameObject.transform);
-
+                
                 //raise children icons above everything else in scene
                 foreach (Transform child in tacticalMarkerInstance.transform)
                 {
                     child.Translate(0, minimapCameraXform.position.y - iconHeightOffset, 0);
-                    child.GetComponent<MeshRenderer>().material.color = playerColor;
+                    var mr = child.GetComponent<MeshRenderer>() as MeshRenderer;
+                    if(mr) mr.material.color = playerColor;
                 }
 
             }
