@@ -5,23 +5,49 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 {
     public class BRS_TacticalMarker : MonoBehaviour
     {
-        #region Static Variables
+        #region Static Readonly Variables
+
+        /// <summary>
+        /// The name of the Button in the Input Manager to check.
+        /// </summary>
         private static readonly string TMBUTTONNAME = "TacticalMarker";//name of the button in Input Manager that will trigger tactical marker placement
+
+        /// <summary>
+        /// The maximum distance from the Player that a Tactical Marker can be placed.
+        /// </summary>
         private static readonly int tacticalMarkerPlaceDistanceLimit = 300;
+
+        /// <summary>
+        /// How high should the icon be placed to ensure that it is above all other objects?
+        /// </summary>
         private static readonly int iconHeightOffset = 1000;
-        private static readonly int distanceToMarkerPollsPerSecond = 2;// this affects perfomance. How often should the distance between the player and marker be checked?
+
+        /// <summary>
+        /// Limits how often the distance is polled in order to save on performance. A larger number means more polls per second.
+        /// </summary>
+        private static readonly int distanceToMarkerPollsPerSecond = 2;
 
         #endregion
+
         //tactical marker stuff
         [Tooltip("The prefab of the UI element that will be shown when activated.")]
         [SerializeField] private GameObject TacticalMarkerPrefab;
+
         [Tooltip("The Player's color. Used to identify icons that belong to each Player.")]
         [SerializeField] private Color playerColor; //player's color to match marker
+
         [Tooltip("Text that tracks the distance between the Player and the Tactical Marker.")]
         [SerializeField] private Text distanceText;
 
-        private Transform playerCameraXform; // transform of player's camera
-        private GameObject tacticalMarkerInstance;//the marker object that is currently existing in the world
+        /// <summary>
+        /// transform of player's camera
+        /// </summary>
+        private Transform playerCameraXform; // 
+
+        /// <summary>
+        /// The marker object that is currently existing in the world
+        /// </summary>
+        private GameObject tacticalMarkerInstance;//
 
         //distance polling stuff
         private int distanceToMarker;//how close is the player to the marker they placed?
@@ -110,7 +136,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 }
 
                 //this will cause the UI to update right away
-                distancePollingTimer = (1 / distanceToMarkerPollsPerSecond);
+                distancePollingTimer = 1 / distanceToMarkerPollsPerSecond;
                 //create a new marker in the world
                 tacticalMarkerInstance = Instantiate(TacticalMarkerPrefab, hitInfo.point, Quaternion.identity);
                 //set icon color to match player's color
