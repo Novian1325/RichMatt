@@ -93,6 +93,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             capsuleCollider = GetComponent<CapsuleCollider>();
             lineRenderer = gameObject.GetComponent<LineRenderer>();
+
+            //verfiy input
+            VerifyShrinkPhases();
+
             //display linerenderer in space local to center of zone wall, not world
             lineRenderer.useWorldSpace = false;
 
@@ -121,6 +125,36 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             HandleShrinkingUpdate();
         }
 
+        /// <summary>
+        /// Alerts Developer of invalid input. Class is robust and will attempt to skip invalid phases.
+        /// </summary>
+        /// <returns></returns>
+        private bool VerifyShrinkPhases()
+        {
+            var phasesAreOkay = true;//only takes one to become false
+
+            //each subsequent radius must be smaller than the first.
+            //
+            var radius = startingZoneWallRadius;
+            foreach(var phase in shrinkPhases)
+            {
+                if(phase.shrinkToRadius >= radius)
+                {
+                    Debug.LogError("ERROR! ZoneWallManager: ShrinkPhases are not valid. Check that radii are in descending order.");
+                    phasesAreOkay = false;
+                }
+                else
+                {
+                    radius = phase.shrinkToRadius;
+                }
+            }
+
+            return phasesAreOkay;
+        }
+
+        /// <summary>
+        /// Shrink, wait for cue, or pass the time.
+        /// </summary>
         private void HandleShrinkingUpdate()
         {//is the zone currently in a shrinking state
             if (shrinking)
