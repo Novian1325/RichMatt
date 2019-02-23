@@ -8,14 +8,17 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 {
     public class BRS_ZoneDamage : MonoBehaviour
     {
-        [Header("---Player Object---")]
-        public GameObject player;
-        private string playername;
 
-        [Header("---Post Processing Objects---")]
-        public PostProcessingProfile outsideZonePPP;
-        public PostProcessingProfile standardPPP;
-        private PostProcessingBehaviour CamPPB;
+        [Header("---Post Processing---")]
+        [Tooltip("Post Processing Profile to use when OUTSIDE of the Zone Wall.")]
+        [SerializeField] private PostProcessingProfile outsideZonePPP;
+
+        [Tooltip("Post Processing Profile to use when INSIDE of the Zone Wall.")]
+        [SerializeField] private PostProcessingProfile standardPPP;
+
+        [Tooltip("The Camera Object whose PostProcessing Behavior will be interchanged.")]
+        [SerializeField] private GameObject cameraToOverride;
+
 
         [Header("---Zone Damage Parameters---")]
         public float TickRate = 3.0f;
@@ -31,10 +34,19 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         public BRS_PlayerHealthManager _PHM;
 
         //Are we in the Zone?
+        /// <summary>
+        /// Is this Behavior inside the bounds of the Zone Wall?
+        /// </summary>
         private bool inZone;
 
-        //For DEMO purposes ONLY.  Reset our Health to full when we
-        //re-enter the Zone!
+        /// <summary>
+        /// Post Processing Behavior that is on the same GameObject as the camera.
+        /// </summary>
+        private PostProcessingBehaviour CamPPB;
+
+        /// <summary>
+        /// For DEMO purposes ONLY.  Reset our Health to full when we re-enter the Zone!
+        /// </summary>
         private bool DebugHealth = true;
 
         void Start()
@@ -46,9 +58,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
             //Get a handle to the Player Health Manager
             _PHM = _BRS_Mechanics.GetComponent<BRS_PlayerHealthManager>();
+            
+        }
 
-            //Setup the DamagePlayer to run every X seconds
-            InvokeRepeating("DamagePlayer", 0.0f, TickRate);
+        private void Update()
+        {
+            HandleZoneDamage();
         }
 
         void OnTriggerExit(Collider col)
@@ -71,7 +86,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
         }
 
-        void DamagePlayer()
+        void HandleZoneDamage()
         {
             if (!inZone)
             {
