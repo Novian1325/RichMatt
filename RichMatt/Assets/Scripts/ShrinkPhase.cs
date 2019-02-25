@@ -22,5 +22,17 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         [Tooltip("What radius should the Zone Wall stop shrinking at this phase?")]
         public int shrinkToRadius;
+
+        /// <summary>
+        /// The amount of damage that is given every one time damage is dealt.
+        /// </summary>
+        [Tooltip("The amount of damage that is given every one time damage is dealt.")]
+        public float damagePerTick;
+
+        /// <summary>
+        /// The frequency of the damage ticks per second.
+        /// </summary>
+        [Tooltip("The frequency of the damage ticks per second.")]
+        public int ticksPerSecond;
     }
 }
