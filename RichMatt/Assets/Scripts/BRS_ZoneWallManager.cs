@@ -129,12 +129,17 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         }
 
         /// <summary>
-        /// Which shrink phase are we currently in?
+        /// Which shrink phase is the Zone Wall currently in?
         /// </summary>
         /// <returns>Shrink phase index.</returns>
         public int GetShrinkPhase()
         {
             return shrinkPhaseIndex;
+        }
+
+        public ShrinkPhase[] GetShrinkPhases()
+        {
+            return shrinkPhases;
         }
 
         /// <summary>
@@ -256,8 +261,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
             //show on minimap where zone will shrink to
             leadingCircle = CreateLeadingCircle(centerPoint, targetShrunkenRadius, originalZoneWallRadius, lineRendererSegments);
-            //increment to next phase
-            ++shrinkPhaseIndex;
+
         }
 
         /// <summary>
@@ -276,6 +280,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 //is there more shrinking to do?
                 if (shrinkPhaseIndex  + 1 < shrinkPhases.Length)
                 {
+                    //increment to next phase
+                    ++shrinkPhaseIndex;
+
+                    //set timers, draw new circle... 
                     InitNextShrink();
                 }
                 else
@@ -344,10 +352,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// Create and configure a Leading Circle from scratch. One could set up a prefab with this configuration as well.
         /// </summary>
         /// <param name="circleCenterPoint">World Space coordinates of centerpoint.</param>
-        /// <param name="rotation"></param>
-        /// <param name="segments"></param>
-        /// <param name="radius"></param>
+        /// <param name="radius">The radius of the Zone Wall after shrinking.</param>
         /// <param name="drawHeight">How high in space the points should be drawn</param>
+        /// <param name="segments">How many segments should the circle be drawn using? 64 seems good; don't go too crazy.</param>
         /// <returns></returns>
         private static GameObject CreateLeadingCircle(Vector3 circleCenterPoint, float radius, float drawHeight, int segments = 64)
         {
