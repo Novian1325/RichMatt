@@ -204,7 +204,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             else if (_DebugHealth)//if inside zone and debugging health....
             {
                 //increase health (for debugging purposes)
-                healthManager.ChangeHealth(100);
+                healthManager.ChangeHealth(healthManager.GetMaxHealth());
             }
         }
     }
