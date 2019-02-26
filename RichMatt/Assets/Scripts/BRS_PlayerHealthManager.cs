@@ -13,17 +13,17 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// Amount of health this Manager currently has.
         /// </summary>
         [Header("---Player Health Parameters---")]
-        [SerializeField] private float currentHealth;
+        [SerializeField] private float currentHealth = 100;
 
         /// <summary>
         /// Maximum amount of health this Manager is allowed to have at one time.
         /// </summary>
-        [SerializeField] private int maxHealth;
+        [SerializeField] private int maxHealth = 100;
 
         /// <summary>
         /// Is this health manager current health above 0?
         /// </summary>
-        [SerializeField] private bool isAlive; //TODO: Future episode on Player stats and 3rd Person Animations!!
+        [SerializeField] private bool isAlive = true;
 
         /// <summary>
         /// UI Component to visually show Players their health. Bots do not need one of these.
@@ -73,6 +73,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// Sets this health manager to have maximum health. "Full heal".
         /// </summary>
+        [ContextMenu("SetToMaxHealth()")]
         public void SetToMaxHealth()
         {
             currentHealth = maxHealth;
