@@ -31,7 +31,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// Collection of the shrink phases
         /// </summary>
-        private static ShrinkPhase[] shrinkPhaseArray;
+        private static ShrinkPhase[] _shrinkPhaseArray;
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 inZone = false;
                 //set the next Time the healthManager should be dealt a damage tick
-                nextDamageTickTime += 1 / shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
+                nextDamageTickTime += 1 / _shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
                 //change visuals
                 if (camPPB)
                 {
@@ -145,6 +145,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 {
                     //get a reference to the Zone Wall Manager script
                     _zoneWallManager = _zoneWallObject.GetComponent<BRS_ZoneWallManager>() as BRS_ZoneWallManager;
+                    _shrinkPhaseArray = _zoneWallManager.GetShrinkPhases();
 
                     //if it does not exist... complain
                     if (!_zoneWallManager) Debug.LogError("ERROR! ZoneDamage behavior cannot find zoneWallManager Component on " + _zoneWallObject.name);
@@ -196,9 +197,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 if (Time.time > nextDamageTickTime)//if it's time to deal a damage tick
                 {
                     //Damage the healthManager depending on the phase of the zone wall
-                    healthManager.ChangeHealth(shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].damagePerTick);
+                    healthManager.ChangeHealth(_shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].damagePerTick);
                     //set the next Time to deal a tick damage
-                    nextDamageTickTime += 1 / shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
+                    nextDamageTickTime += 1 / _shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
                 }
             }
             else if (_DebugHealth)//if inside zone and debugging health....
