@@ -21,9 +21,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [SerializeField] private float startingZoneWallRadius = 1000;
 
         /// <summary>
-        /// Hold shrink Delay, shrink Rate, and shrink Radius.
+        /// Holds shrink time, size, damage data
         /// </summary>
-        [Tooltip("Hold shrink Delay, shrink Rate, and shrink Radius.")]
+        [Tooltip("Holds shrink time, size, damage data.")]
         [SerializeField] private ShrinkPhase[] shrinkPhases;
 
         #region Private Members
@@ -116,9 +116,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //move projector with circle
             safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
 
+            //set target bounds
             InitNextShrink();
             
-            //apply Inspector values
+            //apply starting values
             ShrinkEverything();
 
         }
