@@ -6,7 +6,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
     public class ShrinkPhaseOptions : ScriptableObject
     {
         public int startingRadius = 1000;
-        public ShrinkPhase[] shrinkPhases;
+        public ShrinkPhase[] shrinkPhases = new ShrinkPhase[7];
     }
 
 }
