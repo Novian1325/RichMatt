@@ -11,5 +11,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6643a159c18a384e83ddada1de18faa, type: 3}
   m_Name: ShrinkPhaseOption_InstantKill
   m_EditorClassIdentifier: 
-  startingRadius: 1000
-  shrinkPhases: []
+  startingRadius: 500
+  shrinkPhases:
+  - secondsUntilShrinkBegins: 200
+    secondsToFullyShrink: 180
+    shrinkToRadius: 250
+    ticksPerSecond: 1
+    damagePerTick: 100
+  - secondsUntilShrinkBegins: 120
+    secondsToFullyShrink: 120
+    shrinkToRadius: 125
+    ticksPerSecond: 1
+    damagePerTick: 100
+  - secondsUntilShrinkBegins: 90
+    secondsToFullyShrink: 90
+    shrinkToRadius: 60
+    ticksPerSecond: 1
+    damagePerTick: 100
+  - secondsUntilShrinkBegins: 80
+    secondsToFullyShrink: 70
+    shrinkToRadius: 30
+    ticksPerSecond: 1
+    damagePerTick: 100
+  - secondsUntilShrinkBegins: 50
+    secondsToFullyShrink: 60
+    shrinkToRadius: 15
+    ticksPerSecond: 1
+    damagePerTick: 100
+  - secondsUntilShrinkBegins: 30
+    secondsToFullyShrink: 60
+    shrinkToRadius: 7
+    ticksPerSecond: 1
+    damagePerTick: 100
+  - secondsUntilShrinkBegins: 0
+    secondsToFullyShrink: 55
+    shrinkToRadius: 3
+    ticksPerSecond: 1
+    damagePerTick: 100

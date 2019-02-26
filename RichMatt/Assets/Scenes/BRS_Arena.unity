@@ -2187,6 +2187,12 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+        type: 2}
+      propertyPath: scriptableObject_shrinkPhaseOptions
+      value: 
+      objectReference: {fileID: 11400000, guid: e56a013de168e63459ddc3471f590b26,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
   m_IsPrefabAsset: 0
