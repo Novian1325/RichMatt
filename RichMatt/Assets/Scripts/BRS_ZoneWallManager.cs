@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+//NOTE! Sizes and lengths are given in Unity Meters unless otherwise noted.
+
 namespace PolygonPilgrimage.BattleRoyaleKit
 {
     [RequireComponent(typeof(CapsuleCollider))]
@@ -15,18 +17,21 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [Tooltip("The projecte image on the rim of ZoneWall. Not needed")]
         [SerializeField] private Projector safeZone_Circle_Projector;
 
-        [Header("---Shrinking Zones---")]
+        [Header("---Zone Phase Options---")]
         
-        [Tooltip("Set the starting Radius here so you don't have to mess with the Scale.")]
-        [SerializeField] private float startingZoneWallRadius = 1000;
+        /// <summary>
+        /// Scriptable Object containing options for shrink time, radius, damage.
+        /// </summary>
+        [Tooltip("Scriptable Object containing options for shrink time, radius, damage.")]
+        [SerializeField] private ShrinkPhaseOptions scriptableObject_shrinkPhaseOptions;
+
+
+        #region Private Variables
 
         /// <summary>
-        /// Holds shrink time, size, damage data
+        /// Collection of options (shrink time, radius, damage data) for each phase. 
         /// </summary>
-        [Tooltip("Holds shrink time, size, damage data.")]
-        [SerializeField] private ShrinkPhase[] shrinkPhases;
-
-        #region Private Members
+        private ShrinkPhase[] shrinkPhases;
 
         /// <summary>
         /// this can be set to PUBLIC in order to troubleshoot.  It will show a checkbox in the Inspector.
@@ -36,7 +41,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// iterates through delays between each phase and speed at which each phase shrinks.
         /// </summary>
-        private int shrinkPhaseIndex = 0;//
+        private int shrinkPhaseIndex = 0;
+
+        /// <summary>
+        /// Radius in Unity Meters that the Zone Wall should start the game with.
+        /// </summary>
+        private float startingZoneWallRadius = 1000;
 
         /// <summary>
         /// Holds the next Time that the next shrink phase will start.
@@ -92,14 +102,15 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [Tooltip("Would the developer like to see Debug statements about what's going on during runtime?")]
         [SerializeField] private bool DEBUG = false;
 
-        void Start()
+        private void Awake()
         {
+            //set necessary references to Components
             capsuleCollider = GetComponent<CapsuleCollider>();
             lineRenderer = gameObject.GetComponent<LineRenderer>();
-
-            //verfiy input
-            VerifyShrinkPhases();
-
+            
+            //load options from scriptable object
+            shrinkPhases = scriptableObject_shrinkPhaseOptions.shrinkPhases;
+            
             //display linerenderer in space local to center of zone wall, not world
             lineRenderer.useWorldSpace = false;
 
@@ -115,6 +126,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
             //move projector with circle
             safeZone_Circle_Projector.transform.position = new Vector3(0, capsuleCollider.height, 0);//make sure projector is at a good height
+        }
+
+        void Start()
+        {
+            //verfiy input
+            VerifyShrinkPhases();
 
             //set target bounds
             InitNextShrink();
