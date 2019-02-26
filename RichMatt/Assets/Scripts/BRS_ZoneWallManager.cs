@@ -131,7 +131,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         void Start()
         {
             //verfiy input
-            VerifyShrinkPhases();
+            if (!VerifyShrinkPhases())
+            {
+                Debug.LogError("ERROR! Shrink Phases in Zone Wall Options are not valid. Check input and try again.", this.gameObject);
+            }
 
             //set target bounds
             InitNextShrink();
@@ -173,6 +176,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             var radius = startingZoneWallRadius;
             foreach(var phase in shrinkPhases)
             {
+                //check radius
                 if(phase.shrinkToRadius >= radius)
                 {
                     Debug.LogError("ERROR! ZoneWallManager: ShrinkPhases are not valid. Check that radii are in descending order.");
@@ -181,6 +185,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 else
                 {
                     radius = phase.shrinkToRadius;
+                }
+
+                //check shrink seconds to avoid divide by zero on bad input
+                if(phase.ticksPerSecond <= 0)
+                {
+                    Debug.LogError("ERROR! Ticks per second must be a positive integer! : " + phase.ticksPerSecond);
                 }
             }
 
