@@ -1,75 +1,94 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
-public class BRS_Interactable : MonoBehaviour
+namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    [Header("---Interactable---")]
-    [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
-    [SerializeField] protected GameObject toolTipObject; //protected means derived classes can use it like private
-    
-    private BRS_Trackable trackable;
-    protected bool playerIsLookingAtObject = false;
-
-    // Use this for initialization
-    void Start ()
+    [RequireComponent(typeof(Collider))]
+    public class BRS_Interactable : MonoBehaviour
     {
-        trackable = gameObject.GetComponent<BRS_Trackable>() as BRS_Trackable; //may or may not exist
-	}
+        [Header("---Interactable---")]
+        [Tooltip("UI Tooltip Prompt that gets displayed to Player.")]
+        [SerializeField] protected GameObject toolTipObject; //protected means derived classes can use it like private
 
-    protected virtual void HandleTooltip()
-    {
-        //toggle tooltip
-        if(toolTipObject) ToggleTooltip(playerIsLookingAtObject);
-    }
-	
-	// Update is called once per frame
-	protected void Update ()
-    {
-        //Update must be called from derived class!
+        /// <summary>
+        /// Trackable behavior that may be attached to this gameObject.
+        /// </summary>
+        private BRS_Trackable trackable;
 
-        //Handle Tooltips
-        HandleTooltip();
-        //set to false to verfiy next frame
-        playerIsLookingAtObject = false;
-    }
+        /// <summary>
+        /// Used to display ToolTip.
+        /// </summary>
+        protected bool playerIsLookingAtObject = false;
 
-    protected void RemoveTrackableFromCompass()
-    {
-        if (trackable)
+        // Use this for initialization
+        void Start()
         {
-            trackable.RemoveTrackable();
+            trackable = gameObject.GetComponent<BRS_Trackable>() as BRS_Trackable; //may or may not exist
         }
-    }
 
-    /// <summary>
-    /// Base interact method. Sends log to Console if not overridden by derived class.
-    /// </summary>
-    /// <param name="actor">Object, probably player or AI, that is the actor.</param>
-    public virtual void Interact(BRS_InteractionManager actor)
-    {
-        //this method should probably be overridden by derived class, ie a vehicle should do something that an item does not
-        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+        // Update is called once per frame
+        protected void Update()
+        {
+            //Update must be called from derived class!
 
-        stringBuilder.Append(actor.gameObject.name);
-        stringBuilder.Append(" is interacting with ");
-        stringBuilder.Append(this.gameObject.name);
+            //Handle Tooltips
+            HandleTooltip();
+            //set to false to verfiy next frame
+            playerIsLookingAtObject = false;
+        }
 
-        Debug.Log(stringBuilder.ToString());
-    }
+        /// <summary>
+        /// Turns Tooltip Object on or off depending on it being looked at by the Player.
+        /// </summary>
+        protected virtual void HandleTooltip()
+        {
+            //toggle tooltip
+            if (toolTipObject) toolTipObject.SetActive(playerIsLookingAtObject);
+        }
 
-    public virtual void PlayerIsLookingAtObject(bool b)
-    {
-        playerIsLookingAtObject = b;
-    }
+        /// <summary>
+        /// Tells Compass to stop tracking this object
+        /// </summary>
+        protected void RemoveTrackableFromCompass()
+        {
+            if (trackable)
+            {
+                trackable.RemoveTrackable();
+            }
+        }
 
-    public virtual bool GetPlayerIsLookingAtObject()
-    {
-        return playerIsLookingAtObject;
-    }
+        /// <summary>
+        /// Base interact method. Sends log to Console if not overridden by derived class.
+        /// </summary>
+        /// <param name="actor">Object, probably player or AI, that is the actor.</param>
+        public virtual void Interact(BRS_InteractionManager actor)
+        {
+            //this method should probably be overridden by derived class, ie a vehicle should do something that an item does not
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
-    public virtual void ToggleTooltip(bool active)
-    {
-        if(toolTipObject) toolTipObject.SetActive(active);
-    }
-    
-}
+            stringBuilder.Append(actor.gameObject.name);
+            stringBuilder.Append(" is interacting with ");
+            stringBuilder.Append(this.gameObject.name);
+
+            Debug.Log(stringBuilder.ToString());
+        }
+
+        /// <summary>
+        /// Tells this object whether or not the Player is pointing at it.
+        /// </summary>
+        /// <param name="b"></param>
+        public virtual void PlayerIsLookingAtObject(bool b)
+        {
+            playerIsLookingAtObject = b;
+        }
+
+        /// <summary>
+        /// Whether or not the Player is looking at this Object.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool GetPlayerIsLookingAtObject()
+        {
+            return playerIsLookingAtObject;
+        }
+        
+    }//end class declaration
+}//end namespace

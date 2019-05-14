@@ -1,78 +1,86 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ToolTipManager : MonoBehaviour {
-
-    private static ToolTipManager toolTipManagerInstance;//for singleton pattern
-
-    [SerializeField] private GameObject skydivePrompt;
-    [SerializeField] private GameObject deployParachutePrompt;
-    private List<GameObject> toolTips = new List<GameObject>();
-
-    private void InitToolTips()
+namespace PolygonPilgrimage.BattleRoyaleKit
+{
+    public class ToolTipManager : MonoBehaviour
     {
-        //verify that each prompt exists. If it does, add it to the list for tracking
-        if (skydivePrompt) toolTips.Add(skydivePrompt);
-        if (deployParachutePrompt) toolTips.Add(deployParachutePrompt);
 
-    }
+        private static ToolTipManager toolTipManagerInstance;//for singleton pattern
 
-    private void Awake()
-    {
-        //singleton pattern
-        SingletonPattern(this); //ensures only one exists, if any
+        [SerializeField] private GameObject skydivePrompt;
+        [SerializeField] private GameObject deployParachutePrompt;
+        private List<GameObject> toolTips = new List<GameObject>();
 
-        //verify and init tooltips
-        InitToolTips();
-
-        //all tooltips should start disabled
-        DisableAllToolTips();
-    }
-
-    // Use this for initialization
-    void Start () {
-
-    }
-
-    private static void SingletonPattern(ToolTipManager TTM_instance)
-    {
-        if (!toolTipManagerInstance)
+        private void InitToolTips()
         {
-            toolTipManagerInstance = TTM_instance;
-        }
-        else
-        {
-            Destroy(TTM_instance.gameObject);
+            //verify that each prompt exists. If it does, add it to the list for tracking
+            if (skydivePrompt) toolTips.Add(skydivePrompt);
+            if (deployParachutePrompt) toolTips.Add(deployParachutePrompt);
+
         }
 
-    }
-
-    // Update is called once per frame
-    void Update () {
-		
-	}
-
-    public void DisableAllToolTips()
-    {
-        foreach(GameObject tip in toolTips)
+        private void Awake()
         {
-            tip.SetActive(false);
+            //singleton pattern
+            SingletonPattern(this); //ensures only one exists, if any
+
+            //verify and init tooltips
+            InitToolTips();
+
+            //all tooltips should start disabled
+            DisableAllToolTips();
         }
+
+        // Use this for initialization
+        void Start()
+        {
+
+        }
+
+        private static void SingletonPattern(ToolTipManager TTM_instance)
+        {
+            if (!toolTipManagerInstance)
+            {
+                toolTipManagerInstance = TTM_instance;
+            }
+            else
+            {
+                Destroy(TTM_instance.gameObject);
+            }
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        public void DisableAllToolTips()
+        {
+            foreach (GameObject tip in toolTips)
+            {
+                tip.SetActive(false);
+            }
+        }
+
+        public void ShowToolTip(ToolTipENUM toolTip, bool active)
+        {
+            switch (toolTip)
+            {
+                case ToolTipENUM.DEPLOYPARACHUTE:
+                    if (deployParachutePrompt) deployParachutePrompt.SetActive(active);
+                    break;
+                case ToolTipENUM.SKYDIVE:
+                    if (skydivePrompt) skydivePrompt.SetActive(active);
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 
-    public void ShowToolTip(ToolTipENUM toolTip, bool active)
-    {
-        switch (toolTip)
-        {
-            case ToolTipENUM.DEPLOYPARACHUTE:
-                if(deployParachutePrompt) deployParachutePrompt.SetActive(active);
-                break;
-            case ToolTipENUM.SKYDIVE:
-                if(skydivePrompt) skydivePrompt.SetActive(active);
-                break;
-            default:
-                break;
-        }
-    }
 
 }

@@ -739,7 +739,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 94.6
+      value: 47.8
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.y
@@ -747,7 +747,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -78.4
+      value: -52.1
       objectReference: {fileID: 0}
     - target: {fileID: 4203598678526034, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
       propertyPath: m_LocalRotation.x
@@ -793,9 +793,24 @@ Prefab:
       propertyPath: m_LocalPosition.x
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 1941973348895546, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
+      propertyPath: m_Name
+      value: BRS_TPC PLAYER
+      objectReference: {fileID: 0}
+    - target: {fileID: 114602218308527934, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: profile
+      value: 
+      objectReference: {fileID: 11400000, guid: 6d227a7ee40c88b4eb968bea34f84e37,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &276361382 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1926282694239218, guid: 08d65c8f8a074ac4d839c9204f543d97,
+    type: 2}
+  m_PrefabInternal: {fileID: 276361381}
 --- !u!4 &279634390 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4006093737304204, guid: 40d711fffcd2c8940a56c3c49dbb084f,
@@ -1644,7 +1659,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compassImage: {fileID: 2800000, guid: 65daacca53b4c0a49a7933f46a9510ef, type: 3}
-  minimapImage: {fileID: 0}
   revealDistance: 100
   iconColor: {r: 1, g: 0, b: 0.82073116, a: 1}
 --- !u!114 &671753228
@@ -2060,7 +2074,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compassImage: {fileID: 2800000, guid: 65daacca53b4c0a49a7933f46a9510ef, type: 3}
-  minimapImage: {fileID: 0}
   revealDistance: 500
   iconColor: {r: 0.882353, g: 0.5803922, b: 0.1254902, a: 1}
 --- !u!114 &730161301
@@ -2148,11 +2161,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 2034220229}
     m_Modifications:
-    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
-        type: 2}
-      propertyPath: secondsToShrink.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4040280970808236, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2187,24 +2195,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
         type: 2}
-      propertyPath: secondsToShrink.Array.data[1]
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
+      propertyPath: scriptableObject_shrinkPhaseOptions
+      value: 
+      objectReference: {fileID: 11400000, guid: e56a013de168e63459ddc3471f590b26,
         type: 2}
-      propertyPath: secondsToShrink.Array.data[2]
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 114821101170541108, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
-        type: 2}
-      propertyPath: secondsToShrink.Array.data[0]
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 120132300918642498, guid: a6e35e8f2a41eae459f4585a9ffadcd9,
-        type: 2}
-      propertyPath: m_Loop
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
   m_IsPrefabAsset: 0
@@ -2759,7 +2753,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   compassImage: {fileID: 2800000, guid: 65daacca53b4c0a49a7933f46a9510ef, type: 3}
-  minimapImage: {fileID: 0}
   revealDistance: 100
   iconColor: {r: 0, g: 0.2535498, b: 1, a: 1}
 --- !u!1 &971727324
@@ -3271,6 +3264,35 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1941973348895546, guid: 08d65c8f8a074ac4d839c9204f543d97,
     type: 2}
   m_PrefabInternal: {fileID: 276361381}
+--- !u!114 &1202512678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1202512677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fb502a8928c1c43a904d1d0b10a52f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outsideZonePPP: {fileID: 11400000, guid: b2e81dc1ca0d5f2469b39bf0c29ce359, type: 2}
+  cameraToOverride: {fileID: 276361382}
+  healthManager: {fileID: 1202512679}
+--- !u!114 &1202512679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1202512677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c41c5b2b40079dd4f853df7273c3cabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  maxHealth: 100
+  isAlive: 1
+  healthSlider: {fileID: 0}
 --- !u!1 &1207046465
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Rocks
   itemRarity: 0
-  quantity: 1
   stackQuantity: 0
   itemIcon: {fileID: 0}
   itemModel: {fileID: 1683019269660042, guid: 7cbf02b884a267246be08e488875ccbc, type: 2}
   itemCondition: 1
+  value: 0

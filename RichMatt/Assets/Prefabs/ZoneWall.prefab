@@ -272,11 +272,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRendererSegments: 64
-  zoneWallRadius: 500
-  radiusShrinkFactor: 50
   safeZone_Circle_Projector: {fileID: 119075886879666166}
-  timeBetweenEachShrinkPhase: 0300000003000000030000000300000003000000030000000300000003000000
-  secondsToShrink: 3c0000003c0000003c000000
+  startingZoneWallRadius: 500
+  shrinkPhases:
+  - secondsUntilShrinkBegins: 2
+    secondsToFullyShrink: 5
+    shrinkToRadius: 250
+    ticksPerSecond: 3
+    damagePerTick: 1
+  - secondsUntilShrinkBegins: 4
+    secondsToFullyShrink: 5
+    shrinkToRadius: 125
+    ticksPerSecond: 2
+    damagePerTick: 1
+  - secondsUntilShrinkBegins: 6
+    secondsToFullyShrink: 5
+    shrinkToRadius: 62
+    ticksPerSecond: 1
+    damagePerTick: 1
+  - secondsUntilShrinkBegins: 8
+    secondsToFullyShrink: 5
+    shrinkToRadius: 31
+    ticksPerSecond: 1
+    damagePerTick: 2
+  - secondsUntilShrinkBegins: 10
+    secondsToFullyShrink: 5
+    shrinkToRadius: 16
+    ticksPerSecond: 2
+    damagePerTick: 2
+  - secondsUntilShrinkBegins: 5
+    secondsToFullyShrink: 5
+    shrinkToRadius: 8
+    ticksPerSecond: 2
+    damagePerTick: 3
+  - secondsUntilShrinkBegins: 5
+    secondsToFullyShrink: 5
+    shrinkToRadius: 4
+    ticksPerSecond: 3
+    damagePerTick: 5
   DEBUG: 0
 --- !u!119 &119075886879666166
 Projector:

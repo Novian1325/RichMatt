@@ -1,7 +1,11 @@
-﻿public enum ToolTipENUM
+﻿namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    SKYDIVE,
-    DEPLOYPARACHUTE
+    public enum ToolTipENUM
+    {
+        SKYDIVE,
+        DEPLOYPARACHUTE
+
+    }
+    //add one enum per tooltip
 
 }
-//add one enum per tooltip
