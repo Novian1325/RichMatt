@@ -102,5 +102,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             maxHealth += amount;
         }
+
+        public float GetCurrentHealth()
+        {
+            return currentHealth;
+        }
     }
 }
