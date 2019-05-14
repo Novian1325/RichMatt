@@ -192,12 +192,12 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         private void HandleZoneDamage()
         {
-            if (!inZone)
+            if (!inZone)//if not in the zone
             {
                 if (Time.time > nextDamageTickTime)//if it's time to deal a damage tick
                 {
                     //Damage the healthManager depending on the phase of the zone wall
-                    healthManager.ChangeHealth(_shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].damagePerTick);
+                    healthManager.ChangeHealth(-_shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].damagePerTick);
                     //set the next Time to deal a tick damage
                     nextDamageTickTime += 1 / _shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
                 }
