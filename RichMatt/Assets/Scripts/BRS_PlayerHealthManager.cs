@@ -28,8 +28,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// UI Component to visually show Players their health. Bots do not need one of these.
         /// </summary>
-        [Header("---Health UI Slider---")]
+        [Header("---Health UI---")]
         [SerializeField] private Slider healthSlider;
+        [SerializeField] private Text healthText;
         
         // Use this for initialization
         void Start()
@@ -43,6 +44,11 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 
                 //update UI
                 healthSlider.value = currentHealth;
+            }
+
+            if (healthText)
+            {
+                healthText.text = currentHealth.ToString();
             }
         }
 
@@ -68,6 +74,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 healthSlider.value = currentHealth;
             }
+            if (healthText)
+            {
+                healthText.text = currentHealth.ToString();
+            }
         }
 
         /// <summary>
@@ -82,6 +92,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             if (healthSlider)
             {
                 healthSlider.value = currentHealth;
+            }
+            if (healthText)
+            {
+                healthText.text = currentHealth.ToString();
             }
         }
 
