@@ -41,14 +41,14 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             coroutine_CompassMarkerSort = StartCoroutine(SortCompassMarker(sortsPerSecond));
         }
 
-        public void Update()
+        private void Update()
         {
-            float headingAngle = mainCameraXform.eulerAngles.y;
+            var headingAngle = mainCameraXform.eulerAngles.y;
 
             //Get a handle on the Image's uvRect
             CompassImage.uvRect = new Rect(headingAngle / 360, 0, 1, 1);
-
-            headingAngle = (int)degreeIncrement * headingAngle / (int)degreeIncrement;
+            //round heading
+            headingAngle = Mathf.RoundToInt(headingAngle / (int)degreeIncrement) * (int)degreeIncrement;
 
             //convert the numbers to letters if pointing towards a direction (N/E/S/W)
             if (ordinalLetters)
@@ -70,7 +70,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 trackablePosition = compassMarker.GetTrackableTransform().position;
 
                 //get and save the distance to player
-                float distance = Vector3.Distance(mainCameraXform.position, trackablePosition);
+                var distance = Vector3.Distance(mainCameraXform.position, trackablePosition);
                 compassMarker.SetDistanceFromPlayer(distance);
 
                 if (distance <= compassMarker.GetRevealDistance())
@@ -131,8 +131,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <param name="playerXform">Reference transform (player)</param>
         private static void UpdateCompassMarker(BRS_CompassMarker compassMarker, Vector3 trackablePosition, Transform playerXform)
         {
-            Vector3 relative = playerXform.InverseTransformPoint(trackablePosition);
-            float angle = Mathf.Atan2(relative.x, relative.z) * Mathf.Rad2Deg;
+            var relative = playerXform.InverseTransformPoint(trackablePosition);
+            var angle = Mathf.Atan2(relative.x, relative.z) * Mathf.Rad2Deg;
 
             compassMarker.GetCompassMarkerImage().uvRect = new Rect(-angle / 360, 0, 1, 1); //need a value between -.5 an .5 for uvRect
         }
@@ -153,7 +153,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     //order icons so closest object to player is on top of all other icons
                     compassMarkerList = compassMarkerList.OrderBy(o => o.GetDistanceFromPlayer()).ToList();
 
-                    for (int i = 0; i < compassMarkerList.Count; ++i)
+                    for (var i = 0; i < compassMarkerList.Count; ++i)
                     {
                         compassMarkerList[i].transform.SetSiblingIndex(compassMarkerList.Count - 1 - i);
                     }
@@ -189,7 +189,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <param name="trackable">trackable to remove</param>
         public void RemoveTrackable(BRS_Trackable trackable)
         {
-            for (int i = 0; i < compassMarkerList.Count; ++i)
+            for (var i = 0; i < compassMarkerList.Count; ++i)
             {
                 BRS_CompassMarker marker = compassMarkerList[i];//cache
 
