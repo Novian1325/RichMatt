@@ -2393,7 +2393,8 @@ MonoBehaviour:
   CompassDirectionText: {fileID: 114548843166435702}
   ordinalLetters: 1
   degreeIncrement: 5
-  compassMarkerPrefab: {fileID: 0}
+  compassMarkerPrefab: {fileID: 1809458929977772, guid: 67693eaf4b1cf434d86d743c3c1d628c,
+    type: 2}
 --- !u!114 &114627631679180870
 MonoBehaviour:
   m_ObjectHideFlags: 1
