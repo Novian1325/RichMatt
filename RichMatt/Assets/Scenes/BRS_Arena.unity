@@ -677,6 +677,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 224227410903310606, guid: 71b0b02c4624d6543986e403b4df1099,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224227410903310606, guid: 71b0b02c4624d6543986e403b4df1099,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114134869135109888, guid: 71b0b02c4624d6543986e403b4df1099,
         type: 2}
       propertyPath: m_havePropertiesChanged
@@ -685,10 +695,6 @@ Prefab:
     - target: {fileID: 114134869135109888, guid: 71b0b02c4624d6543986e403b4df1099,
         type: 2}
       propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1187595100876356, guid: 71b0b02c4624d6543986e403b4df1099, type: 2}
-      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
