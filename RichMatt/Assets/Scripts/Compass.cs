@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace PolygonPilgrimage.BattleRoyaleKit
 {
-    public enum degreeIncrement
+    public enum DegreeIncrement
     {
         One = 1,
         Five = 5,
@@ -22,7 +22,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         [Header("Readout Options")]
         [SerializeField] private bool ordinalLetters = true;//show N instead of 0 or S instead of 180
-        [SerializeField] private degreeIncrement degreeIncrement = degreeIncrement.Five;// round to this number
+        [SerializeField] private DegreeIncrement degreeIncrement = DegreeIncrement.Five;// round to this number
 
         [Header("Icons")]
         [SerializeField] private GameObject compassMarkerPrefab;// prefab used  //icons UV rect x value is between -.5 and .5
