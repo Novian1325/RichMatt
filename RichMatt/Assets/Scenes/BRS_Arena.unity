@@ -382,6 +382,16 @@ Prefab:
       propertyPath: m_Name
       value: BRS_TPC PLAYER
       objectReference: {fileID: 0}
+    - target: {fileID: 114062645421935602, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: healthText
+      value: 
+      objectReference: {fileID: 1863367229}
+    - target: {fileID: 114062645421935602, guid: 08d65c8f8a074ac4d839c9204f543d97,
+        type: 2}
+      propertyPath: healthSlider
+      value: 
+      objectReference: {fileID: 1242485888}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d65c8f8a074ac4d839c9204f543d97, type: 2}
   m_IsPrefabAsset: 0
@@ -665,6 +675,10 @@ Prefab:
     - target: {fileID: 1690170598526316, guid: 71b0b02c4624d6543986e403b4df1099, type: 2}
       propertyPath: m_Name
       value: Health Amount Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 1505429338556230, guid: 71b0b02c4624d6543986e403b4df1099, type: 2}
+      propertyPath: m_Name
+      value: HealthSlider
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71b0b02c4624d6543986e403b4df1099, type: 2}
@@ -1247,7 +1261,7 @@ Prefab:
         type: 2}
       propertyPath: scriptableObject_shrinkPhaseOptions
       value: 
-      objectReference: {fileID: 11400000, guid: e56a013de168e63459ddc3471f590b26,
+      objectReference: {fileID: 11400000, guid: 3eb4cdd1ccc1dc244b53a4edc0d1d9fa,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e35e8f2a41eae459f4585a9ffadcd9, type: 2}
@@ -1778,6 +1792,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1941973348895546, guid: 08d65c8f8a074ac4d839c9204f543d97,
     type: 2}
   m_PrefabInternal: {fileID: 276361381}
+--- !u!114 &1242485888 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114932069963990380, guid: 71b0b02c4624d6543986e403b4df1099,
+    type: 2}
+  m_PrefabInternal: {fileID: 429509603}
+  m_Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1453050223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1840,6 +1860,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1863367229 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114033786557518060, guid: 71b0b02c4624d6543986e403b4df1099,
+    type: 2}
+  m_PrefabInternal: {fileID: 429509603}
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1875147396
 GameObject:
   m_ObjectHideFlags: 0
