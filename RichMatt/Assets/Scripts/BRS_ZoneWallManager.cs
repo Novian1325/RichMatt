@@ -444,5 +444,18 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 arcLength += spaceBetweenPoints;
             }
         }
+        /// <summary>
+        /// Gets the height of the zone wall at which the line renderers are drawn.
+        /// </summary>
+        /// <returns></returns>
+        public float GetDrawHeight()
+        {
+            return capsuleCollider.height;
+        }
+
+        public float GetCurrentRadius()
+        {
+            return currentZoneWallRadius;
+        }
     }
 }
