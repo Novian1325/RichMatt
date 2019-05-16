@@ -17,24 +17,24 @@ MonoBehaviour:
     secondsToFullyShrink: 5
     shrinkToRadius: 250
     ticksPerSecond: 1
-    damagePerTick: 5
+    damagePerTick: 1
   - secondsUntilShrinkBegins: 3
     secondsToFullyShrink: 5
     shrinkToRadius: 125
     ticksPerSecond: 1
-    damagePerTick: 5
+    damagePerTick: 1
   - secondsUntilShrinkBegins: 3
     secondsToFullyShrink: 5
     shrinkToRadius: 60
     ticksPerSecond: 1
-    damagePerTick: 5
+    damagePerTick: 1
   - secondsUntilShrinkBegins: 3
     secondsToFullyShrink: 5
     shrinkToRadius: 30
     ticksPerSecond: 1
-    damagePerTick: 5
+    damagePerTick: 1
   - secondsUntilShrinkBegins: 3
     secondsToFullyShrink: 5
     shrinkToRadius: 15
     ticksPerSecond: 1
-    damagePerTick: 5
+    damagePerTick: 1
