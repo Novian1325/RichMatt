@@ -27,6 +27,11 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// Class that controls manipulating the bounds of the Zone Wall Object.
         /// </summary>
         private static BRS_ZoneWallManager _zoneWallManager;
+        
+        /// <summary>
+        /// Transform attached to this GO.
+        /// </summary>
+        private Transform cachedTransform;
 
         /// <summary>
         /// Collection of the shrink phases
@@ -42,8 +47,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [Header("---Post Processing---")]
         [Tooltip("Post Processing Profile to use when OUTSIDE of the Zone Wall.")]
         [SerializeField] private PostProcessingProfile outsideZonePPP;
-
-
+        
         /// <summary>
         /// The Camera Object whose PostProcessing Behavior will be interchanged. If left empty (like for Bots) Console will not complain.
         /// </summary>
@@ -53,9 +57,15 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <summary>
         /// The object that should handle the dealing of the damage.
         /// </summary>
-        [Header("---Player Health Manager Handle---")]
+        [Header("---UI References---")]
         [Tooltip("The object that should handle the dealing of the damage.")]
         [SerializeField] private BRS_PlayerHealthManager healthManager;
+
+        /// <summary>
+        /// When Player is outside of the zone wall, this line will appear and guide the player back to the safe zone.
+        /// </summary>
+        [SerializeField]
+        private LineRenderer linePointingToCircleCenter;
 
         #endregion
 
@@ -98,7 +108,16 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         //called once per frame
         private void Update()
         {
-            HandleZoneDamage();
+            if (!inZone)//if not in the zone
+            {
+                HandleZoneDamage();
+                DrawLineToCircle();
+            }
+            else if (_DebugHealth)//if inside zone and debugging health....
+            {
+                //increase health (for debugging purposes)
+                healthManager.ChangeHealth(healthManager.GetMaxHealth());
+            }
         }
 
         void OnTriggerExit(Collider col)
@@ -114,6 +133,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 {
                     camPPB.profile = outsideZonePPP;
                 }
+            
             }
         }
 
@@ -129,6 +149,33 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     camPPB.profile = standardPPP;
                 }
             }
+
+            linePointingToCircleCenter.enabled = false;
+        }
+
+        private void DrawLineToCircle()
+        {
+            if (!linePointingToCircleCenter.enabled)
+            {
+                linePointingToCircleCenter.enabled = true;
+            }
+            
+            //starting point is player's current position, drawn at appropriate height
+            var pointPosition = cachedTransform.position;
+            pointPosition.y = _zoneWallManager.GetDrawHeight();//set height
+            linePointingToCircleCenter.SetPosition(0, pointPosition);//set starting point
+
+            //set endoing point, a point on the edge of the circle
+            var playerPositionRelativeToWall = _zoneWallObject.transform.InverseTransformPoint(cachedTransform.position);//convert world space point of player into local space of zoneWall circle
+            var angle = Mathf.Atan2(playerPositionRelativeToWall.z, playerPositionRelativeToWall.x) * Mathf.Rad2Deg;//get the angle between Player and centerpoint of zone wall circle
+            var radius = _zoneWallManager.GetCurrentRadius();//get radius of circle
+
+            var zoneWallPosition = _zoneWallObject.transform.position;//get x,z coordinates of circle
+            //yay trig!
+            pointPosition.x = zoneWallPosition.x + radius * Mathf.Cos(angle * (Mathf.PI / 180));//get x coordinate of point on edge of circle
+            pointPosition.z = zoneWallPosition.z + radius * Mathf.Sin(angle * (Mathf.PI / 180));//get y coordinate of point on edge of circle
+
+            linePointingToCircleCenter.SetPosition(1, pointPosition);//set endpoint on edge of circle
         }
 
         /// <summary>
@@ -185,6 +232,14 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     Debug.LogError("ERROR! Reference to HealthManager not set and cannot be located on " + this.gameObject.name, this.gameObject);
                 }
             }
+
+            if (!linePointingToCircleCenter)
+            {
+                Debug.LogError("ERROR! Line Renderer not assigned on Player.", this);
+            }
+            linePointingToCircleCenter.enabled = false; //start with object disabled;
+
+            cachedTransform = transform;
         }
         
         /// <summary>
@@ -192,20 +247,13 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// </summary>
         private void HandleZoneDamage()
         {
-            if (!inZone)//if not in the zone
+            if (Time.time > nextDamageTickTime)//if it's time to deal a damage tick
             {
-                if (Time.time > nextDamageTickTime)//if it's time to deal a damage tick
-                {
-                    //Damage the healthManager depending on the phase of the zone wall
-                    healthManager.ChangeHealth(-_shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].damagePerTick);
-                    //set the next Time to deal a tick damage
-                    nextDamageTickTime += 1 / _shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
-                }
-            }
-            else if (_DebugHealth)//if inside zone and debugging health....
-            {
-                //increase health (for debugging purposes)
-                healthManager.ChangeHealth(healthManager.GetMaxHealth());
+                //Damage the healthManager depending on the phase of the zone wall
+                healthManager.ChangeHealth(-_shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].damagePerTick);//DEAL DAMAGE
+
+                //set the next Time to deal a tick damage
+                nextDamageTickTime += 1 / _shrinkPhaseArray[_zoneWallManager.GetShrinkPhase()].ticksPerSecond;
             }
         }
     }
