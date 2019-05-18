@@ -60,9 +60,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
 
         void Start()
         {
-            if (TacticalMarkerPrefab == null) Debug.LogError("ERROR! No Tactical Marker Prefab set!");
-            playerCameraXform = GameObject.FindGameObjectWithTag("MainCamera").transform;//get the player's camera
-            minimapCameraXform = GameObject.FindGameObjectWithTag("MiniMap Camera").transform;
+            if (!TacticalMarkerPrefab) Debug.LogError("ERROR! No Tactical Marker Prefab set!");
+            playerCameraXform = GameObject.FindGameObjectWithTag("MainCamera").transform as Transform;//get the player's camera
+            minimapCameraXform = GameObject.FindGameObjectWithTag("MiniMap Camera").transform as Transform;
         }
 
         private void DestroyExistingTacticalMarkerAtDistanceLimit()
@@ -108,7 +108,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void UpdateDistanceToMarker()
         {
             //limit polling rate to be more performant
-            if (Time.time >= distancePollingTimer) //if it's time to poll again...
+            if (Time.time > distancePollingTimer) //if it's time to poll again...
             {
                 //Calculate the distance from the player to the marker
                 distanceToMarker = (int)Vector3.Distance(playerCameraXform.position, tacticalMarkerInstance.transform.position);
