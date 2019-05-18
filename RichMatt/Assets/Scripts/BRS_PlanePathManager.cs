@@ -47,6 +47,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         //start and end points for plane to fly through
         private Vector3 planeStartPoint;
         private Vector3 planeEndPoint;
+        /// <summary>
+        /// A primitive sphere that gets used as a target for raycasting against to determine if a path is clear.
+        /// </summary>
         private GameObject endpointMarker;
 
         //to prevent infinite loops
@@ -65,7 +68,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <returns></returns>
         private bool VerifyReferences()
         {
-            bool allReferencesOkay = true;
+            var allReferencesOkay = true;
 
             if (planeSpawnBounds == null)
             {
@@ -147,7 +150,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private void DestroyMarkerObjects()
         {
             //destorys each marker that was used.
-            foreach (GameObject marker in endpointMarkerList)
+            foreach (var marker in endpointMarkerList)
             {
                 if (!DEBUG) Destroy(marker);
             }
@@ -161,8 +164,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private Vector3 GetRandomPointOnCircle()
         {
             //get terminal point on unit circle, then multiply by radius
-            float randomArc = Random.Range(0, 2 * Mathf.PI);
-            Vector3 randomPoint = new Vector3(//create new vector3
+            var randomArc = Random.Range(0, 2 * Mathf.PI);
+            var randomPoint = new Vector3(//create new vector3
                 (Mathf.Sin(randomArc) * spawnBoundsCircleRadius) + planeSpawnBounds.position.x, //get x coordiantes on unit circle, multiply by radius, offset relative to bounds
                 planeFlightAltitude, // set the height
                 (Mathf.Cos(randomArc) * spawnBoundsCircleRadius) + planeSpawnBounds.position.z);//get y coordinate on unity circle, multiply by radius, offset relative to bounds
@@ -226,7 +229,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <returns></returns>
         public bool InitPlaneDrop(GameObject[] incomingCargo)
         {
-            foreach (GameObject cargo in incomingCargo)
+            foreach (var cargo in incomingCargo)
             {
                 LoadCargo(cargo);
             }
@@ -241,7 +244,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         /// <returns>Endpoint object created.</returns>
         private GameObject ConfigureEndpoint(Vector3 targetPosition)
         {
-            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            var marker = GameObject.CreatePrimitive(PrimitiveType.Sphere) as GameObject;
             marker.transform.position = targetPosition;
             endpointMarkerList.Add(marker);//add to list to delete later
             if (DEBUG)
@@ -271,8 +274,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //spawn debugger object. this object is the parent, so both will be destroyed
             if (DEBUG)
             {
-                GameObject startMark = ConfigureEndpoint(planeStartPoint);
-                System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+                var startMark = ConfigureEndpoint(planeStartPoint) as GameObject;
+                var stringBuilder = new System.Text.StringBuilder();
                 stringBuilder.Append("StartMarker: ");
                 stringBuilder.Append(unsuccessfulPasses);
                 startMark.name = stringBuilder.ToString();
@@ -281,7 +284,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
 
             //look for an endpoint
-            for (int endPointsFound = 1; endPointsFound <= flightPathChecksUntilFailure; ++endPointsFound)//while you don't have a valid flight path...
+            for (var endPointsFound = 1; endPointsFound <= flightPathChecksUntilFailure; ++endPointsFound)//while you don't have a valid flight path...
             {
                 //Debug.Log("Attempt No: " + endPointsFound);
                 //get end point on circle
@@ -370,11 +373,11 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         public PlaneManager SpawnPlane()
         {
             //create this plane in the world at this position, with no rotation
-            GameObject plane = Instantiate(BRS_PlaneSpawn, planeStartPoint, Quaternion.identity);//do not set plane to be child of this object!
+            var plane = Instantiate(BRS_PlaneSpawn, planeStartPoint, Quaternion.identity) as GameObject;//do not set plane to be child of this object!
             plane.transform.LookAt(planeEndPoint);//point plane towards endpoint
 
             //get plane manager
-            PlaneManager planeManager = plane.GetComponent<PlaneManager>() as PlaneManager;
+            var planeManager = plane.GetComponent<PlaneManager>() as PlaneManager;
             if (planeManager == null)
             {
                 planeManager = plane.AddComponent<PlaneManager>();//create it if it doesn't exist
@@ -397,14 +400,14 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private bool TestRaycastThroughDropZone(Vector3 startPoint, Vector3 targetObject, GameObject[] acceptableDropZones)
         {
             //did the raycast go through a drop zone?
-            bool raycastThroughDropZone = false;
+            var raycastThroughDropZone = false;
             //RaycastHit will store information about anything hit by the raycast
             RaycastHit raycastHitInfo;
             //raycast
             if (Physics.Raycast(startPoint, targetObject - startPoint, out raycastHitInfo, spawnBoundsCircleRadius * 2))
             {
                 if (DEBUG) Debug.Log("Testing Raycast Through DropZone. Hit: " + raycastHitInfo.collider.gameObject.name);
-                for (int i = 0; i < acceptableDropZones.Length; ++i)//look through each drop zone in list
+                for (var i = 0; i < acceptableDropZones.Length; ++i)//look through each drop zone in list
                 {
                     if (raycastHitInfo.collider.gameObject == acceptableDropZones[i])//if the game object that was hit is inside this list of good zones
                     {
@@ -432,7 +435,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         private bool TestRaycastHitEndPoint(Vector3 startPoint, GameObject targetObject)
         {
             //did the raycast hit the endpoint unobstructed by terrain or obstacles?
-            bool raycastHitEndpoint = false;
+            var raycastHitEndpoint = false;
             //RaycastHit holds info about raycast
             RaycastHit raycastHitInfo;
             //if something was hit...
@@ -449,7 +452,4 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             return raycastHitEndpoint;
         }
     }
-
-
-
 }
