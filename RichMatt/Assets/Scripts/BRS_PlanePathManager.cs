@@ -31,7 +31,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         [SerializeField] private bool DEBUG = false;//if true, prints debug statements
 
         private GameObject[] acceptableDropZones;
-        private List<GameObject> endpointMarkerList = new List<GameObject>();
 
         //how high does the plane fly?
         private float planeFlightAltitude = 800.0f;
@@ -114,6 +113,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //make sure drop zones are the proper height
             ConfigureDropZones(playerDropZones, minimumDropZoneSize);
             ConfigureDropZones(supplyDropZones, minimumDropZoneSize);
+
+            endpointMarker = ConfigureEndpointMarker();
+            endpointMarker.transform.SetParent(this.transform);//make this object the parent
+            endpointMarker.SetActive(false);
         }
 
         /// <summary>
@@ -135,6 +138,19 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         }
 
         /// <summary>
+        /// Create the object that raycasts get tested against at runtime.
+        /// </summary>
+        /// <returns></returns>
+        private static GameObject ConfigureEndpointMarker()
+        {
+            var marker = GameObject.CreatePrimitive(PrimitiveType.Sphere) as GameObject;//create obj
+            marker.GetComponent<MeshRenderer>().enabled = false;//don't need to see this object
+            marker.name = "Plane Path Raycast Target.";
+
+            return marker;
+        }
+
+        /// <summary>
         /// Sets which drop zones and flight speed to use.
         /// </summary>
         private void ConfigureFlightType()
@@ -142,19 +158,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             acceptableDropZones = planeContainsPlayers ? playerDropZones : playerDropZones;
             planeFlightSpeed = planeContainsPlayers ? planeSpeed_PlayerDrop : planeSpeed_SupplyDrop;
 
-        }
-
-        /// <summary>
-        /// Destroys endpoint markers.
-        /// </summary>
-        private void DestroyMarkerObjects()
-        {
-            //destorys each marker that was used.
-            foreach (var marker in endpointMarkerList)
-            {
-                if (!DEBUG) Destroy(marker);
-            }
-            endpointMarkerList.Clear();//clear list so it doesn't balloon infinitely
         }
 
         /// <summary>
@@ -238,28 +241,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         }
 
         /// <summary>
-        /// Create a new endpoint to test against. If DEBUGing, make visible and track. Adds new endpoint to list.
-        /// </summary>
-        /// <param name="targetPosition">Point in space where this Endpoint should be.</param>
-        /// <returns>Endpoint object created.</returns>
-        private GameObject ConfigureEndpoint(Vector3 targetPosition)
-        {
-            var marker = GameObject.CreatePrimitive(PrimitiveType.Sphere) as GameObject;
-            marker.transform.position = targetPosition;
-            endpointMarkerList.Add(marker);//add to list to delete later
-            if (DEBUG)
-            {
-                marker.transform.SetParent(this.transform);//set parent to locate easier in hierarchy
-            }
-            else
-            {
-                marker.GetComponent<MeshRenderer>().enabled = false;//show marker if debugging; hide if not
-            }
-            return marker;
-
-        }
-
-        /// <summary>
         /// Decides where the plane starts and stops
         /// </summary>
         /// <returns></returns>
@@ -274,12 +255,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //spawn debugger object. this object is the parent, so both will be destroyed
             if (DEBUG)
             {
-                var startMark = ConfigureEndpoint(planeStartPoint) as GameObject;
                 var stringBuilder = new System.Text.StringBuilder();
                 stringBuilder.Append("StartMarker: ");
                 stringBuilder.Append(unsuccessfulPasses);
-                startMark.name = stringBuilder.ToString();
-                startMark.GetComponent<MeshRenderer>().enabled = true;//makes marker visible for debugging purposes
 
             }
 
@@ -289,18 +267,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 //Debug.Log("Attempt No: " + endPointsFound);
                 //get end point on circle
                 planeEndPoint = GetRandomPointOnCircle();
-                //create a new endpoint marker at that location
-                endpointMarker = ConfigureEndpoint(planeEndPoint);
-                if (DEBUG)
-                {
-                    //name endpointMarker for debugging purposes
-                    System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-                    stringBuilder.Append("Endpoint Marker ");
-                    stringBuilder.Append(unsuccessfulPasses);
-                    stringBuilder.Append(".");
-                    stringBuilder.Append(endPointsFound);
-                    endpointMarker.name = stringBuilder.ToString();
-                }
+                //move marker to target endpoint to be raycasted against
+                endpointMarker.transform.position = planeEndPoint;
+                //enable marker
+                endpointMarker.SetActive(true);
 
                 //test if flight path goes through LZ
                 if (TestRaycastThroughDropZone(planeStartPoint, endpointMarker.transform.position, acceptableDropZones))
@@ -322,6 +292,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     if (DEBUG) Debug.Log("INVALID: Endpoint Marker Not Hit.");
                 }
 
+                //disable marker
+                endpointMarker.SetActive(false);
+
                 //is the flight unobstructed and through a drop zone
                 if (endpointHit && flightPathThroughLZ)
                 {
@@ -329,7 +302,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                     //reset variables for next path
                     planeFlightAltitude = startingFlightAltitude;//reset altitude for next try
                     unsuccessfulPasses = 0;//reset failures
-                    DestroyMarkerObjects();//clear excess markers
                     planeContainsPlayers = false;//prove me right
                     return true;
                 }
@@ -353,13 +325,10 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             {
                 Debug.LogWarning("ERROR! Flight path failed after " + unsuccessfulPasses * flightPathChecksUntilFailure + " attempts. Adjust planeSpawnBounds. Skipping Plane Deployment");
                 unsuccessfulPasses = 0;//reset tracker
-                DestroyMarkerObjects();
                 return false;
             }
             //raise altitude and try again
             planeFlightAltitude += failedPathAltitudeIncrementAmount;
-            //destroy markers
-            DestroyMarkerObjects();
             //try again
             return SetupFlightPath();
 
