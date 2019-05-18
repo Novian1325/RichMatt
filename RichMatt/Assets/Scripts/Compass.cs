@@ -53,7 +53,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //convert the numbers to letters if pointing towards a direction (N/E/S/W)
             if (ordinalLetters)
             {
-                ConvertAngleToLetter((int)headingAngle);
+                CompassDirectionText.text = ConvertAngleToLetter((int)headingAngle);
             }
             else
             {
@@ -191,7 +191,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             for (var i = 0; i < compassMarkerList.Count; ++i)
             {
-                BRS_CompassMarker marker = compassMarkerList[i];//cache
+                var marker = compassMarkerList[i];//cache
 
                 if (marker.CompareTrackable(trackable))
                 {
@@ -204,48 +204,45 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
         }
 
-        private void ConvertAngleToLetter(int angle)
-        {//Set the text of Compass Degree Text to the clamped value, but change it to the letter if it is a True direction
+        /// <summary>
+        /// Set the text of Compass Degree Text to the clamped value, but change it to the letter if it is a True direction.
+        /// </summary>
+        /// <param name="angle"></param>
+        private static string ConvertAngleToLetter(int angle)
+        {
+            string outputText;
             switch (angle)
             {
                 case 0:
                 case 360:
-                    //Do this
-                    CompassDirectionText.text = "N";
+                    outputText = "N";
                     break;
                 case 45:
-                    //Do this
-                    CompassDirectionText.text = "NE";
+                    outputText = "NE";
                     break;
                 case 90:
-                    //Do this
-                    CompassDirectionText.text = "E";
+                    outputText = "E";
                     break;
                 case 135:
-                    //Do this
-                    CompassDirectionText.text = "SE";
+                    outputText = "SE";
                     break;
                 case 180:
-                    //Do this
-                    CompassDirectionText.text = "S";
+                    outputText = "S";
                     break;
                 case 225:
-                    //Do this
-                    CompassDirectionText.text = "SW";
+                    outputText = "SW";
                     break;
                 case 270:
-                    //Do this
-                    CompassDirectionText.text = "W";
+                    outputText = "W";
                     break;
                 case 315:
-                    //Do this
-                    CompassDirectionText.text = "NW";
+                    outputText = "NW";
                     break;
                 default:
-                    CompassDirectionText.text = angle.ToString();
+                    outputText = angle.ToString();
                     break;
             }
-
+            return outputText;
         }
     }
 
