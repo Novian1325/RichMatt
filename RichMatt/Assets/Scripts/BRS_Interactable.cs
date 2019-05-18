@@ -63,7 +63,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         public virtual void Interact(BRS_InteractionManager actor)
         {
             //this method should probably be overridden by derived class, ie a vehicle should do something that an item does not
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            var stringBuilder = new System.Text.StringBuilder();
 
             stringBuilder.Append(actor.gameObject.name);
             stringBuilder.Append(" is interacting with ");
