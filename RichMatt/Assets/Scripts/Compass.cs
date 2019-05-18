@@ -146,8 +146,6 @@ namespace PolygonPilgrimage.BattleRoyaleKit
         {
             while (true)
             {
-                yield return new WaitForSecondsRealtime(1 / sortsPerSecond);
-
                 if (compassMarkerList.Count > 1)
                 {
                     //order icons so closest object to player is on top of all other icons
@@ -158,6 +156,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                         compassMarkerList[i].transform.SetSiblingIndex(compassMarkerList.Count - 1 - i);
                     }
                 }
+
+                yield return new WaitForSecondsRealtime(1 / sortsPerSecond);
             }
         }
 
@@ -174,7 +174,7 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             }
 
             //create new marker
-            BRS_CompassMarker compassMarker = Instantiate(compassMarkerPrefab, CompassImage.transform).GetComponent<BRS_CompassMarker>() as BRS_CompassMarker;
+            var compassMarker = Instantiate(compassMarkerPrefab, CompassImage.transform).GetComponent<BRS_CompassMarker>() as BRS_CompassMarker;
 
             //initialize marker with image, color, and distance
             compassMarker.InitCompassMarker(newTrackable);
@@ -196,8 +196,8 @@ namespace PolygonPilgrimage.BattleRoyaleKit
                 if (marker.CompareTrackable(trackable))
                 {
                     //remove marker icon reference
-                    compassMarkerList.Remove(compassMarkerList[i]);//this is safe as long as there is a 'break' at the end
-                                                                   //destroy UI element
+                    compassMarkerList.Remove(marker);//this is safe as long as there is a 'break' at the end
+                    //destroy UI element
                     if (marker) Destroy(marker.gameObject);
                     break;
                 }
