@@ -169,9 +169,9 @@ namespace PolygonPilgrimage.BattleRoyaleKit
             //get terminal point on unit circle, then multiply by radius
             var randomArc = Random.Range(0, 2 * Mathf.PI);
             var randomPoint = new Vector3(//create new vector3
-                (Mathf.Sin(randomArc) * spawnBoundsCircleRadius) + planeSpawnBounds.position.x, //get x coordiantes on unit circle, multiply by radius, offset relative to bounds
+                (Mathf.Cos(randomArc) * spawnBoundsCircleRadius) + planeSpawnBounds.position.x, //get x coordiantes on unit circle, multiply by radius, offset relative to bounds
                 planeFlightAltitude, // set the height
-                (Mathf.Cos(randomArc) * spawnBoundsCircleRadius) + planeSpawnBounds.position.z);//get y coordinate on unity circle, multiply by radius, offset relative to bounds
+                (Mathf.Sin(randomArc) * spawnBoundsCircleRadius) + planeSpawnBounds.position.z);//get y coordinate on unity circle, multiply by radius, offset relative to bounds
                                                                                                 //Debug.Log("random point: " + randomPoint);
             return randomPoint;
 
